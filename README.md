@@ -62,3 +62,32 @@ python run_batch.py --student 1_1_qishi --output-root results --device cuda:2
 cd /home/sqw/Projects/3D-AQA
 python -m unittest discover -s tests -v
 ```
+
+## 查看 Tracking `.pkl`
+
+`.pkl` 是 `joblib` 压缩的逐帧 PHALP 结果。下面的脚本会显示文件摘要和指定帧中
+每个追踪人物的 SMPL 字段、数组形状及取值范围：
+
+```bash
+python inspect_tracking_pkl.py \
+  /home/sqw/VisualSearch/aqa/Tracking/teach/QxVvRcRn2TA_1_qishi/results/demo_QxVvRcRn2TA_1_qishi.pkl \
+  --frame 1
+```
+
+## 验证新旧 DTW
+
+验证脚本会直接调用旧 AQA 项目的 `dynamic_time_warpping`，并与本项目
+`dtw_alignment` 对比。它会验证固定种子的合成数据、全平局数据，以及真实的
+`1_1_qishi` 视频特征；两种实现的匹配路径会分别保存为 CSV。
+
+旧实现的 `dtaidistance` 安装在 `aqa` 环境中，因此请使用该环境运行：
+
+```bash
+conda activate aqa
+cd /home/sqw/Projects/3D-AQA
+python validate_dtw/validate_implementations.py --device cuda:2
+```
+
+结果会写入 `validate_dtw/results/validation_summary.json`，每个数据集目录还包含
+`legacy_matching.csv`、`new_matching.csv`、`comparison.json` 与可复现实验输入的
+`input_features.npz`。

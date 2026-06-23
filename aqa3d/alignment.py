@@ -151,6 +151,7 @@ def dtw_alignment(student: np.ndarray, teacher: np.ndarray, coefficient: float =
                 coefficient * accumulated[row, col] + accumulated[row - 1, col - 1],
             )
 
+    # 回溯最佳路径
     row, col = rows - 1, cols - 1
     path = [(row, col)]
     while row > 0 or col > 0:
@@ -185,8 +186,11 @@ def align_keyframes(
     dtw_coefficient: float = 1.0,
     yolo_batch_size: int = 8,
 ) -> KeyframeAlignment:
+    # 构建肢体段向量
     student_vectors = body_vectors(model, student_video.frames, yolo_batch_size)
     teacher_vectors = body_vectors(model, teacher_video.frames, yolo_batch_size)
+
+    # 计算DTW距离和匹配
     distance, matching, costs = dtw_alignment(student_vectors, teacher_vectors, dtw_coefficient)
     keyframes = extract_keyframes(student_video.frames, smooth_kernel_size, keyframe_order)
     teacher_matches = np.asarray(
