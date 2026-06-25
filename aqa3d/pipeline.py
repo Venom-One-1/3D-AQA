@@ -50,6 +50,8 @@ def run_pair(
         yolo_batch_size=yolo_batch_size,
     )
 
+
+    # 计算每个关键帧的局部-SMPL关节误差
     student_track = load_primary_track(student_tracking_path)
     teacher_track = load_primary_track(teacher_tracking_path)
     student_poses = student_track.at_source_frames(alignment.student_source_indices)

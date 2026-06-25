@@ -98,3 +98,14 @@ runs/
 tmp/
 temp/
 *.tmp
+
+# result file
+*.csv
+*.npz
+*.json
+
+# Figures
+*.png
+*.jpg
+*.jpeg
+

@@ -13,7 +13,7 @@ from scipy.signal import argrelextrema
 @dataclass(frozen=True)
 class SampledVideo:
     frames: list[np.ndarray]
-    source_indices: np.ndarray
+    source_indices: np.ndarray # 下标从 '0' 开始
     source_fps: float
 
 
@@ -124,7 +124,7 @@ def extract_keyframes(
         if last - keyframes[-1] < fps:
             keyframes[-1] = last
         else:
-            keyframes = np.append(keyframes, last)
+            keyframes = np.append(keyframes, last) # 保证在视频结尾'1s'内采样一个关键帧
     if keyframes[0] + 1 > fps:
         keyframes = np.concatenate((np.asarray([-1], dtype=np.int64), keyframes))
     return keyframes + 1
