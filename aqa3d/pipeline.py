@@ -52,8 +52,11 @@ def run_pair(
 
 
     # 计算每个关键帧的局部-SMPL关节误差
+    # 读取.pkl文件，并且选择出现次数最多的track，并且返回该track的SMPL body_pose
     student_track = load_primary_track(student_tracking_path)
     teacher_track = load_primary_track(teacher_tracking_path)
+
+    # 根据关键帧的索引，获取对应的SMPL body_pose
     student_poses = student_track.at_source_frames(alignment.student_source_indices)
     teacher_poses = teacher_track.at_source_frames(alignment.teacher_source_indices)
     errors, distance = geodesic_distance(student_poses, teacher_poses)

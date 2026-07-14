@@ -4,6 +4,10 @@
 This is intentionally separate from ``run_batch.py``: the existing pipeline
 continues to use student keyframes for diagnostic analysis, while this script
 uses a fixed teacher-keyframe set for within-move student ranking.
+
+这份脚本运行DTW算法匹配学生和标准教学视频帧, 以教师视频的关键帧为锚点,
+寻找与之匹配的学生视频帧。因此, 不同的学生都使用同一套标准教师关键帧进行评分,
+固定了选择的关键帧数量, 便于在同一动作中对学生进行排名。
 """
 
 from __future__ import annotations

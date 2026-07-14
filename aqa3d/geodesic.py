@@ -14,7 +14,7 @@ def _axis_angle_to_matrix(axis_angle: np.ndarray) -> np.ndarray:
         raise ValueError("Axis-angle input must have a final dimension of 3.")
 
     theta_squared = np.sum(vectors * vectors, axis=-1, keepdims=True)
-    theta = np.sqrt(theta_squared)
+    theta = np.sqrt(theta_squared) # shape: [T, J, 1]
     # These Taylor expansions keep the zero-rotation case well defined.
     a = np.empty_like(theta)
     b = np.empty_like(theta)
@@ -24,7 +24,7 @@ def _axis_angle_to_matrix(axis_angle: np.ndarray) -> np.ndarray:
     a[~nonzero] = (1.0 - theta_squared / 6.0)[~nonzero]
     b[~nonzero] = (0.5 - theta_squared / 24.0)[~nonzero]
 
-    x, y, z = vectors[..., 0], vectors[..., 1], vectors[..., 2]
+    x, y, z = vectors[..., 0], vectors[..., 1], vectors[..., 2] # shape: [T, J]
     zero = np.zeros_like(x)
     skew = np.stack(
         (
@@ -62,7 +62,8 @@ def geodesic_distance(
     batch dimensions.  ``frame_weights`` and ``joint_weights`` are shared by
     every batch item.
     """
-    student = as_rotation_matrices(student_rotations)
+    # 把SMPL轴角表示转换成3x3旋转矩阵表示
+    student = as_rotation_matrices(student_rotations) # shape: [..., T, J, 3, 3]
     teacher = as_rotation_matrices(teacher_rotations)
     if student.shape != teacher.shape:
         raise ValueError(
@@ -72,9 +73,9 @@ def geodesic_distance(
     if student.ndim < 4 or student.shape[-2:] != (3, 3):
         raise ValueError("Expected rotations shaped (..., T, J, 3, 3).")
 
-    relative = student @ np.swapaxes(teacher, -1, -2)
+    relative = student @ np.swapaxes(teacher, -1, -2) # R_student * R_teacher^T
     cosine = (np.trace(relative, axis1=-2, axis2=-1) - 1.0) / 2.0
-    errors = np.arccos(np.clip(cosine, -1.0, 1.0))
+    errors = np.arccos(np.clip(cosine, -1.0, 1.0)) # shape: [T, J]
 
     frame_count, joint_count = errors.shape[-2:]
     if frame_weights is None:

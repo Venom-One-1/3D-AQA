@@ -18,6 +18,7 @@ import numpy as np
 
 from aqa3d.alignment import extract_keyframes, sample_video, trim_qishi_student_video
 from aqa3d.geodesic import geodesic_distance
+from aqa3d.smpl_dtw import dtw_from_cost_matrix, pairwise_geodesic_costs
 from aqa3d.tracking import TrackPoseSequence, load_primary_track
 
 
@@ -60,81 +61,6 @@ def build_teacher_map(teacher_root: Path, tracking_root: Path) -> dict[str, Path
         details = "; ".join(f"{move}: {', '.join(skipped[move])}" for move in missing)
         raise FileNotFoundError(f"No teacher tracking file exists for move(s): {details}")
     return teachers
-
-
-def pairwise_geodesic_costs(
-    student_poses: np.ndarray,
-    teacher_poses: np.ndarray,
-    *,
-    chunk_size: int = 64,
-) -> np.ndarray:
-    """Return frame-pair mean SMPL local-rotation geodesic distances."""
-    if chunk_size <= 0:
-        raise ValueError(f"chunk_size must be positive, got {chunk_size}.")
-    student = np.asarray(student_poses, dtype=np.float64)
-    teacher = np.asarray(teacher_poses, dtype=np.float64)
-    if student.ndim != 4 or student.shape[1:] != (23, 3, 3):
-        raise ValueError(f"Expected student poses shaped (S, 23, 3, 3), got {student.shape}.")
-    if teacher.ndim != 4 or teacher.shape[1:] != (23, 3, 3):
-        raise ValueError(f"Expected teacher poses shaped (T, 23, 3, 3), got {teacher.shape}.")
-
-    costs = np.empty((student.shape[0], teacher.shape[0]), dtype=np.float64)
-    teacher_t = np.swapaxes(teacher, -1, -2)
-    for start in range(0, student.shape[0], chunk_size):
-        end = min(start + chunk_size, student.shape[0])
-        relative = student[start:end, None] @ teacher_t[None]
-        cosine = (np.trace(relative, axis1=-2, axis2=-1) - 1.0) / 2.0
-        costs[start:end] = np.arccos(np.clip(cosine, -1.0, 1.0)).mean(axis=-1)
-    return costs
-
-
-def dtw_from_cost_matrix(
-    local_costs: np.ndarray,
-    coefficient: float = 1.0,
-) -> tuple[float, dict[int, list[int]], np.ndarray]:
-    """Run the same DTW recurrence as ``aqa3d.alignment.dtw_alignment``."""
-    if coefficient <= 0:
-        raise ValueError("DTW coefficient must be positive.")
-    accumulated = np.asarray(local_costs, dtype=np.float64).copy()
-    if accumulated.ndim != 2 or min(accumulated.shape) == 0:
-        raise ValueError(f"local_costs must be a non-empty 2D matrix, got {accumulated.shape}.")
-
-    rows, cols = accumulated.shape
-    accumulated[0, 1:] = np.cumsum(accumulated[0, 1:]) + accumulated[0, 0]
-    accumulated[1:, 0] = np.cumsum(accumulated[1:, 0]) + accumulated[0, 0]
-    accumulated[0, 0] *= coefficient
-    for row in range(1, rows):
-        for col in range(1, cols):
-            accumulated[row, col] = min(
-                accumulated[row, col] + accumulated[row - 1, col],
-                accumulated[row, col] + accumulated[row, col - 1],
-                coefficient * accumulated[row, col] + accumulated[row - 1, col - 1],
-            )
-
-    row, col = rows - 1, cols - 1
-    path = [(row, col)]
-    while row > 0 or col > 0:
-        if row == 0:
-            col -= 1
-        elif col == 0:
-            row -= 1
-        else:
-            choice = int(
-                np.argmin((accumulated[row - 1, col - 1], accumulated[row - 1, col], accumulated[row, col - 1]))
-            )
-            if choice == 0:
-                row, col = row - 1, col - 1
-            elif choice == 1:
-                row -= 1
-            else:
-                col -= 1
-        path.append((row, col))
-    path.reverse()
-
-    matching: dict[int, list[int]] = {}
-    for student_index, teacher_index in path:
-        matching.setdefault(student_index, []).append(teacher_index)
-    return float(accumulated[-1, -1] / len(path)), matching, accumulated
 
 
 def load_teacher_reference(

@@ -56,6 +56,64 @@ python run_batch.py --student 1_1_qishi --output-root results --device cuda:2
 - `matched_keyframes.csv`：关键帧和 DTW 匹配帧的 0/1 基索引及每帧平均误差；
 - `geodesic_errors.npz`：形状为 `(关键帧数, 23)` 的逐帧逐关节误差图（弧度和角度）。
 
+## 完整教学视频的 TAS 边界映射
+
+下面的命令以 `QxVvRcRn2TA` 为参考，将裁剪后的完整教学视频统一采样到 5 FPS，
+使用 23 个 SMPL 局部关节旋转的平均 geodesic distance 运行全局 DTW，并迁移
+24 式的结束边界：
+
+```bash
+cd /home/sqw/Projects/3D-AQA
+conda run -n 4d-humans python run_tas_smpl_dtw_mapping.py
+```
+
+当一个参考边界帧在 DTW 路径上对应多个目标帧时，选择 local geodesic distance
+最小的候选帧。程序要求 24 个映射终点严格递增，不会静默修正重复或逆序边界。
+PHALP 在长视频中发生连续 track ID 切换时，会保持当前 ID 直到其消失，再按相邻
+SMPL 姿态连续性连接后继 ID，并在 `summary.json` 中记录实际使用的 ID。
+
+默认结果保存在 `tas_smpl_dtw_results/`：
+
+- `all_mapped_segments_5fps.csv`：所有目标视频的 1-based、闭区间 5 FPS 分段；
+- `<video_id>/segments_5fps.csv`：单个视频的 24 式映射结果；
+- `<video_id>/boundary_mapping.csv`：边界候选数、源帧号和选中的 local distance；
+- `<video_id>/dtw_path.csv` 与 `dtw_path.npz`：完整 DTW 路径；
+- `<video_id>/dtw_diagnostics.png`：cost matrix、完整路径及 24 个映射边界；
+- `mapping_summary.json`：样本数、DTW 距离、单调性、末尾覆盖和运行时间摘要。
+
+## 完整学生视频的 TAS 边界映射
+
+下面的命令使用 `QxVvRcRn2TA` 的 Ground Truth 边界，通过 5 FPS SMPL
+Geodesic DTW 分割所有已经完成 tracking 的学生视频：
+
+```bash
+cd /home/sqw/Projects/3D-AQA
+conda run -n 4d-humans python run_student_tas_smpl_dtw.py
+```
+
+只处理指定学生时，可以重复传入 `--student-video-id`：
+
+```bash
+conda run -n 4d-humans python run_student_tas_smpl_dtw.py \
+  --student-video-id 00 --student-video-id 01
+```
+
+默认结果保存在 `student_segmentation_results/<video_id>/`。`segments.csv` 同时
+记录原视频的 1-based 闭区间 `start_frame/end_frame`、时间范围以及 5 FPS 序列的
+`start_frame_5fps/end_frame_5fps`。完整 DTW 路径、边界映射、诊断图和运行摘要也会
+保存在同一目录。参考视频、参考 tracking 和边界 CSV 均可通过命令行参数切换。
+
+可视化已经完成分割的学生视频：
+
+```bash
+conda run -n 4d-humans python visualize_student_tas_boundary_frames.py
+```
+
+程序为每个学生生成一张包含全部 24 式的两列对比图：左侧是参考视频的 Ground
+Truth 结束边界帧，右侧是学生视频的 DTW 预测结束边界帧。图片保存在
+`student_segmentation_results/<video_id>/boundary_frames.jpg`。使用
+`--student-video-id 00` 可以只生成指定学生的图片。
+
 ## 测试
 
 ```bash
@@ -91,3 +149,20 @@ python validate_dtw/validate_implementations.py --device cuda:2
 结果会写入 `validate_dtw/results/validation_summary.json`，每个数据集目录还包含
 `legacy_matching.csv`、`new_matching.csv`、`comparison.json` 与可复现实验输入的
 `input_features.npz`。
+
+# DTW 算法分割学生视频
+```bash
+conda activate 4d-humans
+
+python run_student_tas_smpl_dtw.py \
+  --student-video-id 14 \
+  --student-video-id 15 \
+  --student-video-id 16 \
+  --student-video-id 17 \
+  --student-video-id 18 \
+  --student-video-id 19 \
+  --student-video-id 20 \
+  --student-video-id 21 \
+  --student-video-id 22 \
+  --student-video-id 23 \
+```
