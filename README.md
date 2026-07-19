@@ -114,6 +114,84 @@ Truth 结束边界帧，右侧是学生视频的 DTW 预测结束边界帧。图
 `student_segmentation_results/<video_id>/boundary_frames.jpg`。使用
 `--student-video-id 00` 可以只生成指定学生的图片。
 
+## 全视频帧动作流畅性诊断
+
+下面的命令使用原始视频帧率的 SMPL 局部旋转分析动作停顿、节奏和幅度。DTW
+只负责建立教师与学生的动作阶段对应；停顿时长和动作幅度仍在原始时间轴上计算。
+
+```bash
+cd /home/sqw/Projects/3D-AQA
+
+# 分析已有24式分割结果的完整学生视频
+conda run -n 4d-humans python run_motion_quality_analysis.py --dataset full
+
+# 分析学生1、2、3、4、10的三个独立动作片段
+conda run -n 4d-humans python run_motion_quality_analysis.py --dataset clips
+
+# 同时分析两套数据，并保存逐式诊断图
+conda run -n 4d-humans python run_motion_quality_analysis.py \
+  --dataset both --save-diagnostics
+
+# 不重算逐帧指标，仅从已有汇总表重建两套幅度排名实验
+conda run -n 4d-humans python run_motion_quality_analysis.py --rankings-only
+```
+
+可以使用 `--student-video-id 00`、`--clip 4_1_qishi` 或
+`--move qishi` 缩小处理范围。默认结果保存在 `motion_quality_results/`：
+
+- `full/<video_id>/`：完整学生视频的24式指标；
+- `clips/<clip_id>/`：独立动作片段指标；
+- `motion_quality_summary.csv`：每式、每身体区域的停顿、节奏、时长和幅度指标；
+- `pause_events.csv`：每个连续停顿事件的原视频帧范围和教师阶段；
+- `tempo_bins.csv`：教师进度均分为10段后的局部持续时间比例；
+- `motion_signals.npz`：逐帧速度、有效帧、停顿掩码、DTW进度与停滞掩码；
+- `metric_rankings.csv`：各单项指标的学生排名；
+- `human_rank_correlations.csv`：动作片段单项指标与人工排名的 Spearman 相关性。
+- `*_amplitude_larger_is_better.csv`：按幅度比越大越好的当前实验结果；
+- `*_amplitude_teacher_closeness.csv`：按幅度比越接近1越好的对照实验结果。
+- `*_amplitude_absolute_difference.csv`：按 `|amplitude_ratio - 1|` 从小到大排名。
+
+第一版只输出独立诊断指标，不将其合成为总分。通用文件名
+`metric_rankings.csv` 和 `human_rank_correlations.csv` 使用
+`|amplitude_ratio - 1|` 越小越好的假设；`duration_ratio` 仍按与1的对数偏差排名，
+其余误差、停顿和节奏指标均为越小越好。相同指标值使用平均秩处理。
+
+## 关节角速度与加速度流畅性分析
+
+该实验使用5个具备人工24式边界的教学视频，建立
+`招式 × 身体区域 × Qx参考进度` 的教师运动学模板。角速度和角速度变化率在原始
+视频帧率上计算；5 FPS SMPL pose-DTW只用于提供动作阶段对应，不压缩学生的真实
+停顿和持续时间。
+
+```bash
+cd /home/sqw/Projects/3D-AQA
+
+# 构建五教师模板、留一验证和24式模板诊断图
+conda run -n 4d-humans python run_velocity_quality_analysis.py \
+  build-teacher-model
+
+# 分析学生1、2、3、4、10的三式片段
+conda run -n 4d-humans python run_velocity_quality_analysis.py \
+  analyze --dataset clips --save-diagnostics
+
+# 分析已有完整学生视频；可重复指定视频ID
+conda run -n 4d-humans python run_velocity_quality_analysis.py \
+  analyze --dataset full --student-video-id 00 --student-video-id 04 \
+  --save-diagnostics
+```
+
+默认结果保存在 `velocity_quality_results/`：
+
+- `teacher_model/teacher_motion_model.npz`：101点教师速度、加速度和活动概率模板；
+- `teacher_model/teacher_leave_one_out.csv`：五教师留一稳定性验证；
+- `clips/<clip_id>/` 和 `full/<video_id>/`：逐样本指标、事件、信号和诊断图；
+- `all_kinematic_quality_summary.csv`：全部招式和身体区域的批量汇总；
+- `metric_rankings.csv` 和 `human_rank_correlations.csv`：单指标探索性排名与相关性。
+
+`angular_speed_change` 是角速度大小的中心差分，单位为 `degree/s²`，不是完整三维
+角加速度向量。速度均值和方差只作描述；流畅性解释应结合速度轮廓偏差、加速度
+异常、运动碎片、停顿、动作幅度和持续时间，不根据单一统计量生成总分。
+
 ## 测试
 
 ```bash

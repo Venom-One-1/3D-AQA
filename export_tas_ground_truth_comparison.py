@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-"""Export five-video TAS ground truth and compare it with DTW boundaries."""
+"""Export five-video TAS ground truth and compare it with DTW boundaries.
+DTW 算法分割五个教学视频，并将其与人工标注的 ground truth 进行比较，生成 CSV 文件和 JSON 文件，
+包含每个动作的起止时间、持续时间、误差和 IOU 等信息。
+"""
 
 from __future__ import annotations
 
