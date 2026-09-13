@@ -17,6 +17,7 @@ DEFAULT_ANNOTATION_PATH = DEFAULT_ANNOTATION_DIR / "instruction_2026-07-08_22.42
 DEFAULT_VIDEO_ROOT = Path("/home/sqw/VisualSearch/aqa/teach")
 DEFAULT_OUTPUT_ROOT = Path("/home/sqw/VisualSearch/aqa/teach_trimmed")
 REQUIRED_MOVE_IDS = set(range(1, 25))
+BOUNDARY_TAG_IDS = {"起势": 1, "收势": 24}
 
 
 @dataclass(frozen=True)
@@ -55,6 +56,8 @@ def find_trim_jobs(
     rows: list[dict[str, str]],
     video_root: Path,
     output_root: Path,
+    *,
+    require_complete_24: bool = True,
 ) -> list[TrimJob]:
     grouped: dict[str, list[dict[str, str]]] = {}
     for row in rows:
@@ -64,12 +67,13 @@ def find_trim_jobs(
 
     jobs: list[TrimJob] = []
     for video_id, labels in sorted(grouped.items()):
-        move_ids = {int(row["TagID"]) for row in labels if int(row["TagID"]) != 0}
-        if not REQUIRED_MOVE_IDS.issubset(move_ids):
+        move_ids = {_semantic_tag_id(row) for row in labels if _semantic_tag_id(row) != 0}
+        required_ids = REQUIRED_MOVE_IDS if require_complete_24 else {1, 24}
+        if not required_ids.issubset(move_ids):
             continue
 
-        first_move = [row for row in labels if int(row["TagID"]) == 1]
-        last_move = [row for row in labels if int(row["TagID"]) == 24]
+        first_move = [row for row in labels if _semantic_tag_id(row) == 1]
+        last_move = [row for row in labels if _semantic_tag_id(row) == 24]
         if not first_move or not last_move:
             continue
 
@@ -95,6 +99,11 @@ def find_trim_jobs(
             )
         )
     return jobs
+
+
+def _semantic_tag_id(row: dict[str, str]) -> int:
+    tag = row.get("Tag", "").strip()
+    return BOUNDARY_TAG_IDS.get(tag, int(row["TagID"]))
 
 
 def _row_start(row: dict[str, str]) -> float:
@@ -178,9 +187,17 @@ def _replace(job: TrimJob, **updates: object) -> TrimJob:
 
 def write_manifest(output_root: Path, annotation_path: Path, jobs: list[TrimJob]) -> None:
     output_root.mkdir(parents=True, exist_ok=True)
-    rows = [_manifest_row(job) for job in jobs]
     csv_path = output_root / "trim_manifest.csv"
     json_path = output_root / "trim_manifest.json"
+    rows_by_id: dict[str, dict[str, object]] = {}
+    if csv_path.is_file():
+        with csv_path.open("r", encoding="utf-8", newline="") as handle:
+            rows_by_id.update(
+                (row["video_id"], dict(row))
+                for row in csv.DictReader(handle)
+            )
+    rows_by_id.update((job.video_id, _manifest_row(job)) for job in jobs)
+    rows = [rows_by_id[video_id] for video_id in sorted(rows_by_id)]
     if rows:
         with csv_path.open("w", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
@@ -211,6 +228,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--video-root", type=Path, default=DEFAULT_VIDEO_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--video-id", action="append", help="Only trim this video id; repeatable")
+    parser.add_argument(
+        "--boundary-only",
+        action="store_true",
+        help="Require only move 1 and move 24 labels instead of all 24 move labels",
+    )
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     return parser
@@ -222,7 +244,12 @@ def main() -> None:
         DEFAULT_ANNOTATION_PATH if DEFAULT_ANNOTATION_PATH.exists() else latest_annotation_file(args.annotation_dir)
     )
     rows = read_rows(annotation_path)
-    jobs = find_trim_jobs(rows, args.video_root, args.output_root)
+    jobs = find_trim_jobs(
+        rows,
+        args.video_root,
+        args.output_root,
+        require_complete_24=not args.boundary_only,
+    )
     if args.video_id:
         requested = set(args.video_id)
         jobs = [job for job in jobs if job.video_id in requested]

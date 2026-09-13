@@ -312,10 +312,15 @@ def load_sampled_track(
     video_path: Path,
     tracking_file: Path,
     sample_fps: float,
+    max_tracking_gap_seconds: float = 0.0,
 ) -> tuple[VideoSampling, TrackPoseSequence, np.ndarray]:
     sampling = inspect_video_sampling(video_path, sample_fps)
     track = load_stitched_primary_track(tracking_file)
-    poses = track.at_source_frames(sampling.source_indices)
+    max_distance_frames = int(round(max_tracking_gap_seconds * sampling.source_fps))
+    poses = track.at_source_frames(
+        sampling.source_indices,
+        nearest_max_distance_frames=max_distance_frames,
+    )
     return sampling, track, poses
 
 
@@ -334,11 +339,17 @@ def process_target(
     dtw_coefficient: float,
     pairwise_chunk_size: int,
     save_local_costs: bool,
+    max_tracking_gap_seconds: float,
 ) -> dict:
     started = time.perf_counter()
     target_video = video_root / f"{target_video_id}.mp4"
     target_tracking = tracking_path(tracking_root, target_video_id)
-    target_sampling, target_track, target_poses = load_sampled_track(target_video, target_tracking, sample_fps)
+    target_sampling, target_track, target_poses = load_sampled_track(
+        target_video,
+        target_tracking,
+        sample_fps,
+        max_tracking_gap_seconds,
+    )
     print(
         f"[{target_video_id}] loaded {target_sampling.sample_count} target samples; "
         f"computing {target_sampling.sample_count} x {reference_sampling.sample_count} local costs",
@@ -397,6 +408,7 @@ def process_target(
         "global_orientation_included": False,
         "boundary_candidate_selection": "minimum local geodesic distance among DTW-path candidates",
         "mapped_boundaries_strictly_increasing": True,
+        "max_tracking_gap_seconds": max_tracking_gap_seconds,
         "dtw_distance_radians": dtw_distance,
         "dtw_distance_degrees": float(np.degrees(dtw_distance)),
         "mapped_last_end_frame": mapped_segments[-1].end_frame,
@@ -427,11 +439,19 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dtw-coefficient", type=float, default=1.0)
     parser.add_argument("--pairwise-chunk-size", type=int, default=32)
     parser.add_argument("--save-local-costs", action="store_true")
+    parser.add_argument(
+        "--max-tracking-gap-seconds",
+        type=float,
+        default=0.0,
+        help="Use the nearest tracked pose for missing samples within this distance; default is strict.",
+    )
     return parser
 
 
 def main() -> None:
     args = build_parser().parse_args()
+    if args.max_tracking_gap_seconds < 0:
+        raise ValueError("--max-tracking-gap-seconds must be non-negative.")
     reference_video = args.video_root / f"{args.reference_video_id}.mp4"
     reference_tracking = tracking_path(args.tracking_root, args.reference_video_id)
     reference_segments = load_reference_segments(args.reference_segments, args.sample_fps)
@@ -471,6 +491,7 @@ def main() -> None:
                     dtw_coefficient=args.dtw_coefficient,
                     pairwise_chunk_size=args.pairwise_chunk_size,
                     save_local_costs=args.save_local_costs,
+                    max_tracking_gap_seconds=args.max_tracking_gap_seconds,
                 )
             )
         except Exception as error:

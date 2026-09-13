@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+
+<defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+    <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#192A3A" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7C8998"/>
+  </marker>
+</defs>
+<rect width="1920" height="1080" fill="#F5F7FA"/>
+<text x="58" y="66.28" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="42" font-weight="700" fill="#172433"><tspan x="58" dy="0">长期目标：搭建24式太极拳完整视频动作质量评估 Pipeline</tspan></text>
+<text x="60" y="108.14" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="400" fill="#627083"><tspan x="60" dy="0">从完整视频自动分式，以可解释量化指标驱动逐式纠错与完整报告</tspan></text>
+<rect x="1325" y="83" width="23" height="15" rx="3" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2"/>
+<text x="1357" y="96.78" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="400" fill="#627083"><tspan x="1357" dy="0">数据/标准</tspan></text>
+<rect x="1463" y="83" width="23" height="15" rx="3" fill="#E0F2EE" stroke="#2F8277" stroke-width="2"/>
+<text x="1495" y="96.78" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="400" fill="#627083"><tspan x="1495" dy="0">算法/计算</tspan></text>
+<rect x="1601" y="83" width="23" height="15" rx="3" fill="#FFF1CE" stroke="#B87B20" stroke-width="2"/>
+<text x="1633" y="96.78" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="400" fill="#627083"><tspan x="1633" dy="0">判断</tspan></text>
+<rect x="1739" y="83" width="23" height="15" rx="3" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2"/>
+<text x="1771" y="96.78" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="400" fill="#627083"><tspan x="1771" dy="0">反馈/输出</tspan></text>
+<rect x="228" y="166" width="505" height="714" rx="8" fill="#F2F7FB" stroke="#D8DEE7" stroke-width="2"/>
+<rect x="228" y="166" width="505" height="70" rx="8" fill="#326A95"/>
+<circle cx="263" cy="201" r="21" fill="#326A95" stroke="#FFFFFF" stroke-width="2"/>
+<text x="263" y="207.82" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#FFFFFF"><tspan x="263" dy="0">1</tspan></text>
+<text x="298" y="210.18" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="27" font-weight="700" fill="#FFFFFF"><tspan x="298" dy="0">24式时序分割</tspan></text>
+<rect x="744" y="166" width="505" height="714" rx="8" fill="#F1F8F6" stroke="#D8DEE7" stroke-width="2"/>
+<rect x="744" y="166" width="505" height="70" rx="8" fill="#287C71"/>
+<circle cx="779" cy="201" r="21" fill="#287C71" stroke="#FFFFFF" stroke-width="2"/>
+<text x="779" y="207.82" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#FFFFFF"><tspan x="779" dy="0">2</tspan></text>
+<text x="814" y="210.18" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="27" font-weight="700" fill="#FFFFFF"><tspan x="814" dy="0">关键姿势定量分析</tspan></text>
+<rect x="1260" y="166" width="600" height="714" rx="8" fill="#FBF7ED" stroke="#D8DEE7" stroke-width="2"/>
+<rect x="1260" y="166" width="600" height="70" rx="8" fill="#9A6A22"/>
+<circle cx="1295" cy="201" r="21" fill="#9A6A22" stroke="#FFFFFF" stroke-width="2"/>
+<text x="1295" y="207.82" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#FFFFFF"><tspan x="1295" dy="0">3</tspan></text>
+<text x="1330" y="210.18" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="27" font-weight="700" fill="#FFFFFF"><tspan x="1330" dy="0">规则驱动反馈</tspan></text>
+<rect x="58" y="254" width="145" height="244" rx="8" fill="#E8EEF5" stroke="#D8DEE7" stroke-width="2"/>
+<text x="130" y="335.68" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="27" font-weight="700" fill="#172433"><tspan x="130" dy="0">离线参考</tspan><tspan x="130" dy="33">构建</tspan></text>
+<text x="130" y="408.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="400" fill="#627083"><tspan x="130" dy="0">沉淀标准</tspan><tspan x="130" dy="24">一次构建</tspan></text>
+<rect x="58" y="526" width="145" height="336" rx="8" fill="#E5F1ED" stroke="#D8DEE7" stroke-width="2"/>
+<text x="130" y="632.68" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="27" font-weight="700" fill="#172433"><tspan x="130" dy="0">在线学生</tspan><tspan x="130" dy="33">评估</tspan></text>
+<text x="130" y="717.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="400" fill="#627083"><tspan x="130" dy="0">输入完整视频</tspan><tspan x="130" dy="24">自动逐式分析</tspan></text>
+<text x="130" y="823.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#287C71"><tspan x="130" dy="0">运行时</tspan></text>
+<line x1="228" y1="513" x2="1860" y2="513" stroke="#D8DEE7" stroke-width="2"/>
+<text x="242" y="269.1" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="15" font-weight="700" fill="#627083"><tspan x="242" dy="0">OFFLINE</tspan></text>
+<text x="242" y="541.1" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="15" font-weight="700" fill="#627083"><tspan x="242" dy="0">ONLINE</tspan></text>
+<rect x="270" y="294" width="180" height="72" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="360.0" y="323.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="360.0" dy="0">多个参考</tspan><tspan x="360.0" dy="29">教学视频</tspan></text>
+<rect x="496" y="294" width="194" height="72" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="593.0" y="323.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="593.0" dy="0">人工标注</tspan><tspan x="593.0" dy="29">24式动作边界</tspan></text>
+<rect x="382" y="410" width="200" height="68" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="482.0" y="437.64" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="482.0" dy="0">参考边界 +</tspan><tspan x="482.0" dy="27">时序动作模板</tspan></text>
+<polyline points="450,330 496,330" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="593,366 593,386 482,386 482,410" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="270" y="570" width="180" height="72" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="360.0" y="599.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="360.0" dy="0">练习者</tspan><tspan x="360.0" dy="29">完整视频</tspan></text>
+<rect x="496" y="570" width="194" height="72" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="593.0" y="599.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="593.0" dy="0">提取时序</tspan><tspan x="593.0" dy="29">动作特征</tspan></text>
+<rect x="365" y="690" width="230" height="82" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="480.0" y="724.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="480.0" dy="0">DTW时序对齐</tspan><tspan x="480.0" dy="29">映射24式边界</tspan></text>
+<rect x="382" y="808" width="200" height="56" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="482.0" y="843.48" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="22" font-weight="700" fill="#172433"><tspan x="482.0" dy="0">24式分段结果</tspan></text>
+<polyline points="450,606 496,606" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="593,642 593,666 480,666 480,690" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="482,478 482,690" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<rect x="486.0" y="517" width="88" height="27" rx="4" fill="#F5F7FA"/>
+<text x="530" y="536.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#7C8998"><tspan x="530" dy="0">模板约束</tspan></text>
+<polyline points="480,772 480,808" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="790" y="294" width="180" height="72" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="880.0" y="323.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="880.0" dy="0">每式选取</tspan><tspan x="880.0" dy="29">关键姿势</tspan></text>
+<rect x="1014" y="286" width="190" height="88" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="1109.0" y="323.64" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="1109.0" dy="0">多参考视频</tspan><tspan x="1109.0" dy="27">计算参考指标</tspan></text>
+<rect x="900" y="410" width="194" height="68" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="997.0" y="437.48" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="22" font-weight="700" fill="#172433"><tspan x="997.0" dy="0">标准值 /</tspan><tspan x="997.0" dy="28">合理范围</tspan></text>
+<polyline points="582,444 714,444 714,330 790,330" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="970,330 1014,330" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1109,374 1109,390 997,390 997,410" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="790" y="570" width="180" height="72" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="880.0" y="599.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="880.0" dy="0">逐式定位</tspan><tspan x="880.0" dy="29">关键姿势</tspan></text>
+<rect x="1010" y="556" width="196" height="100" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="1108.0" y="586.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="1108.0" dy="0">计算定量指标</tspan><tspan x="1108.0" dy="26">关节夹角</tspan><tspan x="1108.0" dy="26">归一化相对距离</tspan></text>
+<rect x="858" y="704" width="278" height="76" rx="8" fill="#FFF1CE" stroke="#B87B20" stroke-width="2" filter="url(#shadow)"/>
+<text x="997.0" y="735.48" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="22" font-weight="700" fill="#172433"><tspan x="997.0" dy="0">与标准值 /</tspan><tspan x="997.0" dy="28">合理范围比较</tspan></text>
+<rect x="900" y="812" width="194" height="52" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="997.0" y="845.14" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="997.0" dy="0">逐式指标偏差</tspan></text>
+<polyline points="582,836 710,836 710,606 790,606" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="970,606 1010,606" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1108,656 1108,680 997,680 997,704" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="997,478 997,704" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<rect x="1001.0" y="518" width="88" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1045" y="537.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#7C8998"><tspan x="1045" dy="0">标准参照</tspan></text>
+<polyline points="997,780 997,812" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1310" y="294" width="206" height="72" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="1413.0" y="323.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="1413.0" dy="0">整理24式</tspan><tspan x="1413.0" dy="29">动作要领</tspan></text>
+<path d="M 1570 299 A 120.0 13 0 0 1 1810 299 L 1810 365 A 120.0 13 0 0 1 1570 365 Z" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<ellipse cx="1690.0" cy="299" rx="120.0" ry="13" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2"/>
+<path d="M 1570 365 A 120.0 13 0 0 0 1810 365" fill="none" stroke="#4A7CA5" stroke-width="2"/>
+<text x="1690.0" y="330.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="1690.0" dy="0">动作要领–指标–反馈</tspan><tspan x="1690.0" dy="26">规则库</tspan></text>
+<polyline points="1516,330 1570,330" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1305" y="568" width="220" height="78" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="1415.0" y="600.64" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="1415.0" dy="0">规则匹配与归因</tspan><tspan x="1415.0" dy="27">定位动作要领</tspan></text>
+<polygon points="1680,544.0 1805.0,607 1680,670.0 1555.0,607" fill="#FFF1CE" stroke="#B87B20" stroke-width="2" filter="url(#shadow)"/>
+<text x="1680" y="601.14" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="1680" dy="0">指标是否超出</tspan><tspan x="1680" dy="26">合理范围？</tspan></text>
+<polyline points="1094,838 1235,838 1235,607 1305,607" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1690,378 1690,438 1415,438 1415,568" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<rect x="1496.0" y="425" width="88" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1540" y="444.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#7C8998"><tspan x="1540" dy="0">规则约束</tspan></text>
+<polyline points="1525,607 1555,607" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1300" y="738" width="205" height="80" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="1402.5" y="771.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="1402.5" dy="0">达标确认</tspan><tspan x="1402.5" dy="26">保持与巩固提示</tspan></text>
+<rect x="1560" y="724" width="265" height="108" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="1692.5" y="759.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#172433"><tspan x="1692.5" dy="0">针对性教练式反馈</tspan><tspan x="1692.5" dy="25">问题定位 · 纠正方法</tspan><tspan x="1692.5" dy="25">专项训练提示</tspan></text>
+<polyline points="1650,663 1650,690 1402,690 1402,738" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1471.0" y="677" width="34" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1488" y="696.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#7C8998"><tspan x="1488" dy="0">否</tspan></text>
+<polyline points="1710,666 1710,724" fill="none" stroke="#B85E4C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1725.0" y="680" width="34" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1742" y="699.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#B85E4C"><tspan x="1742" dy="0">是</tspan></text>
+<rect x="1395" y="844" width="320" height="50" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="1555.0" y="875.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="1555.0" dy="0">招式级反馈（第1式—第24式）</tspan></text>
+<polyline points="1402,818 1402,830 1515,830 1515,844" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1692,832 1692,838 1595,838 1595,844" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="228" y="928" width="1632" height="112" rx="8" fill="#FFFFFF" stroke="#D8DEE7" stroke-width="2" filter="url(#shadow)"/>
+<rect x="228" y="928" width="16" height="112" rx="8" fill="#B85E4C"/>
+<polyline points="1555,894 1555,928" fill="none" stroke="#B85E4C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="286" y="966.12" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#B85E4C"><tspan x="286" dy="0">最终输出</tspan></text>
+<text x="286" y="1012.2" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="30" font-weight="700" fill="#172433"><tspan x="286" dy="0">完整视频动作质量评估报告</tspan></text>
+<rect x="885" y="960" width="170" height="46" rx="7" fill="#FBE8E4" stroke="#B85E4C" stroke-width="1"/>
+<text x="970" y="989.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#B85E4C"><tspan x="970" dy="0">24式分割</tspan></text>
+<rect x="1085" y="960" width="170" height="46" rx="7" fill="#FBE8E4" stroke="#B85E4C" stroke-width="1"/>
+<text x="1170" y="989.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#B85E4C"><tspan x="1170" dy="0">指标证据</tspan></text>
+<rect x="1285" y="960" width="170" height="46" rx="7" fill="#FBE8E4" stroke="#B85E4C" stroke-width="1"/>
+<text x="1370" y="989.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#B85E4C"><tspan x="1370" dy="0">逐式建议</tspan></text>
+<rect x="1485" y="960" width="170" height="46" rx="7" fill="#FBE8E4" stroke="#B85E4C" stroke-width="1"/>
+<text x="1570" y="989.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#B85E4C"><tspan x="1570" dy="0">总体总结</tspan></text>
+<text x="1778" y="989.78" text-anchor="end" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="700" fill="#627083"><tspan x="1778" dy="0">可追溯 · 可解释</tspan></text>
+</svg>

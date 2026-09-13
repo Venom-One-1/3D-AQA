@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
@@ -29,7 +30,12 @@ class TrackPoseSequence:
             return (self.track_id,)
         return tuple(sorted(int(value) for value in np.unique(self.source_track_ids)))
 
-    def at_source_frames(self, source_frame_indices: Iterable[int]) -> np.ndarray:
+    def at_source_frames(
+        self,
+        source_frame_indices: Iterable[int],
+        *,
+        nearest_max_distance_frames: int = 0,
+    ) -> np.ndarray:
         """Return poses for zero-based source-video frame indices.
 
         PHALP image keys start at ``000001.jpg`` while OpenCV/AQA frame indices
@@ -38,7 +44,25 @@ class TrackPoseSequence:
         lookup = {int(number): pose for number, pose in zip(self.frame_numbers, self.body_poses)}
         requested = np.asarray(list(source_frame_indices), dtype=np.int64)
         tracking_frames = requested + 1
-        missing = [int(frame) for frame in tracking_frames if int(frame) not in lookup]
+        selected_frames: list[int] = []
+        available = self.frame_numbers.astype(np.int64)
+        for frame in tracking_frames:
+            requested_frame = int(frame)
+            if requested_frame in lookup:
+                selected_frames.append(requested_frame)
+                continue
+            if nearest_max_distance_frames <= 0:
+                selected_frames.append(requested_frame)
+                continue
+            insertion = int(np.searchsorted(available, requested_frame))
+            candidates = available[max(insertion - 1, 0) : min(insertion + 1, len(available))]
+            nearest = int(candidates[np.argmin(np.abs(candidates - requested_frame))])
+            selected_frames.append(
+                nearest
+                if abs(nearest - requested_frame) <= nearest_max_distance_frames
+                else requested_frame
+            )
+        missing = [frame for frame in selected_frames if frame not in lookup]
         if missing:
             preview = ", ".join(map(str, missing[:10]))
             suffix = "..." if len(missing) > 10 else ""
@@ -46,7 +70,7 @@ class TrackPoseSequence:
                 "No valid tracked SMPL pose for PHALP frame(s) "
                 f"{preview}{suffix}. The video and tracking result may not match."
             )
-        return np.stack([lookup[int(frame)] for frame in tracking_frames], axis=0)
+        return np.stack([lookup[frame] for frame in selected_frames], axis=0)
 
 
 @dataclass(frozen=True)
@@ -100,29 +124,136 @@ class TrackSmplSequence:
         if not model_dir.exists():
             raise FileNotFoundError(f"SMPL model path does not exist: {model_dir}")
 
-        import torch
-        import smplx
+        return _regress_smpl24_joints(
+            self.global_orients,
+            self.body_poses,
+            self.betas,
+            model_dir,
+            batch_size,
+            device,
+        )
 
-        smpl = smplx.SMPLLayer(model_path=str(model_dir), gender="neutral", num_betas=10).to(device)
-        smpl.eval()
 
-        joints: list[np.ndarray] = []
-        with torch.no_grad():
-            for start in range(0, len(self.frame_numbers), batch_size):
-                end = min(start + batch_size, len(self.frame_numbers))
-                global_orient = torch.as_tensor(self.global_orients[start:end], dtype=torch.float32, device=device)
-                body_pose = torch.as_tensor(self.body_poses[start:end], dtype=torch.float32, device=device)
-                betas = torch.as_tensor(self.betas[start:end], dtype=torch.float32, device=device)
-                output = smpl(
-                    global_orient=global_orient,
-                    body_pose=body_pose,
-                    betas=betas,
-                    pose2rot=False,
+@dataclass(frozen=True)
+class TrackRootSequence:
+    """PHALP parameters, model-specific joints and camera translation."""
+
+    frame_numbers: np.ndarray
+    global_orients: np.ndarray
+    body_poses: np.ndarray
+    betas: np.ndarray
+    joints: np.ndarray
+    camera_translations: np.ndarray
+    track_id: int
+    source_track_ids: np.ndarray
+
+    @property
+    def used_track_ids(self) -> tuple[int, ...]:
+        return tuple(sorted(int(value) for value in np.unique(self.source_track_ids)))
+
+    def at_source_frames(self, source_frame_indices: Iterable[int]) -> "TrackRootSequence":
+        """Return root-track values for zero-based source-video frame indices."""
+        lookup = {int(number): index for index, number in enumerate(self.frame_numbers)}
+        requested = np.asarray(list(source_frame_indices), dtype=np.int64)
+        tracking_frames = requested + 1
+        missing = [int(frame) for frame in tracking_frames if int(frame) not in lookup]
+        if missing:
+            preview = ", ".join(map(str, missing[:10]))
+            suffix = "..." if len(missing) > 10 else ""
+            raise KeyError(
+                "No valid tracked root data for PHALP frame(s) "
+                f"{preview}{suffix}. The video and tracking result may not match."
+            )
+        indices = np.asarray([lookup[int(frame)] for frame in tracking_frames], dtype=np.int64)
+        return TrackRootSequence(
+            frame_numbers=tracking_frames,
+            global_orients=self.global_orients[indices],
+            body_poses=self.body_poses[indices],
+            betas=self.betas[indices],
+            joints=self.joints[indices],
+            camera_translations=self.camera_translations[indices],
+            track_id=self.track_id,
+            source_track_ids=self.source_track_ids[indices],
+        )
+
+    @property
+    def camera_space_joints(self) -> np.ndarray:
+        """Return PHALP's model-specific joints translated into camera space."""
+        return self.joints + self.camera_translations[:, None, :]
+
+    def to_smpl24_joints(
+        self,
+        *,
+        model_path: str | Path = DEFAULT_SMPL_MODEL_PATH,
+        batch_size: int = 256,
+        device: str = "cpu",
+    ) -> np.ndarray:
+        """Regress native SMPL-24 joints instead of using PHALP's reordered joints."""
+        if batch_size <= 0:
+            raise ValueError(f"batch_size must be positive, got {batch_size}.")
+        model_dir = Path(model_path).expanduser()
+        if not model_dir.exists():
+            raise FileNotFoundError(f"SMPL model path does not exist: {model_dir}")
+        return _regress_smpl24_joints(
+            self.global_orients,
+            self.body_poses,
+            self.betas,
+            model_dir,
+            batch_size,
+            device,
+        )
+
+
+@lru_cache(maxsize=4)
+def _cached_smpl_layer(model_path: str, device: str):
+    import smplx
+
+    layer = smplx.SMPLLayer(model_path=model_path, gender="neutral", num_betas=10).to(device)
+    layer.eval()
+    return layer
+
+
+def _regress_smpl24_joints(
+    global_orients: np.ndarray,
+    body_poses: np.ndarray,
+    betas: np.ndarray,
+    model_path: Path,
+    batch_size: int,
+    device: str,
+) -> np.ndarray:
+    import torch
+
+    smpl = _cached_smpl_layer(str(model_path), device)
+    joints: list[np.ndarray] = []
+    with torch.no_grad():
+        for start in range(0, len(global_orients), batch_size):
+            end = min(start + batch_size, len(global_orients))
+            output = smpl(
+                global_orient=torch.as_tensor(
+                    global_orients[start:end],
+                    dtype=torch.float32,
+                    device=device,
+                ),
+                body_pose=torch.as_tensor(
+                    body_poses[start:end],
+                    dtype=torch.float32,
+                    device=device,
+                ),
+                betas=torch.as_tensor(
+                    betas[start:end],
+                    dtype=torch.float32,
+                    device=device,
+                ),
+                pose2rot=False,
+            )
+            if output.joints.shape[1] < 24:
+                raise RuntimeError(
+                    f"SMPLLayer returned only {output.joints.shape[1]} joints; expected at least 24."
                 )
-                if output.joints.shape[1] < 24:
-                    raise RuntimeError(f"SMPLLayer returned only {output.joints.shape[1]} joints; expected at least 24.")
-                joints.append(output.joints[:, :24, :].detach().cpu().numpy().astype(np.float64))
-        return np.concatenate(joints, axis=0)
+            joints.append(
+                output.joints[:, :24, :].detach().cpu().numpy().astype(np.float64)
+            )
+    return np.concatenate(joints, axis=0)
 
 
 def _frame_number(key: str) -> int:
@@ -161,6 +292,24 @@ def _betas(smpl: dict) -> np.ndarray:
     return betas
 
 
+def _camera_translation(value: object) -> np.ndarray:
+    camera = np.asarray(value, dtype=np.float64)
+    if camera.shape == (1, 3):
+        camera = camera[0]
+    if camera.shape != (3,):
+        raise ValueError(f"Expected PHALP camera shape (3,), got {camera.shape}.")
+    return camera
+
+
+def _phalp_joints(value: object) -> np.ndarray:
+    joints = np.asarray(value, dtype=np.float64)
+    if joints.shape == (1, 45, 3):
+        joints = joints[0]
+    if joints.ndim != 2 or joints.shape[0] < 24 or joints.shape[1] != 3:
+        raise ValueError(f"Expected PHALP joints shape (J>=24, 3), got {joints.shape}.")
+    return joints
+
+
 def _extract_smpl_candidates(data: dict) -> list[tuple[int, int, np.ndarray, np.ndarray, np.ndarray]]:
     candidates: list[tuple[int, int, np.ndarray, np.ndarray, np.ndarray]] = []
     for key, record in data.items():
@@ -175,6 +324,35 @@ def _extract_smpl_candidates(data: dict) -> list[tuple[int, int, np.ndarray, np.
                         _global_orient_matrix(smpl),
                         _body_pose_matrix(smpl),
                         _betas(smpl),
+                    )
+                )
+            except (KeyError, TypeError, ValueError):
+                continue
+    return candidates
+
+
+def _extract_root_candidates(
+    data: dict,
+) -> list[tuple[int, int, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+    candidates: list[
+        tuple[int, int, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+    ] = []
+    for key, record in data.items():
+        tids = record.get("tid", [])
+        smpls = record.get("smpl", [])
+        cameras = record.get("camera", [])
+        joints = record.get("3d_joints", [])
+        for tid, smpl, camera, frame_joints in zip(tids, smpls, cameras, joints):
+            try:
+                candidates.append(
+                    (
+                        int(tid),
+                        _frame_number(key),
+                        _global_orient_matrix(smpl),
+                        _body_pose_matrix(smpl),
+                        _betas(smpl),
+                        _phalp_joints(frame_joints),
+                        _camera_translation(camera),
                     )
                 )
             except (KeyError, TypeError, ValueError):
@@ -298,4 +476,56 @@ def load_primary_smpl_track(tracking_path: str | Path, track_id: int | None = No
         body_poses=np.stack([body_pose for _, _, body_pose, _ in selected], axis=0),
         betas=np.stack([betas for _, _, _, betas in selected], axis=0),
         track_id=int(selected_id),
+    )
+
+
+def load_stitched_root_track(
+    tracking_path: str | Path,
+    track_id: int | None = None,
+) -> TrackRootSequence:
+    """Load joints and camera translation while stitching main-person ID changes."""
+    path = Path(tracking_path)
+    if not path.is_file():
+        raise FileNotFoundError(f"Tracking result does not exist: {path}")
+
+    candidates = _extract_root_candidates(joblib.load(path))
+    if not candidates:
+        raise ValueError(f"No valid SMPL joint/camera entries found in {path}.")
+    primary_id = _select_track_id(candidates, track_id)
+    counts = Counter(item[0] for item in candidates)
+    by_frame: dict[int, list[tuple]] = {}
+    for candidate in candidates:
+        by_frame.setdefault(int(candidate[1]), []).append(candidate)
+
+    current_id = primary_id
+    previous_pose: np.ndarray | None = None
+    selected: list[tuple] = []
+    for frame in sorted(by_frame):
+        options = by_frame[frame]
+        active = next((item for item in options if item[0] == current_id), None)
+        if active is None:
+            if previous_pose is None:
+                active = min(options, key=lambda item: (-counts[item[0]], item[0]))
+            else:
+                active = min(
+                    options,
+                    key=lambda item: (
+                        _pose_continuity_cost(previous_pose, item[3]),
+                        -counts[item[0]],
+                        item[0],
+                    ),
+                )
+            current_id = int(active[0])
+        selected.append(active)
+        previous_pose = active[3]
+
+    return TrackRootSequence(
+        frame_numbers=np.asarray([item[1] for item in selected], dtype=np.int64),
+        global_orients=np.stack([item[2] for item in selected], axis=0),
+        body_poses=np.stack([item[3] for item in selected], axis=0),
+        betas=np.stack([item[4] for item in selected], axis=0),
+        joints=np.stack([item[5] for item in selected], axis=0),
+        camera_translations=np.stack([item[6] for item in selected], axis=0),
+        track_id=int(primary_id),
+        source_track_ids=np.asarray([item[0] for item in selected], dtype=np.int64),
     )

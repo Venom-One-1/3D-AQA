@@ -25,7 +25,12 @@ DEFAULT_TARGET_IDS = (
     "an5qNCspzUw",
     "i8kMrJmAfjU",
 )
-DEFAULT_FONT_PATH = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+DEFAULT_FONT_CANDIDATES = (
+    (Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"), 2),
+    (Path("/usr/share/fonts/todesk/NotoSansCJK-Regular.ttc"), 2),
+    (Path("/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf"), 0),
+    (Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"), 0),
+)
 
 
 @dataclass(frozen=True)
@@ -172,8 +177,9 @@ def read_video_frames(video_path: Path, source_indices: list[int]) -> dict[int, 
 
 
 def load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    if DEFAULT_FONT_PATH.is_file():
-        return ImageFont.truetype(str(DEFAULT_FONT_PATH), size=size)
+    for path, font_index in DEFAULT_FONT_CANDIDATES:
+        if path.is_file():
+            return ImageFont.truetype(str(path), size=size, index=font_index)
     return ImageFont.load_default()
 
 
