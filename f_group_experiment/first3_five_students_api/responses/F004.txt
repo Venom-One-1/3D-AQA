@@ -1,0 +1,145 @@
+// Let me analyze each metric systematically.
+
+// **1. left_knee_angle:** Student = 123.36, median_2mad = [109.35, 131.23], p10_p90 = [113.80, 131.63]. Within both.
+
+// **2. right_knee_angle:** Student = 121.61, median_2mad = [113.06, 122.32], p10_p90 = [106.10, 119.15]. Within median_2mad, above p10_p90.
+
+// **3. left_elbow_angle:** Student = 89.14, median_2mad = [94.35, 119.66], p10_p90 = [83.78, 113.19]. Below median_2mad, within p10_p90.
+
+// **4. right_elbow_angle:** Student = 86.17, median_2mad = [88.21, 123.74], p10_p90 = [89.66, 116.39]. Below both.
+
+// **5. stance_width_shoulder_ratio:** Student = 1.042, median_2mad = [0.813, 1.472], p10_p90 = [0.960, 1.340]. Within both.
+
+// **6. left_wrist_pelvis_up_torso_ratio:** Student = 0.249, median_2mad = [-0.007, 0.247], p10_p90 = [0.035, 0.295]. Above median_2mad (0.249 > 0.247), within p10_p90.
+
+// **7. right_wrist_pelvis_up_torso_ratio:** Student = 0.242, median_2mad = [-0.047, 0.274], p10_p90 = [0.008, 0.257]. Within both.
+
+// **8. left_wrist_pelvis_forward_torso_ratio:** Student = 0.123, median_2mad = [0.137, 0.459], p10_p90 = [0.220, 0.488]. Below both.
+
+// **9. right_wrist_pelvis_forward_torso_ratio:** Student = 0.198, median_2mad = [0.157, 0.415], p10_p90 = [0.204, 0.389]. Within median_2mad, below p10_p90.
+
+// Now let me think about findings:
+
+// **Elbow angles:** Both elbows are relatively flexed. Right elbow (86.17) is below both intervals. Left elbow (89.14) is below median_2mad but within p10_p90. The technique says "两肘松垂" (elbows hang loosely). The teacher median is around 105-107°. The student's elbows are more flexed than typical. However, T09 has 77.8 (left) and 81.1 (right), and T04 has 84.4 (left) and 90.6 (right), so some teachers also have quite flexed elbows. The right elbow being below both intervals is notable. But "两肘松垂" suggests elbows should hang naturally, not be overly bent. The student's elbows being more flexed could indicate the hands are held too close to the body or the arms are overly bent. Combined with the forward position metrics being low, this could suggest the hands are too close to the body rather than extended forward to the abdomen area.
+
+// **Wrist forward positions:** Left wrist forward = 0.123, below both intervals (median_2mad lower = 0.137, p10_p90 lower = 0.220). Right wrist forward = 0.198, within median_2mad but below p10_p90 (lower = 0.204). The technique says hands should be pressed down to "腹前" (in front of the abdomen). The student's hands appear to be less forward than most teachers. Combined with the more flexed elbows, this suggests the hands may be held too close to the body rather than being extended slightly forward.
+
+// **Wrist up positions:** Left = 0.249, slightly above median_2mad (0.247) but within p10_p90. Right = 0.242, within both. These are borderline. The technique says hands at "腹前" (in front of abdomen). The up position being slightly high for the left wrist is marginal and the two intervals disagree.
+
+// **Right knee:** 121.61 is within median_2mad but above p10_p90. This is a minor discrepancy between intervals. Not strong evidence of a problem.
+
+// Let me consolidate findings:
+
+// **Finding 1 (possible_issue):** Hands too close to body / insufficient forward extension. Evidence: left_wrist_pelvis_forward_torso_ratio below both intervals, right_wrist_pelvis_forward_torso_ratio below p10_p90, combined with both elbow angles being more flexed than typical (right below both, left below median_2mad). The technique requires "两掌轻轻下按至腹前" - hands should be in front of the abdomen. The low forward values and high elbow flexion together suggest the hands are held too close to the torso rather than being extended forward.
+
+// **Finding 2 (insufficient_evidence):** Left wrist height slightly above median_2mad but within p10_p90 - intervals disagree, not enough to flag.
+
+// Actually, let me reconsider. The left wrist up ratio is 0.249 vs median_2mad upper of 0.247 - that's barely above. And p10_p90 says within. This is really marginal and the intervals disagree. I'll mark it as insufficient_evidence or just not include it.
+
+// Let me finalize with 2 findings max since the evidence is clearest for the forward position + elbow issue.
+
+{
+  "case_id": "F004",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 123.36151817707446,
+      "median_2mad_interval": [109.35155324600822, 131.2250100093595],
+      "p10_p90_interval": [113.79830878486246, 131.62556147574506],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 121.61189069916048,
+      "median_2mad_interval": [113.06076338660931, 122.32416382404931],
+      "p10_p90_interval": [106.0991453493265, 119.1530188360103],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 89.13818719479738,
+      "median_2mad_interval": [94.34978939734465, 119.6602993372275],
+      "p10_p90_interval": [83.78259692698694, 113.18553921500038],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 86.16813442142323,
+      "median_2mad_interval": [88.20555942014398, 123.73748939968395],
+      "p10_p90_interval": [89.66373760020726, 116.39377490211797],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "stance_width_shoulder_ratio",
+      "student_value": 1.0422915840638083,
+      "median_2mad_interval": [0.8130808132812322, 1.472161822935602],
+      "p10_p90_interval": [0.9601754476283878, 1.340148998279047],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_wrist_pelvis_up_torso_ratio",
+      "student_value": 0.24921620958741458,
+      "median_2mad_interval": [-0.007483251537078128, 0.2469177368468745],
+      "p10_p90_interval": [0.034553031881902854, 0.29464641436781086],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_pelvis_up_torso_ratio",
+      "student_value": 0.24161858510203144,
+      "median_2mad_interval": [-0.04691970696574388, 0.27421624271354444],
+      "p10_p90_interval": [0.0077255913748859855, 0.25745777953680776],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_wrist_pelvis_forward_torso_ratio",
+      "student_value": 0.12283330401777687,
+      "median_2mad_interval": [0.13722994506551384, 0.45907001846231005],
+      "p10_p90_interval": [0.2204006682511467, 0.4882776222734058],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_wrist_pelvis_forward_torso_ratio",
+      "student_value": 0.19758821844191174,
+      "median_2mad_interval": [0.1568621033303191, 0.4145340095156954],
+      "p10_p90_interval": [0.20359705631740593, 0.38887776531810636],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "below"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "双掌前伸不足，手臂过于贴近身体，未能将两掌按至腹前方",
+      "evidence_metric_ids": [
+        "left_wrist_pelvis_forward_torso_ratio",
+        "right_wrist_pelvis_forward_torso_ratio",
+        "left_elbow_angle",
+        "right_elbow_angle"
+      ],
+      "explanation": "起势要领要求两掌轻轻下按至腹前。学生左腕前方位置为0.123，低于两套参考区间（median_2mad下限0.137，p10_p90下限0.220）；右腕前方位置为0.198，低于p10_p90下限0.204。同时双肘弯曲程度偏大：右肘86.2°低于两套区间（median_2mad下限88.2°，p10_p90下限89.7°），左肘89.1°低于median_2mad下限94.3°。腕部前伸不足与肘部过度屈曲相互印证，提示手臂回收过多、手掌未充分前送至腹前位置。",
+      "uncertainty": "教师样本中个别教师（如T09）肘角也较小，且无法排除躯干前倾导致坐标系差异的影响；腕关节位置不代表掌心实际位置。",
+      "guidance": "定势时注意将两掌向前松送至腹前，肘部自然松垂而非过度弯曲回收。可对照镜子检查手掌是否已离开身体、位于小腹前方，保持肘尖向下松沉。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "insufficient_evidence",
+      "problem": "右膝屈曲程度在两套参考区间中判定不一致",
+      "evidence_metric_ids": [
+        "right_knee_angle"
+      ],
+      "explanation": "学生右膝角121.6°在median_2mad区间[113.1°, 122.3°]内，但超出p10_p90区间上限119.2°。两套区间不一致，且差异幅度较小（约2.4°），教师样本中T07右膝达128.8°，说明教师间本身存在较大个体差异。左膝角123.4°在两套区间内，双膝差异不大。",
+      "uncertainty": "无法确定是右膝屈曲略浅还是教师样本分布偏态所致，差异幅度小，临床意义不明确。",
+      "guidance": null
+    }
+  ],
+  "coach_summary": "起势定势中主要问题是双掌前伸不足、手臂过于贴近身体，左腕前方位置明显低于教师参考范围，右腕也偏低，同时双肘弯曲程度偏大，提示手掌未充分按至腹前。建议定势时将两掌向前松送至小腹前方，肘尖自然下垂。右膝屈曲角度在两套参考标准间判定不一致，暂无充分证据表明存在问题。"
+}

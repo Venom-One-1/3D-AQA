@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+
+<defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+    <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#192A3A" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7C8998"/>
+  </marker>
+</defs>
+<rect width="1920" height="1080" fill="#F5F7FA"/>
+<text x="64" y="68.28" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="42" font-weight="700" fill="#172433"><tspan x="64" dy="0">MLLM 时序查询驱动的定性动作质量分析</tspan></text>
+<text x="66" y="112.14" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="400" fill="#627083"><tspan x="66" dy="0">用文字推理生成可执行查询，用量化证据完成定位、判断与训练反馈</tspan></text>
+<rect x="64" y="139" width="1792" height="72" rx="8" fill="#FFFFFF" stroke="#D8DEE7" stroke-width="2" filter="url(#shadow)"/>
+<text x="92" y="181.46" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#326A95"><tspan x="92" dy="0">前置结果</tspan></text>
+<rect x="220" y="157" width="250" height="30" rx="5" fill="#FFFFFF" stroke="#326A95" stroke-width="1"/>
+<text x="345.0" y="177.1" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="15" font-weight="700" fill="#326A95"><tspan x="345.0" dy="0">24式招式边界已分割</tspan></text>
+<rect x="494" y="157" width="340" height="30" rx="5" fill="#FFFFFF" stroke="#287C71" stroke-width="1"/>
+<text x="664.0" y="177.1" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="15" font-weight="700" fill="#287C71"><tspan x="664.0" dy="0">教师与学生帧序列已通过 DTW 对齐</tspan></text>
+<text x="1818" y="180.78" text-anchor="end" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="400" fill="#627083"><tspan x="1818" dy="0">以下流程在每一式内部独立执行</tspan></text>
+<rect x="62" y="234" width="1796" height="230" rx="8" fill="#F2F7FB" stroke="#D8DEE7" stroke-width="2"/>
+<rect x="62" y="234" width="148" height="230" rx="8" fill="#326A95"/>
+<circle cx="104" cy="276" r="23" fill="#FFFFFF" fill-opacity="0.18" stroke="#FFFFFF" stroke-width="2"/>
+<text x="104" y="284.16" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF"><tspan x="104" dy="0">1</tspan></text>
+<text x="136" y="337.82" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#FFFFFF"><tspan x="136" dy="0">教师标准</tspan></text>
+<text x="136" y="376.44" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF"><tspan x="136" dy="0">10个参考视频</tspan></text>
+<rect x="62" y="484" width="1796" height="230" rx="8" fill="#F1F8F6" stroke="#D8DEE7" stroke-width="2"/>
+<rect x="62" y="484" width="148" height="230" rx="8" fill="#287C71"/>
+<circle cx="104" cy="526" r="23" fill="#FFFFFF" fill-opacity="0.18" stroke="#FFFFFF" stroke-width="2"/>
+<text x="104" y="534.16" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF"><tspan x="104" dy="0">2</tspan></text>
+<text x="136" y="587.82" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#FFFFFF"><tspan x="136" dy="0">时序查询</tspan></text>
+<text x="136" y="626.44" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF"><tspan x="136" dy="0">动作要领 → 查询</tspan></text>
+<rect x="62" y="734" width="1796" height="230" rx="8" fill="#FBF7ED" stroke="#D8DEE7" stroke-width="2"/>
+<rect x="62" y="734" width="148" height="230" rx="8" fill="#9A6A22"/>
+<circle cx="104" cy="776" r="23" fill="#FFFFFF" fill-opacity="0.18" stroke="#FFFFFF" stroke-width="2"/>
+<text x="104" y="784.16" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF"><tspan x="104" dy="0">3</tspan></text>
+<text x="136" y="837.82" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#FFFFFF"><tspan x="136" dy="0">学生诊断</tspan></text>
+<text x="136" y="876.44" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF"><tspan x="136" dy="0">对齐 → 判断 → 反馈</tspan></text>
+<rect x="242" y="286" width="205" height="104" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="344.5" y="331.16" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="24" font-weight="700" fill="#172433"><tspan x="344.5" dy="0">10个参考</tspan><tspan x="344.5" dy="30">教学视频</tspan></text>
+<rect x="495" y="286" width="230" height="104" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="610.0" y="331.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="610.0" dy="0">同一招式</tspan><tspan x="610.0" dy="29">已分割片段</tspan></text>
+<rect x="773" y="274" width="270" height="128" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="908.0" y="318.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="908.0" dy="0">逐帧计算量化指标</tspan><tspan x="908.0" dy="26">关节夹角</tspan><tspan x="908.0" dy="26">归一化相对距离 · …</tspan></text>
+<rect x="1093" y="286" width="242" height="104" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="1214.0" y="331.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="1214.0" dy="0">执行时序查询</tspan><tspan x="1214.0" dy="29">定位目标阶段</tspan></text>
+<rect x="1383" y="274" width="246" height="128" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="1506.0" y="318.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="1506.0" dy="0">10位教师在目标阶段</tspan><tspan x="1506.0" dy="26">对应指标值</tspan><tspan x="1506.0" dy="26">与局部时间序列</tspan></text>
+<path d="M 1668 287 A 81.0 13 0 0 1 1830 287 L 1830 389 A 81.0 13 0 0 1 1668 389 Z" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<ellipse cx="1749.0" cy="287" rx="81.0" ry="13" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2"/>
+<path d="M 1668 389 A 81.0 13 0 0 0 1830 389" fill="none" stroke="#4A7CA5" stroke-width="2"/>
+<text x="1749.0" y="336.8" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="20" font-weight="700" fill="#172433"><tspan x="1749.0" dy="0">教师参考范围</tspan><tspan x="1749.0" dy="26">10视频统计</tspan></text>
+<polyline points="447,338 495,338" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="725,338 773,338" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1043,338 1093,338" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1335,338 1383,338" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1629,338 1668,338" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="1749" y="423.44" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="16" font-weight="400" fill="#627083"><tspan x="1749" dy="0">保留10个原始值</tspan><tspan x="1749" dy="22">并估计合理区间</tspan></text>
+<rect x="242" y="536" width="205" height="104" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="344.5" y="581.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="344.5" dy="0">该式动作要领</tspan><tspan x="344.5" dy="29">文字知识</tspan></text>
+<path d="M 495 537 A 115.0 13 0 0 1 725 537 L 725 639 A 115.0 13 0 0 1 495 639 Z" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<ellipse cx="610.0" cy="537" rx="115.0" ry="13" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2"/>
+<path d="M 495 639 A 115.0 13 0 0 0 725 639" fill="none" stroke="#4A7CA5" stroke-width="2"/>
+<text x="610.0" y="574.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#172433"><tspan x="610.0" dy="0">通用指标库</tspan><tspan x="610.0" dy="25">角度 · 距离 · 方向</tspan><tspan x="610.0" dy="25">身体部位</tspan></text>
+<rect x="773" y="524" width="270" height="128" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="908.0" y="581.16" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="24" font-weight="700" fill="#172433"><tspan x="908.0" dy="0">MLLM 生成</tspan><tspan x="908.0" dy="30">结构化时序查询</tspan></text>
+<rect x="1093" y="512" width="300" height="152" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="1243.0" y="556.96" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#172433"><tspan x="1243.0" dy="0">查询描述</tspan><tspan x="1243.0" dy="25">何时：阶段 / 事件 / 条件</tspan><tspan x="1243.0" dy="25">看哪里：身体部位</tspan><tspan x="1243.0" dy="25">算什么：指标与方向</tspan></text>
+<rect x="1470" y="536" width="280" height="104" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="1610.0" y="581.64" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="1610.0" dy="0">程序解释并执行</tspan><tspan x="1610.0" dy="27">不让模型直接猜帧号</tspan></text>
+<polyline points="447,588 773,588" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="725,588 773,588" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1043,588 1093,588" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1393,588 1470,588" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1610,536 1610,462 1214,462 1214,390" fill="none" stroke="#287C71" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1386.0" y="449" width="88" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1430" y="468.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#287C71"><tspan x="1430" dy="0">查询定位</tspan></text>
+<rect x="242" y="786" width="205" height="104" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="344.5" y="831.32" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="23" font-weight="700" fill="#172433"><tspan x="344.5" dy="0">学生同一招式</tspan><tspan x="344.5" dy="29">已分割片段</tspan></text>
+<rect x="495" y="774" width="230" height="128" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="610.0" y="831.48" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="22" font-weight="700" fill="#172433"><tspan x="610.0" dy="0">逐帧计算</tspan><tspan x="610.0" dy="28">同一组量化指标</tspan></text>
+<rect x="773" y="774" width="270" height="128" rx="8" fill="#E0F2EE" stroke="#2F8277" stroke-width="2" filter="url(#shadow)"/>
+<text x="908.0" y="818.14" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="908.0" dy="0">DTW 对应关系</tspan><tspan x="908.0" dy="27">教师目标阶段</tspan><tspan x="908.0" dy="27">→ 学生对应阶段</tspan></text>
+<rect x="1093" y="786" width="242" height="104" rx="8" fill="#E7F0F8" stroke="#4A7CA5" stroke-width="2" filter="url(#shadow)"/>
+<text x="1214.0" y="831.64" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="1214.0" dy="0">学生阶段</tspan><tspan x="1214.0" dy="27">指标值与时间序列</tspan></text>
+<polygon points="1502,767.0 1637.0,838 1502,909.0 1367.0,838" fill="#FFF1CE" stroke="#B87B20" stroke-width="2" filter="url(#shadow)"/>
+<text x="1502" y="832.14" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="1502" dy="0">是否落在</tspan><tspan x="1502" dy="26">10位教师参考范围？</tspan></text>
+<rect x="1662" y="774" width="176" height="128" rx="8" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2" filter="url(#shadow)"/>
+<text x="1750.0" y="819.46" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="19" font-weight="700" fill="#172433"><tspan x="1750.0" dy="0">结构化证据</tspan><tspan x="1750.0" dy="25">偏差方向</tspan><tspan x="1750.0" dy="25">发生阶段</tspan></text>
+<polyline points="447,838 495,838" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="725,838 773,838" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1043,838 1093,838" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1335,838 1367,838" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1637,838 1662,838" fill="none" stroke="#7C8998" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1214,390 1214,440 908,440 908,774" fill="none" stroke="#326A95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<rect x="953.0" y="427" width="124" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1015" y="446.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#326A95"><tspan x="1015" dy="0">教师目标阶段</tspan></text>
+<polyline points="1749,402 1749,690 1502,690 1502,767" fill="none" stroke="#326A95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<rect x="1585.5" y="677" width="109" height="27" rx="4" fill="#F5F7FA"/>
+<text x="1640" y="696.12" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#326A95"><tspan x="1640" dy="0">10教师统计</tspan></text>
+<rect x="210" y="989" width="1648" height="68" rx="8" fill="#FFFFFF" stroke="#D8DEE7" stroke-width="2" filter="url(#shadow)"/>
+<text x="246" y="1029.12" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="18" font-weight="700" fill="#B85E4C"><tspan x="246" dy="0">输出</tspan></text>
+<text x="333" y="1030.48" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="22" font-weight="700" fill="#172433"><tspan x="333" dy="0">动作要领 + 结构化证据</tspan></text>
+<polyline points="662,1023 760,1023" fill="none" stroke="#B85E4C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="785" y="1030.48" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="22" font-weight="700" fill="#172433"><tspan x="785" dy="0">MLLM 基于事实推理</tspan></text>
+<polyline points="1060,1023 1158,1023" fill="none" stroke="#B85E4C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1184" y="1000" width="622" height="46" rx="7" fill="#FBE8E4" stroke="#B85E4C" stroke-width="2"/>
+<text x="1495" y="1030.14" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#B85E4C"><tspan x="1495" dy="0">教练式反馈：问题位置 · 偏差事实 · 可执行纠正建议</tspan></text>
+<polyline points="1750,902 1750,964 1495,964 1495,1000" fill="none" stroke="#B85E4C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+</svg>

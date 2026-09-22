@@ -1,0 +1,99 @@
+{
+  "case_id": "F011",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 159.20153284604305,
+      "median_2mad_interval": [64.11412974650574, 117.88935009156495],
+      "p10_p90_interval": [77.77722000557138, 117.51443382724128],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 155.4474880607575,
+      "median_2mad_interval": [136.05437008857547, 154.98190368811248],
+      "p10_p90_interval": [137.7874420355115, 151.58203879691555],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 95.34578353901122,
+      "median_2mad_interval": [92.75378182931497, 126.53651537007538],
+      "p10_p90_interval": [100.0236910285027, 120.17206810310658],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 158.84011865131845,
+      "median_2mad_interval": [124.69498916450796, 139.56749255124674],
+      "p10_p90_interval": [127.09343686758773, 138.9011777727053],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "stance_length_leg_ratio",
+      "student_value": 0.5397917030647399,
+      "median_2mad_interval": [0.5418950487604398, 0.9458389790293223],
+      "p10_p90_interval": [0.5408784976631696, 0.8597742954114018],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "left_wrist_head_up_torso_ratio",
+      "student_value": -0.12870638878261037,
+      "median_2mad_interval": [-0.08895274166859399, 0.00018666861302721327],
+      "p10_p90_interval": [-0.11585249083045045, -0.016228538141795312],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "left_wrist_head_forward_torso_ratio",
+      "student_value": 0.5137147778345101,
+      "median_2mad_interval": [0.3101695466269734, 0.5896930375405331],
+      "p10_p90_interval": [0.30511310275920117, 0.556775604511893],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_hip_distance_torso_ratio",
+      "student_value": 0.662997581855506,
+      "median_2mad_interval": [0.611103587155504, 1.0619392846219917],
+      "p10_p90_interval": [0.6561994241738505, 0.9852375076330127],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "左膝过于伸直，未形成有效的左弓步",
+      "evidence_metric_ids": ["left_knee_angle", "stance_length_leg_ratio"],
+      "explanation": "左膝夹角159.2°远超两套教师参考区间上限（约117.5°–117.9°），教师中位数约91°，说明教师在前弓步时前膝有明显弯曲。学生左膝接近伸直，不符合左弓步'前腿屈膝'的要求。步幅/腿长比0.540刚好低于两套区间下限（0.542/0.541），虽差距极小，但与左膝过直共同提示前迈步幅可能不足，导致前腿未能充分屈膝。",
+      "uncertainty": "步幅仅比区间下限低约0.001–0.002，几乎处于边界，单独来看证据很弱；但左膝角度偏离幅度大且两套区间一致，弓步不充分的可能性较高。",
+      "guidance": "左脚向左前方迈出时步幅可适当加大，使前膝能自然弯曲至约90°–110°范围，膝盖方向与脚尖一致，避免前腿几乎伸直。注意重心前移到位，使前腿真正承担弓步的支撑作用。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "右臂过于伸直，缺少自然弧度",
+      "evidence_metric_ids": ["right_elbow_angle", "right_wrist_hip_distance_torso_ratio"],
+      "explanation": "右肘夹角158.8°超出两套教师参考区间上限（约139°–140°），教师中位数约132°，表明教师右臂在胯旁时保持一定弯曲。学生右臂接近完全伸直。右腕至右髋距离0.663处于教师区间内偏低端，说明手的位置大致在胯旁，但手臂缺少自然弯曲。",
+      "uncertainty": "右腕与髋的距离在参考范围内，手的位置本身可能并无明显偏差；问题主要在臂的形态。无法从数据判断是否因肩部位置差异导致。",
+      "guidance": "右手落于右胯旁时，肘部应保持自然微屈，不要将手臂完全伸直绷紧。想象手臂自然松沉地放在胯旁，肘尖微有下垂之意。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "possible_issue",
+      "problem": "左手高度偏低，可能未达到与眼平的要求",
+      "evidence_metric_ids": ["left_wrist_head_up_torso_ratio"],
+      "explanation": "左腕相对头关节的上方位置比为-0.129，低于两套教师参考区间下限（-0.089/-0.116），说明学生左腕相对头部偏低。要领要求'左手高与眼平'，教师中位数约-0.044，学生明显更低。左腕前方位置（0.514）在参考范围内，说明手的远近尚可，主要是高度不足。",
+      "uncertainty": "SMPL头关节位置与眼睛位置存在解剖差异，无法精确换算'与眼平'对应的数值；但学生值低于所有教师样本中除T01外的全部值（T01为-0.187，但其窗口波动大），偏离较为一致。",
+      "guidance": "左手向左上方分出时，注意将手抬至与眼同高。可以眼睛平视前方，检查左手是否大致在视线高度，避免手落在胸前过低的位置。"
+    }
+  ],
+  "coach_summary": "本次野马分鬃结束定势存在三个主要问题：一是左膝接近伸直（159°），未形成有效的左弓步，建议加大前迈步幅使前膝充分弯曲；二是右臂过于伸直（159°），右手虽在胯旁但缺少自然微屈；三是左手高度偏低，可能未达到与眼平的要求。左腕前后位置和右腕与髋的距离尚在教师参考范围内。建议重点改善弓步姿态和左手高度。"
+}

@@ -1,0 +1,107 @@
+{
+  "case_id": "F001",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 129.78524095792108,
+      "median_2mad_interval": [109.35155324600822, 131.2250100093595],
+      "p10_p90_interval": [113.79830878486246, 131.62556147574506],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 127.42645887270703,
+      "median_2mad_interval": [113.06076338660931, 122.32416382404931],
+      "p10_p90_interval": [106.0991453493265, 119.1530188360103],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 122.03206239208535,
+      "median_2mad_interval": [94.34978939734465, 119.6602993372275],
+      "p10_p90_interval": [83.78259692698694, 113.18553921500038],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 78.66679898660216,
+      "median_2mad_interval": [88.20555942014398, 123.73748939968395],
+      "p10_p90_interval": [89.66373760020726, 116.39377490211797],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "stance_width_shoulder_ratio",
+      "student_value": 0.9226580986739173,
+      "median_2mad_interval": [0.8130808132812322, 1.472161822935602],
+      "p10_p90_interval": [0.9601754476283878, 1.340148998279047],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "left_wrist_pelvis_up_torso_ratio",
+      "student_value": 0.7968047161209103,
+      "median_2mad_interval": [-0.007483251537078128, 0.2469177368468745],
+      "p10_p90_interval": [0.034553031881902854, 0.29464641436781086],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_wrist_pelvis_up_torso_ratio",
+      "student_value": 0.5704916346599637,
+      "median_2mad_interval": [-0.04691970696574388, 0.27421624271354444],
+      "p10_p90_interval": [0.0077255913748859855, 0.25745777953680776],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_wrist_pelvis_forward_torso_ratio",
+      "student_value": 0.7743460591663253,
+      "median_2mad_interval": [0.13722994506551384, 0.45907001846231005],
+      "p10_p90_interval": [0.2204006682511467, 0.4882776222734058],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_wrist_pelvis_forward_torso_ratio",
+      "student_value": 0.2338933928805928,
+      "median_2mad_interval": [0.1568621033303191, 0.4145340095156954],
+      "p10_p90_interval": [0.20359705631740593, 0.38887776531810636],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "双腕位置明显偏高，未达到"下按至腹前"的要求",
+      "evidence_metric_ids": ["left_wrist_pelvis_up_torso_ratio", "right_wrist_pelvis_up_torso_ratio"],
+      "explanation": "起势结束定势要求两掌下按至腹前。学生左腕相对骨盆上方位置为0.797倍躯干长，右腕为0.570倍躯干长，均远超教师参考范围（左腕教师p10_p90上限约0.295，右腕约0.257）。教师中位数约为0.11-0.12，表明定势时手腕应接近骨盆高度。学生数值偏高约2-3倍，提示双手仍停留在较高位置，未完成下按动作。",
+      "uncertainty": "无法排除重建误差或定势时刻选取偏差；但偏差幅度较大，系统性偏高可能性较高。",
+      "guidance": "注意在屈膝下蹲的同时，将两掌沿体前缓缓下按至小腹前方，手腕高度大致与腹部齐平。可对照镜子检查手掌是否已降至腰带以下区域。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "左臂前伸过远且肘关节偏直，与"两肘松垂"要领不符",
+      "evidence_metric_ids": ["left_wrist_pelvis_forward_torso_ratio", "left_elbow_angle"],
+      "explanation": "学生左腕前方位置为0.774倍躯干长，超出教师两套区间上限（median_2mad上限0.459，p10_p90上限0.488）；左肘角122.0°也超出两套区间上限（119.7°和113.2°），表明左臂较为伸直且前伸幅度大。起势要求两肘松垂、与膝上下相对，手臂应自然弯曲悬于体前而非前伸。右腕前方位置（0.234）在教师范围内，说明左右不对称。",
+      "uncertainty": "左肘角虽超出区间，但教师T05样本达132.4°，说明个别教师也有较大肘角；不过结合前方位移明显偏大，整体仍指向左臂前伸问题。",
+      "guidance": "注意左肘不要向前伸出，保持肘尖自然下垂、微屈，使手掌悬于大腿前方而非伸向远处。可意念引导肘尖向下松沉。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "possible_issue",
+      "problem": "右膝弯曲程度不足，下蹲幅度偏小",
+      "evidence_metric_ids": ["right_knee_angle"],
+      "explanation": "学生右膝角127.4°，超出教师median_2mad上限（122.3°）和p10_p90上限（119.2°）。教师中位数约117.7°，多数教师右膝角在106°-118°之间。起势要求屈膝松腰下蹲，右膝偏直提示下蹲深度不够。左膝角129.8°虽在两套区间内，但也处于偏高端，整体蹲幅可能偏浅。",
+      "uncertainty": "左膝在范围内，仅右膝超出；可能反映轻微左右不对称或重心偏左。无法从静态角度判断实际承重分布。",
+      "guidance": "适当增加屈膝下蹲幅度，注意两膝均匀弯曲，膝盖方向与脚尖一致。可先稍加大蹲幅再微调至舒适稳定的位置。"
+    }
+  ],
+  "coach_summary": "本次起势结束定势最突出的问题是双手位置偏高，未达到"下按至腹前"的要求，建议重点练习下按时手掌降至腹前的意识。其次左臂有前伸倾向，应保持肘部松垂微屈。右膝弯曲幅度略不足，可适当加深下蹲。整体来看，动作框架基本成立，但下按与松沉的质感仍需加强。"
+}

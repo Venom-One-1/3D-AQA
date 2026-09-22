@@ -13,6 +13,53 @@
 
 ## 环境
 
+### 前三式结束定势规则反馈
+
+在已有 `endpoint_metric_results/first3_five_students` 上生成学生
+01、02、03、04、10 的规则反馈，不重跑分割、重建或评分：
+
+```bash
+conda activate 4d-humans
+python /home/sqw/Projects/3D-AQA/run_endpoint_feedback.py
+```
+
+默认输出到 `endpoint_feedback_results/first3_five_students/`：
+`feedback_report.md` 为五人入口；每人目录包含 `feedback_report.md`、
+`feedback.csv` 和 `feedback.json`；根目录的 `manual_review.csv` 用于填写
+`correct / false_positive / uncertain` 及误判原因。
+`feedback_rules.json` 保存可核验的方向性规则，`summary.json` 保存阈值及输入/代码哈希。
+
+只有两种区间方向一致、中心帧判断一致、窗口稳定的受支持偏差才生成候选建议。
+教师窗口不稳定也触发复核，但不剔除教师、不改变既有参考范围。
+默认角度中心差/窗口极差门槛为 5/10 度；归一化距离为 0.05/0.10。
+这些门槛尚未标定，不是专家判定标准，可通过 `--center-delta-degree`、
+`--center-delta-ratio`、`--window-spread-degree`、`--window-spread-ratio` 调整。
+稳定估计仍可能重建错误；不生成承重、掌心朝向、肌肉放松或整体合格结论。
+
+调整规则后可用 `--rules-json <修改后的规则文件>` 和新的 `--output-root`
+运行独立实验；程序拒绝覆盖已有结果和人工复核记录。
+
+#### 浏览器人工复核工具
+
+启动不依赖额外 Web 框架的本地复核界面：
+
+```bash
+conda activate 4d-humans
+cd /home/sqw/Projects/3D-AQA
+python run_feedback_review_app.py
+```
+
+默认访问 `http://127.0.0.1:8501`。远程 SSH 环境可在编辑器中转发该端口。
+界面只显示 `feedback_candidate` 和 `needs_review`，即当前实验的 93 项记录；
+可以按学生、招式和完成状态筛选。每项显示动作要领、简短提示、学生定势、
+参考锚点、十位教师对照以及学生值和两种教师范围。
+
+选择“正确、误判、无法判断”后会自动保存到
+`endpoint_feedback_results/first3_five_students/review_progress.json`，不会改写原始
+`manual_review.csv`。点击“导出 CSV”会下载包含全部 130 行的
+`manual_review_labeled.csv`，已复核的 93 项使用英文枚举
+`correct / false_positive / uncertain`，其余记录保留原状态。
+
 在 `4d-humans` 环境中安装项目依赖：
 
 ```bash
@@ -174,6 +221,70 @@ conda run -n 4d-humans python build_endpoint_keypose_reference.py
 `[previous_boundary + 1, current_boundary]`，第 1 式从 sample/source index 0
 开始。参考 tracking 必须在全部 24 个精确边界帧上存在 SMPL pose，否则程序默认
 报错；仅诊断缺失数据时可以显式添加 `--allow-missing-tracking-keyposes`。
+
+## 学生结束定势 KeyPose
+
+以人工确认的 reference manifest 为唯一参考事件来源，复用全局 5 FPS SMPL-DTW，
+将 24 个结束边界映射为学生的 `1.end` 到 `24.end`。输入完整视频需预先完成 tracking，
+本入口不自动裁背景。每个视频输出至独立目录：
+
+```bash
+conda run -n 4d-humans python run_student_endpoint_keyposes.py \
+  --reference-manifest reference_data/BV1WE411W7JB/reference_manifest.json \
+  --input-video /home/sqw/VisualSearch/aqa/student/00.mp4 \
+  --input-tracking /home/sqw/VisualSearch/aqa/Tracking/student_full/00/results/demo_00.pkl
+```
+
+默认输出 `student_keypose_results/<video_id>/`，包括 `endpoint_keyposes.csv/json`、
+24 行教师/学生全帧对照图 `boundary_frames.jpg`、48 张原始定势截图 `keypose_frames/`，
+以及 `boundaries.csv`、`segments.csv`、`segmentation.json`、完整 DTW 路径和诊断图。
+动作要领原样复制自 manifest；`reference_manifest_snapshot.json` 和摘要中的 SHA256
+记录本次所用版本。重新运行请通过 `--output-root` 指定新目录，保留先前结果。
+
+KeyPose 表分别保存 5 FPS 网格时间、真实原视频帧时间，以及请求/实际使用的 PHALP
+帧号和 track ID。默认采样点缺失 tracking 时失败并输出 `summary.json` 原因；
+只有显式设置 `--max-tracking-gap-seconds` 才允许近邻替代，并标记替代帧。
+`sample_tracking_provenance.npz` 保留全序列实际使用的 tracking 帧。
+替代帧及 ID 切换附近的定势会标记 `review_required`；可通过
+`--review-geodesic-degrees` 额外设置人工复核阈值，默认不设未经校准的距离阈值。
+所有记录 `manual_review_status=pending`，无诊断标记不代表动作合格。
+相邻预测结束边界若不严格递增则失败，保留完整路径和所选候选，供排查选帧问题。
+
+## 前三式结束定势指标对比
+
+对完整视频 `01、02、03、04、10` 和原有 10 名教师计算前三式结束定势指标：
+
+```bash
+conda run -n 4d-humans python run_endpoint_metrics_experiment.py
+```
+
+入口复用通过输入身份、帧索引及全路径 Geodesic Distance 校验的教师/学生 DTW
+路径；其余视频重新运行 5 FPS 全局 SMPL-DTW。参考事件及动作要领来自 reference
+manifest。输出目录默认为 `endpoint_metric_results/first3_five_students/`，已有结果
+不会覆盖；再次实验使用 `--output-root` 指定新目录。
+
+- `comparison_report.md`：前三式文字表格、教师/学生定势截图及指标分布图。
+- `comparison_matrix.csv`：每行一个指标，五名学生并排，包含窗口值和中心帧值。
+- `student_teacher_comparison.csv`：每名学生每个指标的长表，两种区间及偏差方向。
+- `teacher_reference_values.json`：每项完整保存 10 名教师原始值、有效状态及统计量。
+- `teacher_reference_ranges.csv`：26 个招式/指标组合的参考区间。
+- `endpoint_metric_rules_first3.json`：本轮结束定势规则、指标定义及坐标/归一化约定。
+- `all_endpoint_metrics.csv`：所有教师和学生的中心值、窗口中位数、有效帧数。
+- `teacher/<id>/`、`student/<id>/`：对齐来源、完整路径、逐帧指标、SMPL-24 关节及定势截图。
+
+每个结束事件取前后 `--window-seconds 0.2` 秒并裁至当前招式；因此实际使用边界前
+约 0.2 秒及边界本帧。先逐帧计算指标，再取中位数；保留中心帧值，不重新选最佳帧。
+窗口缺帧不使用近邻补值，track ID 切换前后各一帧被排除；至少 3 帧且有效比例达到
+`--minimum-window-valid-ratio 0.7` 才生成有效窗口值。
+
+教师每人每项贡献一个窗口值，至少 `--minimum-teachers 7` 名有效才比较。默认区间
+为 median ± 2×MAD，MAD 为未缩放的绝对偏差中位数，同时导出 P10–P90。
+不足教师数或零宽参考区间不产生高/低判断。参考锚点 BV1WE411W7JB 不加入 10 人统计。
+
+本轮仅使用膝肘夹角及归一化身体相对距离。上方轴为 Pelvis→Neck，左右轴由髋线及
+肩线构造，前方轴由叉积得到；它不代表重力方向或地面标定。Head/Wrist 分别只是
+头部/手部位置代理，不能当作额头/眼睛/掌心精确位置。超出教师区间仅供诊断，
+不能直接认定动作不标准，也不产生质量总分或排名。
 
 ## 全视频帧动作流畅性诊断
 

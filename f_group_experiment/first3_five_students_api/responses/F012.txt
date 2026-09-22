@@ -1,0 +1,159 @@
+Let me analyze each metric systematically.
+
+**1. left_knee_angle**: Student = 134.24, median_2mad = [139.07, 163.49], p10_p90 = [142.73, 159.29]. Below both intervals.
+
+**2. right_knee_angle**: Student = 152.38, median_2mad = [113.15, 120.55], p10_p90 = [103.61, 125.37]. Above both intervals.
+
+**3. left_elbow_angle**: Student = 96.52, median_2mad = [84.41, 132.00], p10_p90 = [90.79, 119.19]. Within both intervals.
+
+**4. right_elbow_angle**: Student = 77.49, median_2mad = [87.36, 140.67], p10_p90 = [88.40, 125.48]. Below both intervals.
+
+**5. stance_length_leg_ratio**: Student = 0.315, median_2mad = [0.486, 0.703], p10_p90 = [0.444, 0.643]. Below both intervals.
+
+**6. right_wrist_head_up_torso_ratio**: Student = -0.037, median_2mad = [0.275, 0.391], p10_p90 = [0.125, 0.367]. Below both intervals.
+
+**7. right_wrist_head_forward_torso_ratio**: Student = 0.384, median_2mad = [0.462, 0.692], p10_p90 = [0.382, 0.644]. Below median_2mad, within p10_p90 (0.384 ≥ 0.382).
+
+**8. right_wrist_head_right_torso_ratio**: Student = 0.599, median_2mad = [0.308, 0.523], p10_p90 = [0.342, 0.599]. Above median_2mad, within p10_p90 (0.599 ≤ 0.599).
+
+**9. left_wrist_hip_distance_torso_ratio**: Student = 0.613, median_2mad = [0.467, 0.731], p10_p90 = [0.472, 0.882]. Within both intervals.
+
+Now let me think about findings:
+
+**Right knee angle (152.38°)**: In 白鹤亮翅, the right leg is the supporting leg (重心移至右腿), so it should be bent. Teachers show median ~117°, range ~104-125°. Student's 152° is much straighter — above all teacher values. This is a clear issue: the right (supporting) leg is too straight, not sufficiently bent.
+
+**Left knee angle (134.24°)**: The left leg is the virtual step (虚步), with the toe touching the ground. Teachers show median ~151°, range ~143-159°. Student's 134° is below both intervals. The left knee is more bent than teachers. In a virtual step, the left leg should be relatively extended with just the toe touching. A more bent left knee might indicate the left leg is bearing more weight or the foot placement is different.
+
+**Right elbow angle (77.49°)**: The technique says "右臂呈舒展的弧形" and "肘部自然下坠并保持微屈". Teachers show median ~114°, range ~88-125°. Student's 77° is below both intervals. The right arm is too bent — not showing the "舒展的弧形" described in the technique.
+
+**Right wrist height (up ratio = -0.037)**: The technique says the right hand should be at or slightly above forehead level. The metric measures wrist position relative to head joint along the up axis. Student's value is negative, meaning the wrist is below the head joint. Teachers show median ~0.33, range ~0.12-0.37. Student is well below both intervals. However, the instructions say "白鹤亮翅右手允许与额头同高或略高，不能仅因数值高于参考范围就要求降低右手." But here the issue is the opposite — the hand is too LOW. The head joint in SMPL is at the top of the head, so a negative value means the wrist is below the top of the head. The forehead would be somewhat below the head joint. Still, the student's value is substantially below all teachers, suggesting the right hand is notably low.
+
+**Stance length (0.315)**: Below both intervals. The step is too short. Combined with the knee angles, this suggests the student hasn't properly positioned the feet.
+
+**Right wrist forward (0.384)**: Below median_2mad but within p10_p90 (barely). The two intervals disagree.
+
+**Right wrist right (0.599)**: Above median_2mad but within p10_p90 (at the boundary). The two intervals disagree.
+
+Let me now formulate findings:
+
+**Finding 1**: Right knee too straight + stance too short. The right (supporting) leg should be bent but student's 152° is far above all teachers. Combined with short stance length (0.315 vs teacher median 0.594), this suggests the student hasn't properly settled into the stance with adequate knee bend and step length.
+
+**Finding 2**: Right elbow too bent. 77.49° vs teacher range 88-125°. The technique requires "舒展的弧形" with "微屈", but the student's arm is significantly more flexed.
+
+**Finding 3**: Right wrist too low. -0.037 vs teacher range 0.12-0.37. The right hand should be at or above forehead level, but the wrist is below the head joint.
+
+Let me also consider the left knee. The left knee being more bent (134° vs teachers ~143-159°) could relate to the short stance — if the left foot is too close, the knee would be more bent. This could be integrated with Finding 1.
+
+Let me finalize with 3 findings:
+
+P1: Right supporting leg too straight + short stance (right_knee_angle + stance_length_leg_ratio + left_knee_angle as supporting evidence)
+P2: Right elbow too bent (right_elbow_angle)
+P3: Right wrist too low (right_wrist_head_up_torso_ratio)
+
+{
+  "case_id": "F012",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 134.2408894182161,
+      "median_2mad_interval": [139.0696980837238, 163.48972242224195],
+      "p10_p90_interval": [142.72940289883667, 159.29083246320675],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 152.37990404474527,
+      "median_2mad_interval": [113.15264309199698, 120.54957925057705],
+      "p10_p90_interval": [103.60581749409936, 125.3653413569363],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 96.52347802461024,
+      "median_2mad_interval": [84.40932439940988, 131.99317920599427],
+      "p10_p90_interval": [90.79188276031573, 119.18911450130958],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 77.49089822594293,
+      "median_2mad_interval": [87.35540198794814, 140.67434271502094],
+      "p10_p90_interval": [88.39802311675798, 125.47864008176495],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "stance_length_leg_ratio",
+      "student_value": 0.3148972141381102,
+      "median_2mad_interval": [0.48558934112160823, 0.7027919060773035],
+      "p10_p90_interval": [0.4435180260564029, 0.6430743736689978],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_wrist_head_up_torso_ratio",
+      "student_value": -0.03702543825036024,
+      "median_2mad_interval": [0.27545474925691565, 0.39143907944408657],
+      "p10_p90_interval": [0.12457008680496355, 0.36719441966640076],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_wrist_head_forward_torso_ratio",
+      "student_value": 0.3842106154807945,
+      "median_2mad_interval": [0.4619931165379132, 0.6916299458459092],
+      "p10_p90_interval": [0.3818376195553711, 0.6437304451077843],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_head_right_torso_ratio",
+      "student_value": 0.5990163393519722,
+      "median_2mad_interval": [0.307726401900608, 0.5230964354479914],
+      "p10_p90_interval": [0.3418176380686599, 0.5992249181861629],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_wrist_hip_distance_torso_ratio",
+      "student_value": 0.6126482901995415,
+      "median_2mad_interval": [0.46672854544779685, 0.7305193236372488],
+      "p10_p90_interval": [0.4715067289619568, 0.8819103670078083],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "右腿（支撑腿）弯曲不足，步幅偏小，整体下蹲幅度不够",
+      "evidence_metric_ids": ["right_knee_angle", "stance_length_leg_ratio", "left_knee_angle"],
+      "explanation": "白鹤亮翅定势要求重心坐于右腿，右膝应有明显弯曲。学生右膝角152.4°，远高于教师中位数116.9°及全部教师样本（最高约140.4°），两套区间均判定偏高，说明右腿接近伸直，未充分屈膝下沉。同时步幅/腿长比仅0.315，远低于教师中位数0.594及两套区间下限，表明前后脚距过短。左膝角134.2°低于教师区间（中位数151.3°），可能与步幅过短导致左腿过度弯曲有关。三项指标共同指向学生未充分展开步幅并屈膝坐胯。",
+      "uncertainty": "无法从静态指标判断重心实际承重比例；步幅偏小也可能与个人腿长比例或定势时刻选取有关，但偏离幅度较大，系统性偏差的可能性较高。",
+      "guidance": "定势时注意右腿屈膝下坐，膝盖方向与脚尖一致，避免右腿过于伸直；同时左脚前移适当加大前后步距，使虚步与支撑腿之间形成合理的步幅，整体重心下沉。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "右肘弯曲过大，右臂未能呈现舒展弧形",
+      "evidence_metric_ids": ["right_elbow_angle"],
+      "explanation": "动作要领要求右臂'舒展的弧形'，肘部'自然下坠并保持微屈'。学生右肘角77.5°，低于两套参考区间下限（median_2mad下限87.4°，p10_p90下限88.4°），且低于所有教师样本值（最低约87.2°）。这表明右臂屈曲程度明显过大，与'微屈''舒展'的要求不符。",
+      "uncertainty": "SMPL肘关节角度受上臂与前臂估计精度影响；若右腕位置偏低（见P3），可能部分导致肘角偏小，需结合整体臂形判断。",
+      "guidance": "右臂上举时注意肘部不要过度弯曲，保持手臂自然舒展的弧形，肘尖有向下松坠之意但前臂与上臂之间角度不宜过小，想象手臂如展翅般向外撑开。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "possible_issue",
+      "problem": "右手位置偏低，未达到额头同高或略高的要求",
+      "evidence_metric_ids": ["right_wrist_head_up_torso_ratio", "right_elbow_angle"],
+      "explanation": "动作要领要求右手'掌心中心大致与额头同高或略高'。学生右腕相对头关节的上方偏移为-0.037（即右腕略低于头关节），远低于教师中位数0.333及两套区间下限（p10_p90下限0.125）。即使考虑头关节位于头顶而非额头，该值仍显著偏低，说明右手整体高度不足。结合右肘角偏小（77.5°），右臂过度屈曲可能是导致手部高度不够的原因之一。",
+      "uncertainty": "头关节与额头存在位置差异，但学生值为负值，即使扣除这一差异仍明显偏低；右腕前方位置（0.384）在p10_p90区间内，说明手的前后位置尚可，主要问题在高度方向。",
+      "guidance": "定势时右手上举至额头同高或略高，注意不是耸肩抬手，而是通过右臂舒展、肘部微屈自然将手送至头侧前方，可对照镜子检查右手高度是否达到额头附近。"
+    }
+  ],
+  "coach_summary": "本次白鹤亮翅定势存在三个主要问题：一是右腿（支撑腿）过于伸直、步幅偏小，整体下蹲不足，需加强屈膝坐胯并适当加大前后步距；二是右肘弯曲过大，手臂未能展现舒展的弧形，应有意识地放松肘部、保持微屈；三是右手高度偏低，未达到额头同高的基本要求，与右臂过度屈曲有关。建议重点练习右腿屈膝下沉与右臂舒展上举的协调配合。"
+}

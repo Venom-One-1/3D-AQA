@@ -1,0 +1,99 @@
+{
+  "case_id": "F008",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 177.52040070943787,
+      "median_2mad_interval": [64.11412974650574, 117.88935009156495],
+      "p10_p90_interval": [77.77722000557138, 117.51443382724128],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 152.26742211318245,
+      "median_2mad_interval": [136.05437008857547, 154.98190368811248],
+      "p10_p90_interval": [137.7874420355115, 151.58203879691555],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 90.82818156860023,
+      "median_2mad_interval": [92.75378182931497, 126.53651537007538],
+      "p10_p90_interval": [100.0236910285027, 120.17206810310658],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 84.2243557493765,
+      "median_2mad_interval": [124.69498916450796, 139.56749255124674],
+      "p10_p90_interval": [127.09343686758773, 138.9011777727053],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "stance_length_leg_ratio",
+      "student_value": 0.6122473623933773,
+      "median_2mad_interval": [0.5418950487604398, 0.9458389790293223],
+      "p10_p90_interval": [0.5408784976631696, 0.8597742954114018],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_wrist_head_up_torso_ratio",
+      "student_value": -0.061126066654235395,
+      "median_2mad_interval": [-0.08895274166859399, 0.00018666861302721327],
+      "p10_p90_interval": [-0.11585249083045045, -0.016228538141795312],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_wrist_head_forward_torso_ratio",
+      "student_value": 0.5567713207262406,
+      "median_2mad_interval": [0.3101695466269734, 0.5896930375405331],
+      "p10_p90_interval": [0.30511310275920117, 0.556775604511893],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_hip_distance_torso_ratio",
+      "student_value": 0.7157905337066406,
+      "median_2mad_interval": [0.611103587155504, 1.0619392846219917],
+      "p10_p90_interval": [0.6561994241738505, 0.9852375076330127],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "左膝接近完全伸直，未形成弓步所需的前腿弯曲",
+      "evidence_metric_ids": ["left_knee_angle"],
+      "explanation": "动作要领要求成左弓步，前腿（左腿）应明显屈膝。学生左膝夹角为177.5°，接近完全伸直，远超教师参考范围（median_2mad上限117.9°，p10_p90上限117.5°）。教师中位数约91°，表明前腿通常有较大幅度的弯曲。该偏差幅度极大，两套区间一致指向同一结论。",
+      "uncertainty": "无法排除定势时刻选取偏差或重建误差的可能，但偏差幅度（约60°以上）远超一般测量波动。",
+      "guidance": "左弓步定势时，前腿（左腿）应屈膝前弓，膝盖大致在脚尖方向上方，膝角通常在90°–110°左右。请检查迈步后是否真正将重心前移并屈膝，避免前腿僵直。可对着镜子练习，确认前膝有明显弯曲。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "右肘过度弯曲，右臂未能自然舒展地落于右胯旁",
+      "evidence_metric_ids": ["right_elbow_angle", "right_wrist_hip_distance_torso_ratio"],
+      "explanation": "动作要领要求右手落于右胯旁，手臂应相对舒展。学生右肘夹角仅84.2°，远低于教师参考范围（median_2mad下限124.7°，p10_p90下限127.1°），偏差约40°以上。同时右腕至右髋距离（0.716）在教师范围内，说明手的位置大致正确，但手臂形态与教师差异显著——学生可能通过过度屈肘将手放在胯旁，而非手臂自然下垂微屈。",
+      "uncertainty": "右腕位置在参考范围内，手的大致位置可能并无明显错误，主要问题在臂形。",
+      "guidance": "右手落于右胯旁时，手臂应自然舒展、微屈而非大幅折叠。注意右臂不要过度弯曲夹紧，保持肘部有向下、向外的舒展感，使右臂呈自然弧形而非锐角折叠。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "possible_issue",
+      "problem": "左肘弯曲程度偏大，左臂弧形与教师样本有差异",
+      "evidence_metric_ids": ["left_elbow_angle", "left_wrist_head_up_torso_ratio", "left_wrist_head_forward_torso_ratio"],
+      "explanation": "学生左肘夹角90.8°，低于两套参考区间（median_2mad下限92.8°，p10_p90下限100.0°）。左腕的上下位置（-0.061）和前后位置（0.557）均在教师范围内，说明左手大致到达了与眼平、略前方的位置，但达到该位置时肘部弯曲更多。这可能意味着左臂过于收缩，缺乏向前舒展的掤劲。",
+      "uncertainty": "偏差幅度相对较小（与median_2mad下限相差约2°，与p10_p90下限相差约9°），且手的位置指标正常，实际影响需结合整体臂形判断。",
+      "guidance": "左手前举至眼平时，手臂应保持一定的弧形舒展，肘部不宜过度内收或下垂。可注意左臂有向前、向外微微展开的意念，避免将手臂缩成锐角。"
+    }
+  ],
+  "coach_summary": "本次定势最突出的问题是左膝几乎完全伸直（约177.5°），未能形成左弓步所要求的前腿屈膝，需重点纠正重心前移和屈膝动作。其次，右肘过度弯曲（约84°），虽然右手位置大致在胯旁，但臂形过于折叠，应使右臂更自然地舒展下垂。左肘也略偏弯曲，但偏差较小，可在纠正前两个问题后一并关注。"
+}

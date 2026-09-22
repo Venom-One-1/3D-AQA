@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Temporal Query Annotator</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="loading" class="loading-screen">正在载入标注项目...</div>
+
+  <div id="app" class="app-shell" hidden>
+    <aside class="sidebar">
+      <header class="brand-block">
+        <div class="brand-mark">TQ</div>
+        <div>
+          <h1>时序查询标注</h1>
+          <p id="video-id"></p>
+        </div>
+      </header>
+
+      <div class="progress-block">
+        <div class="progress-copy">
+          <span>审核进度</span>
+          <strong id="progress-label">0 / 0</strong>
+        </div>
+        <div class="progress-track"><span id="progress-fill"></span></div>
+      </div>
+
+      <div class="sidebar-controls">
+        <label for="move-filter">招式</label>
+        <select id="move-filter"></select>
+        <label for="status-filter">状态</label>
+        <select id="status-filter">
+          <option value="all">全部状态</option>
+          <option value="unannotated">未标注</option>
+          <option value="draft">草稿</option>
+          <option value="reviewed">已审核</option>
+        </select>
+      </div>
+
+      <nav id="task-list" class="task-list" aria-label="动作要领列表"></nav>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div class="task-heading">
+          <div class="eyebrow" id="move-name"></div>
+          <h2 id="task-title"></h2>
+        </div>
+        <div class="topbar-actions">
+          <span id="save-state" class="save-state">已保存</span>
+          <button id="previous-task" class="button secondary" type="button">上一条</button>
+          <button id="next-task" class="button secondary" type="button">下一条</button>
+          <button id="save-button" class="button primary" type="button">保存</button>
+          <a class="button secondary" href="/api/export">导出 JSON</a>
+        </div>
+      </header>
+
+      <section class="technique-band">
+        <div>
+          <span class="section-label">动作要领</span>
+          <p id="technique-text"></p>
+        </div>
+        <div id="existing-metrics" class="existing-metrics"></div>
+      </section>
+
+      <div class="work-grid">
+        <section class="media-section">
+          <div class="section-header">
+            <h3>时间定位</h3>
+            <div class="view-tabs" role="tablist">
+              <button class="view-tab active" data-view="frame" type="button">精确帧</button>
+              <button class="view-tab" data-view="video" type="button">视频</button>
+            </div>
+          </div>
+
+          <div class="media-stage">
+            <img id="frame-view" alt="当前 5 FPS 视频帧">
+            <video id="video-view" src="/media/video" controls preload="metadata" hidden></video>
+          </div>
+
+          <div class="transport">
+            <button id="jump-start" class="compact-button" type="button">招式开头</button>
+            <button id="previous-frame" class="compact-button" type="button">上一帧</button>
+            <div class="time-readout">
+              <strong id="current-time">00:00.0</strong>
+              <span id="current-frame">帧 0</span>
+            </div>
+            <button id="next-frame" class="compact-button" type="button">下一帧</button>
+            <button id="jump-end" class="compact-button" type="button">招式结尾</button>
+          </div>
+
+          <div class="timeline-wrap">
+            <input id="frame-slider" type="range" min="0" max="1" value="0" step="1">
+            <div class="timeline-labels">
+              <span id="move-start-time"></span>
+              <span id="selection-time"></span>
+              <span id="move-end-time"></span>
+            </div>
+          </div>
+
+          <div id="filmstrip" class="filmstrip"></div>
+
+          <div class="mark-actions">
+            <button id="set-start" class="button mark-start" type="button">设为区间起点</button>
+            <button id="set-representative" class="button mark-representative" type="button">设为代表帧</button>
+            <button id="set-end" class="button mark-end" type="button">设为区间终点</button>
+            <button id="clear-range" class="button tertiary" type="button">清除区间</button>
+          </div>
+        </section>
+
+        <section class="annotation-section">
+          <div class="section-header">
+            <h3>Gold Standard</h3>
+            <select id="review-status" class="status-select">
+              <option value="unannotated">未标注</option>
+              <option value="draft">草稿</option>
+              <option value="reviewed">已审核</option>
+            </select>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              <span>可观测性</span>
+              <select id="observability">
+                <option value="uncertain">待判断</option>
+                <option value="observable">可观测</option>
+                <option value="partially_observable">部分可观测</option>
+                <option value="not_observable">不可观测</option>
+              </select>
+            </label>
+            <label>
+              <span>时序类型</span>
+              <select id="temporal-scope">
+                <option value="instant_event">瞬时事件</option>
+                <option value="stable_window">稳定区间</option>
+                <option value="transition_interval">过渡区间</option>
+                <option value="whole_move">整式属性</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="full-field">
+            <span>可观测性说明</span>
+            <textarea id="observability-reason" rows="2"></textarea>
+          </label>
+
+          <div class="frame-fields">
+            <label>
+              <span>起始帧</span>
+              <input id="gold-start" type="number" min="0" step="1">
+            </label>
+            <label>
+              <span>结束帧</span>
+              <input id="gold-end" type="number" min="0" step="1">
+            </label>
+            <label>
+              <span>代表帧</span>
+              <input id="gold-representative" type="number" min="0" step="1">
+            </label>
+          </div>
+
+          <label class="full-field notes-field">
+            <span>人工备注</span>
+            <textarea id="annotator-notes" rows="3"></textarea>
+          </label>
+
+          <div id="unsupported-block" class="unsupported-block" hidden>
+            <span class="section-label">已有不可观测提示</span>
+            <ul id="unsupported-list"></ul>
+          </div>
+        </section>
+      </div>
+
+      <section class="query-section">
+        <div class="section-header query-header">
+          <div>
+            <h3>运动学时序查询</h3>
+            <span id="llm-status" class="llm-status"></span>
+          </div>
+          <div class="query-actions">
+            <button id="open-prompt" class="button secondary" type="button">查看提示词</button>
+            <button id="generate-query" class="button accent" type="button">生成候选查询</button>
+            <button id="apply-candidate" class="button secondary" type="button" hidden>采用候选</button>
+          </div>
+        </div>
+
+        <div id="candidate-banner" class="candidate-banner" hidden></div>
+
+        <div class="query-basics">
+          <label>
+            <span>搜索起始进度</span>
+            <input id="query-progress-start" type="number" min="0" max="1" step="0.05">
+          </label>
+          <label>
+            <span>搜索结束进度</span>
+            <input id="query-progress-end" type="number" min="0" max="1" step="0.05">
+          </label>
+          <label>
+            <span>返回目标</span>
+            <select id="selection-target">
+              <option value="frame">帧</option>
+              <option value="window">时间区间</option>
+              <option value="whole_move">整式</option>
+            </select>
+          </label>
+          <label>
+            <span>选择策略</span>
+            <select id="selection-strategy">
+              <option value="best_score">最高匹配分</option>
+              <option value="first_match">首个匹配</option>
+              <option value="last_match">最后匹配</option>
+              <option value="longest_match">最长区间</option>
+            </select>
+          </label>
+          <label>
+            <span>代表帧策略</span>
+            <select id="representative-strategy">
+              <option value="center">区间中心</option>
+              <option value="start">区间起点</option>
+              <option value="end">区间终点</option>
+              <option value="min_motion">最小运动强度</option>
+              <option value="max_score">最高匹配分</option>
+              <option value="none">不返回</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="conditions-header">
+          <h4>查询条件</h4>
+          <button id="add-condition" class="button secondary" type="button">添加条件</button>
+        </div>
+        <div class="table-scroll">
+          <table class="conditions-table">
+            <thead>
+              <tr>
+                <th>指标</th>
+                <th>信号</th>
+                <th>聚合</th>
+                <th>判断</th>
+                <th>作用</th>
+                <th>持续时间</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="conditions-body"></tbody>
+          </table>
+        </div>
+
+        <label class="full-field rationale-field">
+          <span>查询依据</span>
+          <textarea id="query-rationale" rows="3"></textarea>
+        </label>
+
+        <details class="advanced-editor">
+          <summary>高级 JSON 编辑</summary>
+          <textarea id="query-json" rows="18" spellcheck="false"></textarea>
+          <div class="advanced-actions">
+            <button id="refresh-json" class="button secondary" type="button">从表单刷新</button>
+            <button id="apply-json" class="button secondary" type="button">应用 JSON</button>
+          </div>
+        </details>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="prompt-dialog">
+    <form method="dialog" class="dialog-shell">
+      <header>
+        <div>
+          <span class="section-label">LLM 候选查询</span>
+          <h3>提示词与结果导入</h3>
+        </div>
+        <button class="dialog-close" value="cancel" aria-label="关闭" type="submit">关闭</button>
+      </header>
+      <div class="dialog-grid">
+        <label>
+          <span>System Prompt</span>
+          <textarea id="system-prompt" rows="12" readonly></textarea>
+        </label>
+        <label>
+          <span>User Prompt</span>
+          <textarea id="user-prompt" rows="12" readonly></textarea>
+        </label>
+      </div>
+      <div class="dialog-actions">
+        <button id="copy-prompts" class="button secondary" type="button">复制完整提示词</button>
+      </div>
+      <label class="full-field">
+        <span>粘贴 LLM 返回的 JSON</span>
+        <textarea id="candidate-import" rows="12" spellcheck="false"></textarea>
+      </label>
+      <footer>
+        <button class="button secondary" value="cancel" type="submit">取消</button>
+        <button id="import-candidate" class="button primary" type="button">导入候选</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

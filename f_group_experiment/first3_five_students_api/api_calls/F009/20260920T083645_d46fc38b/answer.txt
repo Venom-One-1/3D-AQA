@@ -1,0 +1,107 @@
+{
+  "case_id": "F009",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 148.29011768825566,
+      "median_2mad_interval": [139.0696980837238, 163.48972242224195],
+      "p10_p90_interval": [142.72940289883667, 159.29083246320675],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 157.71486073831448,
+      "median_2mad_interval": [113.15264309199698, 120.54957925057705],
+      "p10_p90_interval": [103.60581749409936, 125.3653413569363],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 139.19897542845138,
+      "median_2mad_interval": [84.40932439940988, 131.99317920599427],
+      "p10_p90_interval": [90.79188276031573, 119.18911450130958],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 122.77483000056307,
+      "median_2mad_interval": [87.35540198794814, 140.67434271502094],
+      "p10_p90_interval": [88.39802311675798, 125.47864008176495],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "stance_length_leg_ratio",
+      "student_value": 0.28953326879157304,
+      "median_2mad_interval": [0.48558934112160823, 0.7027919060773035],
+      "p10_p90_interval": [0.4435180260564029, 0.6430743736689978],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_wrist_head_up_torso_ratio",
+      "student_value": 0.3519412065719567,
+      "median_2mad_interval": [0.27545474925691565, 0.39143907944408657],
+      "p10_p90_interval": [0.12457008680496355, 0.36719441966640076],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_head_forward_torso_ratio",
+      "student_value": 0.10073948255478928,
+      "median_2mad_interval": [0.4619931165379132, 0.6916299458459092],
+      "p10_p90_interval": [0.3818376195553711, 0.6437304451077843],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_wrist_head_right_torso_ratio",
+      "student_value": 0.8973338430886351,
+      "median_2mad_interval": [0.307726401900608, 0.5230964354479914],
+      "p10_p90_interval": [0.3418176380686599, 0.5992249181861629],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_wrist_hip_distance_torso_ratio",
+      "student_value": 0.34785139353662686,
+      "median_2mad_interval": [0.46672854544779685, 0.7305193236372488],
+      "p10_p90_interval": [0.4715067289619568, 0.8819103670078083],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "右腿过于伸直且步幅明显偏短，未形成有效的右腿支撑屈膝姿态",
+      "evidence_metric_ids": ["right_knee_angle", "stance_length_leg_ratio"],
+      "explanation": "白鹤亮翅定势要求重心坐于右腿、右膝弯曲承载体重。学生右膝夹角157.7°，远超教师两套参考区间（median_2mad上限120.5°，p10_p90上限125.4°），接近伸直状态；同时步幅/腿长比仅0.29，不足教师中位数0.59的一半，低于两套区间下限（0.49/0.44）。两项指标共同表明学生右腿未充分屈膝下沉，前后脚距过短，整体姿态偏高、支撑不稳。",
+      "uncertainty": "无法从静态指标判断实际重心分布和承重比例；步幅偏短也可能与个人腿长比例或定势时刻选取有关，但右膝角度偏差幅度较大，系统性问题的可能性较高。",
+      "guidance": "定势时注意右腿屈膝下坐，使重心沉稳落于右腿；左脚前移脚尖点地时，适当加大前后脚距，形成稳定的虚步结构。可对照镜子检查右膝是否有明显弯曲，避免双腿近乎直立地完成定势。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "右手位置偏右过多、前方伸展不足，未处于头部右前方的正确方位",
+      "evidence_metric_ids": ["right_wrist_head_right_torso_ratio", "right_wrist_head_forward_torso_ratio"],
+      "explanation": "要领要求右手位于头部右前方。学生右腕相对头关节的右方偏移为0.90倍躯干长，远超教师两套区间上限（0.52/0.60）；而前方偏移仅0.10倍躯干长，远低于教师区间下限（0.46/0.38）。两项指标一致表明右手过于偏向身体右侧，缺乏向前方的伸展，与'头部右前方'的要求不符。右腕上方位置（0.35）在教师区间内，高度本身无明显问题。",
+      "uncertainty": "坐标系基于躯干方向定义，若躯干本身有倾斜或扭转，可能影响前后/左右分量的解读；但偏差幅度较大，方向性结论较为可靠。",
+      "guidance": "右手向上举起时注意同时略向前方送出，使手掌处于额头右前方而非正侧方。可想象右手向斜前上方展开，而非单纯向身体右侧打开，保持右臂舒展的弧形。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "possible_issue",
+      "problem": "左臂过于伸直且左腕距左髋过近，左手可能紧贴身体而非自然置于左胯前",
+      "evidence_metric_ids": ["left_elbow_angle", "left_wrist_hip_distance_torso_ratio"],
+      "explanation": "要领要求左手落于左胯前、掌心向下。学生左肘夹角139.2°，高于两套教师区间上限（132.0°/119.2°），手臂接近伸直；左腕至左髋距离仅0.35倍躯干长，低于两套区间下限（0.47/0.47），说明左手非常贴近髋部。两者结合提示左臂可能垂直紧贴体侧下垂，而非保持自然微屈、手掌略在胯前的姿态。",
+      "uncertainty": "窗口内左肘角度波动较大（119°–144°），可能存在定势时刻偏差或重建误差；左腕距离的波动也较大（0.28–0.48），中位数偏低但部分帧接近教师范围低端。",
+      "guidance": "左手下按时注意肘部保持自然微屈，不要完全伸直；手掌置于左胯前方约一拳距离处，指尖朝前，避免手臂紧贴身体侧面。"
+    }
+  ],
+  "coach_summary": "本次白鹤亮翅定势存在三个较明显的问题：一是右腿过于伸直、步幅偏短，未形成屈膝坐胯的虚步支撑；二是右手位置偏右过多而前方伸展不足，应调整至头部右前方；三是左臂偏直且左手过于贴近髋部，应保持微屈并略向前放置。建议重点练习右腿屈膝下沉与右手前送协调配合，同时注意左手的自然弧度。"
+}

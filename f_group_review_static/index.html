@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>定势反馈对照复核</title><link rel="stylesheet" href="/styles.css"><script src="/lucide.js" defer></script><script src="/app.js" defer></script></head>
+<body>
+<header><div class="brand">定势反馈对照复核 <span>F / RULE BASELINE</span></div><div class="toolbar"><span id="progress"></span><span id="saveState" role="status"></span><button id="save" title="保存标注" aria-label="保存标注"><i data-lucide="save"></i></button><button id="export" title="导出 CSV" aria-label="导出 CSV"><i data-lucide="download"></i><span>导出 CSV</span></button></div></header>
+<div class="layout"><aside><label for="student">学生</label><select id="student"><option value="">全部学生</option></select><label for="move">招式</label><select id="move"><option value="">全部招式</option></select><label for="reviewer">复核人</label><input id="reviewer" maxlength="100" autocomplete="name"><label class="toggle"><input id="pending" type="checkbox">仅未完成</label><nav id="queue" aria-label="案例列表"></nav></aside>
+<main><div id="error" role="alert" hidden></div><div id="content"><p>正在加载…</p></div></main></div>
+<dialog id="imageDialog"><button id="closeImage" title="关闭大图" aria-label="关闭大图"><i data-lucide="x"></i></button><img id="largeImage" alt="定势帧大图"></dialog>
+</body></html>

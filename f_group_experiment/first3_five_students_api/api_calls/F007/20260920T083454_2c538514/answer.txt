@@ -1,0 +1,107 @@
+{
+  "case_id": "F007",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 123.70185726950422,
+      "median_2mad_interval": [109.35155324600822, 131.2250100093595],
+      "p10_p90_interval": [113.79830878486246, 131.62556147574506],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 112.06728316066588,
+      "median_2mad_interval": [113.06076338660931, 122.32416382404931],
+      "p10_p90_interval": [106.0991453493265, 119.1530188360103],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 144.4865156787181,
+      "median_2mad_interval": [94.34978939734465, 119.6602993372275],
+      "p10_p90_interval": [83.78259692698694, 113.18553921500038],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 142.89205073901127,
+      "median_2mad_interval": [88.20555942014398, 123.73748939968395],
+      "p10_p90_interval": [89.66373760020726, 116.39377490211797],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "stance_width_shoulder_ratio",
+      "student_value": 0.7104516650905108,
+      "median_2mad_interval": [0.8130808132812322, 1.472161822935602],
+      "p10_p90_interval": [0.9601754476283878, 1.340148998279047],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "left_wrist_pelvis_up_torso_ratio",
+      "student_value": 0.08217316605061092,
+      "median_2mad_interval": [-0.007483251537078128, 0.2469177368468745],
+      "p10_p90_interval": [0.034553031881902854, 0.29464641436781086],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_pelvis_up_torso_ratio",
+      "student_value": 0.073777550770577,
+      "median_2mad_interval": [-0.04691970696574388, 0.27421624271354444],
+      "p10_p90_interval": [0.0077255913748859855, 0.25745777953680776],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "left_wrist_pelvis_forward_torso_ratio",
+      "student_value": 0.06385840172571516,
+      "median_2mad_interval": [0.13722994506551384, 0.45907001846231005],
+      "p10_p90_interval": [0.2204006682511467, 0.4882776222734058],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    },
+    {
+      "metric_id": "right_wrist_pelvis_forward_torso_ratio",
+      "student_value": -0.02722793208657634,
+      "median_2mad_interval": [0.1568621033303191, 0.4145340095156954],
+      "p10_p90_interval": [0.20359705631740593, 0.38887776531810636],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "below"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "两肘过于伸直，双手未能前送至腹前，与'两肘松垂、两掌下按至腹前'的要领不符",
+      "evidence_metric_ids": ["left_elbow_angle", "right_elbow_angle", "left_wrist_pelvis_forward_torso_ratio", "right_wrist_pelvis_forward_torso_ratio"],
+      "explanation": "学生左肘144.5°、右肘142.9°，均远超两套教师参考区间上限（median_2mad上限分别为119.7°和123.7°，p10_p90上限分别为113.2°和116.4°），表明肘关节接近伸直而非松垂。与此同时，左腕前方位置仅为0.064（教师median_2mad下限0.137），右腕为-0.027（已位于骨盆后方，教师median_2mad下限0.157），两套区间一致显示双手远未达到腹前方位。肘部缺乏屈曲与手腕前送不足在力学上相互印证：肘未松垂则前臂无法将手掌送至腹前。",
+      "uncertainty": "无法排除重建误差对腕部位置的影响，但四个指标方向一致且偏差幅度较大，系统性错误的可能性较低。",
+      "guidance": "定势时注意松肩坠肘，让肘尖自然下垂，前臂微屈将双掌送至小腹前方；可对着镜子检查手掌是否在肚脐前方约一拳距离，同时确认肘尖指向地面而非向后撑开。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "两脚间距明显偏窄，不足肩宽",
+      "evidence_metric_ids": ["stance_width_shoulder_ratio"],
+      "explanation": "学生站距/肩宽比为0.71，低于两套教师参考区间（median_2mad下限0.81，p10_p90下限0.96），且低于全部10位教师的最低值（0.95）。起势要求两脚与肩同宽，该数值表明双脚间距明显不足。",
+      "uncertainty": "踝关节定位误差可能影响站距测量，但偏差幅度较大（约25%以上），不太可能完全由误差解释。",
+      "guidance": "起势开步时注意两脚内侧与肩同宽，可先以肩宽为参照调整脚位再开始下蹲；日常练习时可在地上做标记辅助定位。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "insufficient_evidence",
+      "problem": "右膝屈曲程度略大于左膝，两膝不对称",
+      "evidence_metric_ids": ["left_knee_angle", "right_knee_angle"],
+      "explanation": "左膝123.7°在两套区间内，右膝112.1°低于median_2mad下限（113.1°）但在p10_p90区间内（下限106.1°）。两套区间给出不同判断，且右膝值仍处于教师样本分布的合理范围内（T04为108.3°，T05为105.8°）。左右差约11.6°，可能反映轻微重心偏移或定势时刻差异，但证据不足以确认为动作错误。",
+      "uncertainty": "两套区间结论不一致；无法确定是真实重心偏移还是定势时刻选取差异所致。",
+      "guidance": null
+    }
+  ],
+  "coach_summary": "本次起势定势存在两个较明确的问题：一是两肘过于伸直、双手未前送至腹前，需加强松肩坠肘意识，让手掌落到小腹前方；二是站距偏窄，应注意两脚与肩同宽。右膝屈曲略大于左膝，但证据尚不充分，暂不作定论。"
+}

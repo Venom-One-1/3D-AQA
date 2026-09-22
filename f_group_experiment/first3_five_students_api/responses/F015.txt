@@ -1,0 +1,322 @@
+Let me analyze each metric systematically.
+
+**1. left_knee_angle:**
+- Student: 163.51
+- median_2mad: [139.07, 163.49] → 163.51 > 163.49 → above
+- p10_p90: [142.73, 159.29] → 163.51 > 159.29 → above
+- Both intervals say above. The left knee is relatively straight. In 白鹤亮翅, the left leg is the virtual step (虚步), with the left foot touching ground lightly. A relatively straight left knee is consistent with the virtual leg being extended forward with toe touching ground. However, both intervals indicate the student's left knee is straighter than typical teachers.
+
+**2. right_knee_angle:**
+- Student: 137.67
+- median_2mad: [113.15, 120.55] → 137.67 > 120.55 → above
+- p10_p90: [103.61, 125.37] → 137.67 > 125.37 → above
+- Both intervals say above. The right knee is the supporting leg in 白鹤亮翅. Teachers show much more knee flexion (median ~117°). The student's right knee at ~138° is significantly straighter, suggesting insufficient knee bend on the supporting leg.
+
+**3. left_elbow_angle:**
+- Student: 113.81
+- median_2mad: [84.41, 131.99] → within
+- p10_p90: [90.79, 119.19] → within
+- Both within. No issue.
+
+**4. right_elbow_angle:**
+- Student: 113.06
+- median_2mad: [87.36, 140.67] → within
+- p10_p90: [88.40, 125.48] → within
+- Both within. No issue.
+
+**5. stance_length_leg_ratio:**
+- Student: 0.504
+- median_2mad: [0.486, 0.703] → within
+- p10_p90: [0.444, 0.643] → within
+- Both within. No issue.
+
+**6. right_wrist_head_up_torso_ratio:**
+- Student: 0.147
+- median_2mad: [0.275, 0.391] → 0.147 < 0.275 → below
+- p10_p90: [0.125, 0.367] → 0.147 is within [0.125, 0.367] → within
+- Disagreement: below in median_2mad, within in p10_p90. The student's right wrist is lower relative to the head. The technique says the right hand should be at forehead height or slightly above. The student's value is quite low compared to teacher median (0.333), but within p10_p90. Note T04 (0.126) and T09 (0.108) are also low. This is uncertain.
+
+**7. right_wrist_head_forward_torso_ratio:**
+- Student: 0.598
+- median_2mad: [0.462, 0.692] → within
+- p10_p90: [0.382, 0.644] → within
+- Both within. No issue.
+
+**8. right_wrist_head_right_torso_ratio:**
+- Student: 0.621
+- median_2mad: [0.308, 0.523] → 0.621 > 0.523 → above
+- p10_p90: [0.342, 0.599] → 0.621 > 0.599 → above
+- Both intervals say above. The right wrist is further to the right of the head than typical. The technique says the right hand should be at the right front of the head. Being too far right might indicate the arm is too extended laterally.
+
+**9. left_wrist_hip_distance_torso_ratio:**
+- Student: 0.538
+- median_2mad: [0.467, 0.731] → within
+- p10_p90: [0.472, 0.882] → within
+- Both within. No issue.
+
+Now let me think about findings:
+
+**Finding 1: Right knee insufficiently bent (supporting leg)**
+- right_knee_angle is above both intervals (137.67 vs upper bounds 120.55 and 125.37)
+- This is the supporting leg in 白鹤亮翅. The technique requires weight on right leg with proper knee bend.
+- The difference is substantial (~12-17° above upper bounds).
+- This is a clear possible_issue.
+
+**Finding 2: Left knee relatively straight**
+- left_knee_angle is above both intervals (163.51 vs upper bounds 163.49 and 159.29)
+- In 白鹤亮翅, the left leg is the virtual step. The left knee being very straight could be consistent with the virtual leg being extended, but it's above both reference ranges.
+- However, the margin above median_2mad is tiny (0.02°), and above p10_p90 by about 4°. The virtual leg in 白鹤亮翅 is supposed to be relatively extended with toe touching ground. Some teachers also have values around 155-161. This is borderline.
+- Actually, looking more carefully: the left knee at 163.5° is very close to straight (180°). In the virtual step, the left leg should be relatively straight but with some slight bend. The p10_p90 upper is 159.29, so the student is about 4° above. This could be a mild issue but the evidence is moderate.
+
+Let me reconsider: the left leg in 白鹤亮翅 is the virtual step - the foot touches ground lightly with the toe. The leg should be relatively extended but not completely locked. At 163.5°, it's quite straight. But the margin above median_2mad is negligible (0.02°). I'll note this as insufficient_evidence or a mild possible_issue.
+
+Actually, let me reconsider. The median_2mad upper is 163.49 and student is 163.51 - that's essentially on the boundary. The p10_p90 upper is 159.29, so it's about 4° above. The two intervals disagree slightly (one says barely above, the other says clearly above). Given that the virtual leg should have some natural bend, and the student's knee is very close to fully straight, this could be a mild issue. But the evidence is not strong enough for a definitive possible_issue. I'll mark it as insufficient_evidence.
+
+Wait, let me reconsider. Both intervals say "above" - median_2mad says above (barely), p10_p90 says above (by ~4°). The technique says the left foot touches ground with toe in a virtual step. A very straight left knee could indicate the leg is too stiff/locked. But it could also be a valid variation. I think this warrants insufficient_evidence given the borderline nature.
+
+**Finding 3: Right wrist position - too far right and possibly too low**
+- right_wrist_head_right_torso_ratio: above both intervals (0.621 vs 0.523 and 0.599)
+- right_wrist_head_up_torso_ratio: below median_2mad (0.147 vs 0.275) but within p10_p90 (0.147 within [0.125, 0.367])
+
+The right wrist being too far to the right is supported by both intervals. The height is uncertain (below median_2mad but within p10_p90). 
+
+The technique says "右手位于头部右前方" - right hand at the right front of the head. Being too far right could mean the arm is overextended laterally rather than being in front. Combined with the forward ratio being within range (0.598), the hand is forward but also quite far to the right.
+
+I think the right wrist being too far right is a possible_issue. The height issue is uncertain.
+
+Let me also consider whether the right knee and left knee issues can be combined. They relate to the same aspect - the stance. The right knee being too straight (insufficient bend on supporting leg) is the primary issue. The left knee being very straight is related but is about the virtual leg.
+
+Let me finalize:
+
+**P1: Right knee insufficiently bent (possible_issue)** - strong evidence, both intervals agree, substantial deviation.
+
+**P2: Right wrist too far to the right (possible_issue)** - both intervals agree, moderate deviation.
+
+**P3: Left knee very close to fully straight (insufficient_evidence)** - borderline in median_2mad, above in p10_p90, but the virtual leg is expected to be relatively straight.
+
+Actually, let me reconsider P3. The left knee at 163.5° is above both intervals. Even though the margin in median_2mad is tiny, the p10_p90 shows a clearer deviation. In 白鹤亮翅, the virtual leg should have some natural bend. A knee at 163.5° is very close to locked. I think this could be a possible_issue but with moderate evidence. Let me keep it as insufficient_evidence since the deviation is small and the virtual leg is supposed to be relatively extended.
+
+Wait, I need to reconsider. The instructions say "不要忽略区间内的指标" and "超出范围不自动等于动作错误". Let me be careful.
+
+For the left knee: the student value is above both intervals, but only barely above median_2mad. The technique says the left foot touches ground with toe (虚步). A relatively straight left knee is expected for the virtual leg. The question is whether 163.5° is too straight. Given that the teacher median is 151.3° and the student is at 163.5°, there's a 12° difference from the median. But the virtual leg can vary. I'll mark this as insufficient_evidence.
+
+Let me also think about whether the right knee issue and the stance are related. The right knee being too straight (137.67° vs teacher median 116.85°) suggests the student isn't sinking into the stance enough. This is a clear issue for the supporting leg.
+
+Final findings:
+1. P1: Right knee insufficiently bent - possible_issue
+2. P2: Right wrist too far to the right - possible_issue  
+3. P3: Left knee very straight / right wrist height uncertain - insufficient_evidence
+
+Actually, I should limit to 3 findings max. Let me prioritize:
+- P1 (right knee) is the strongest evidence
+- P2 (right wrist right) is also strong
+- P3 could be the left knee or the right wrist height
+
+I'll go with:
+- P1: Right knee insufficiently bent (possible_issue)
+- P2: Right wrist too far to the right (possible_issue)
+- P3: Left knee nearly straight (insufficient_evidence) - since the evidence is borderline
+
+Let me now construct the JSON.
+
+For metric_comparisons, I need to check each metric:
+
+1. left_knee_angle: student 163.51, median_2mad [139.07, 163.49], p10_p90 [142.73, 159.29]
+   - median_2mad: 163.51 > 163.49 → above
+   - p10_p90: 163.51 > 159.29 → above
+
+2. right_knee_angle: student 137.67, median_2mad [113.15, 120.55], p10_p90 [103.61, 125.37]
+   - median_2mad: 137.67 > 120.55 → above
+   - p10_p90: 137.67 > 125.37 → above
+
+3. left_elbow_angle: student 113.81, median_2mad [84.41, 131.99], p10_p90 [90.79, 119.19]
+   - median_2mad: within
+   - p10_p90: within
+
+4. right_elbow_angle: student 113.06, median_2mad [87.36, 140.67], p10_p90 [88.40, 125.48]
+   - median_2mad: within
+   - p10_p90: within
+
+5. stance_length_leg_ratio: student 0.504, median_2mad [0.486, 0.703], p10_p90 [0.444, 0.643]
+   - median_2mad: within
+   - p10_p90: within
+
+6. right_wrist_head_up_torso_ratio: student 0.147, median_2mad [0.275, 0.391], p10_p90 [0.125, 0.367]
+   - median_2mad: 0.147 < 0.275 → below
+   - p10_p90: 0.125 ≤ 0.147 ≤ 0.367 → within
+
+7. right_wrist_head_forward_torso_ratio: student 0.598, median_2mad [0.462, 0.692], p10_p90 [0.382, 0.644]
+   - median_2mad: within
+   - p10_p90: within
+
+8. right_wrist_head_right_torso_ratio: student 0.621, median_2mad [0.308, 0.523], p10_p90 [0.342, 0.599]
+   - median_2mad: 0.621 > 0.523 → above
+   - p10_p90: 0.621 > 0.599 → above
+
+9. left_wrist_hip_distance_torso_ratio: student 0.538, median_2mad [0.467, 0.731], p10_p90 [0.472, 0.882]
+   - median_2mad: within
+   - p10_p90: within
+
+Now let me write the final JSON. I need to be precise with the values from the input.
+
+Let me double-check the right_wrist_head_up_torso_ratio p10_p90: lower is 0.12457008680496355, upper is 0.36719441966640076. Student value is 0.1467412246536171. So 0.1246 ≤ 0.1467 ≤ 0.3672 → within. Correct.
+
+For the right_wrist_head_right_torso_ratio p10_p90: lower is 0.3418176380686599, upper is 0.5992249181861629. Student value is 0.6211495709744437. So 0.6211 > 0.5992 → above. Correct.
+
+Now for findings, let me think about what guidance to give:
+
+P1 (right knee): The supporting leg (right) should be more bent. In 白鹤亮翅, the weight is on the right leg, and the knee should have a natural bend to maintain stability and proper body mechanics. Guidance: 注意右腿（支撑腿）屈膝下沉，重心坐实于右腿，避免右膝过于伸直。
+
+P2 (right wrist too far right): The right hand should be at the right front of the head, not too far to the side. Guidance: 右手不宜过于偏向右侧，应保持于头部右前方，注意右肩松沉、肘部自然下坠，避免手臂过度外展。
+
+P3 (left knee): insufficient_evidence, guidance is null.
+
+Let me also think about whether to combine right knee and left knee into one finding about the stance. They are related but different aspects - one is the supporting leg, the other is the virtual leg. I'll keep them separate.
+
+Actually, I realize I should think more carefully about the right wrist height issue. The student's value (0.147) is below the median_2mad interval but within p10_p90. The technique says the right hand should be at forehead height or slightly above. The student's right wrist is only slightly above the head joint (0.147 torso lengths above). Most teachers have it around 0.33 torso lengths above. But two teachers (T04: 0.126, T09: 0.108) also have low values. The p10_p90 interval includes the student's value. This is genuinely uncertain. I could include this as part of the right wrist finding or as a separate insufficient_evidence finding.
+
+I think I'll mention the height uncertainty within the context of the right wrist finding or as a separate insufficient_evidence item. Since I can have at most 3 findings, let me structure:
+
+P1: Right knee insufficiently bent (possible_issue)
+P2: Right wrist too far to the right (possible_issue) - I can mention the height uncertainty here
+P3: Left knee nearly fully extended (insufficient_evidence)
+
+Actually, the right wrist height and right wrist lateral position are different aspects. Let me keep them separate if needed. But I only have 3 slots. Let me prioritize:
+
+P1: Right knee (strongest evidence, most important for the stance)
+P2: Right wrist lateral position (strong evidence from both intervals)
+P3: Left knee or right wrist height (insufficient_evidence)
+
+I'll go with left knee as P3 since it has a clearer (though borderline) deviation pattern.
+
+Let me finalize the JSON now.
+
+One more thought on the right wrist height: the instructions say "白鹤亮翅右手允许与额头同高或略高，不能仅因数值高于参考范围就要求降低右手。" This is about not requiring the hand to be lowered if it's too high. In this case, the hand might be too LOW, which is a different concern. But the p10_p90 interval includes the student's value, so I can't definitively say it's too low. I'll note this uncertainty.
+
+Let me also reconsider whether the right wrist being too far right could be related to the right wrist being too low. If the arm is more horizontal (lower), it might naturally extend further to the right. But I shouldn't speculate too much without direct evidence of this relationship.
+
+OK, let me write the final output now.
+
+Actually, I want to reconsider the left knee finding more carefully. The student's left knee is at 163.5°. The technique says "左脚稍向前移，脚尖点地成左虚步". In a virtual step, the front leg is relatively extended but not locked. The teacher median is 151.3°, with the p10_p90 upper at 159.3°. The student is at 163.5°, which is about 4° above the p10_p90 upper and essentially at the median_2mad upper (163.49). 
+
+The fact that the student's left knee is very close to fully straight (180°) could indicate the virtual leg is too stiff. However, the deviation is small and the virtual leg is supposed to be relatively extended. I'll keep this as insufficient_evidence.
+
+Let me now write the complete JSON.
+
+For the coach_summary, I need to summarize the findings in 2-4 sentences.
+
+Let me draft:
+"白鹤亮翅结束定势中，右腿（支撑腿）膝关节弯曲不足，明显偏直，建议加强右膝屈曲下沉以稳固重心。右手位置偏右，超出教师参考范围，注意将右手收于头部右前方而非过度外展。左膝接近完全伸直，但证据尚不充分，需结合实际情况判断。"
+
+That's 3 sentences. Good.
+
+Let me finalize everything now.
+</think>
+
+{
+  "case_id": "F015",
+  "metric_comparisons": [
+    {
+      "metric_id": "left_knee_angle",
+      "student_value": 163.50783743554652,
+      "median_2mad_interval": [139.0696980837238, 163.48972242224195],
+      "p10_p90_interval": [142.72940289883667, 159.29083246320675],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "right_knee_angle",
+      "student_value": 137.67087643678616,
+      "median_2mad_interval": [113.15264309199698, 120.54957925057705],
+      "p10_p90_interval": [103.60581749409936, 125.3653413569363],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_elbow_angle",
+      "student_value": 113.81033281307414,
+      "median_2mad_interval": [84.40932439940988, 131.99317920599427],
+      "p10_p90_interval": [90.79188276031573, 119.18911450130958],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_elbow_angle",
+      "student_value": 113.05845051097427,
+      "median_2mad_interval": [87.35540198794814, 140.67434271502094],
+      "p10_p90_interval": [88.39802311675798, 125.47864008176495],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "stance_length_leg_ratio",
+      "student_value": 0.5040689421731437,
+      "median_2mad_interval": [0.48558934112160823, 0.7027919060773035],
+      "p10_p90_interval": [0.4435180260564029, 0.6430743736689978],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_head_up_torso_ratio",
+      "student_value": 0.1467412246536171,
+      "median_2mad_interval": [0.27545474925691565, 0.39143907944408657],
+      "p10_p90_interval": [0.12457008680496355, 0.36719441966640076],
+      "median_2mad_relation": "below",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_head_forward_torso_ratio",
+      "student_value": 0.598013576205462,
+      "median_2mad_interval": [0.4619931165379132, 0.6916299458459092],
+      "p10_p90_interval": [0.3818376195553711, 0.6437304451077843],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    },
+    {
+      "metric_id": "right_wrist_head_right_torso_ratio",
+      "student_value": 0.6211495709744437,
+      "median_2mad_interval": [0.307726401900608, 0.5230964354479914],
+      "p10_p90_interval": [0.3418176380686599, 0.5992249181861629],
+      "median_2mad_relation": "above",
+      "p10_p90_relation": "above"
+    },
+    {
+      "metric_id": "left_wrist_hip_distance_torso_ratio",
+      "student_value": 0.5376208035029828,
+      "median_2mad_interval": [0.46672854544779685, 0.7305193236372488],
+      "p10_p90_interval": [0.4715067289619568, 0.8819103670078083],
+      "median_2mad_relation": "within",
+      "p10_p90_relation": "within"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "P1",
+      "assessment": "possible_issue",
+      "problem": "右腿（支撑腿）膝关节弯曲不足，定势时右膝偏直",
+      "evidence_metric_ids": ["right_knee_angle"],
+      "explanation": "学生右膝夹角为137.7°，高于median_2mad上界120.5°和p10_p90上界125.4°，两套区间一致显示偏大。教师中位数约116.9°，表明白鹤亮翅定势中支撑腿通常保持较明显的屈膝。学生右膝偏直提示重心下沉不够，可能影响下盘稳定性。",
+      "uncertainty": "无法排除个体腿长比例或重建误差的影响；仅凭膝角不能确定实际承重分布。",
+      "guidance": "定势时注意右腿屈膝松沉，重心坐实于右腿，体会右膝微屈、胯根内收的感觉，避免右腿过于挺直。"
+    },
+    {
+      "finding_id": "P2",
+      "assessment": "possible_issue",
+      "problem": "右手相对头部偏右过多，手臂可能过度外展",
+      "evidence_metric_ids": ["right_wrist_head_right_torso_ratio", "right_wrist_head_up_torso_ratio"],
+      "explanation": "右腕相对头关节的右方偏移为0.621倍躯干长，高于median_2mad上界0.523和p10_p90上界0.599，两套区间一致偏大，提示右手横向展开幅度超出教师常见范围。同时右腕相对头关节的上方偏移为0.147倍躯干长，低于median_2mad下界0.275，但仍在p10_p90区间[0.125, 0.367]内，高度是否偏低存在不确定性。要领要求右手位于头部右前方，掌心斜向左后方；过度偏右可能伴随右肩外展、肘部抬起。",
+      "uncertainty": "右腕高度在两套区间中判断不一致，无法确认是否偏低；SMPL腕关节位置与掌心实际位置存在差异。",
+      "guidance": "注意将右手收于头部右前方，不宜过度向右展开；保持右肩松沉、肘部自然下坠，右臂呈舒展弧形而非横向撑开。"
+    },
+    {
+      "finding_id": "P3",
+      "assessment": "insufficient_evidence",
+      "problem": "左膝接近完全伸直，虚步腿可能偏僵",
+      "evidence_metric_ids": ["left_knee_angle"],
+      "explanation": "学生左膝夹角为163.5°，略高于median_2mad上界163.5°（差距仅约0.02°），高于p10_p90上界159.3°约4°。白鹤亮翅中左腿为虚步，脚尖点地，腿部应相对舒展但保持自然微屈。学生数值接近180°（完全伸直），但偏差幅度较小，且虚步腿本身允许较伸展的姿态，尚不能确定是否构成动作问题。",
+      "uncertainty": "偏差幅度小，可能属于正常个体差异；无法从静态角度判断左腿是否真正放松。",
+      "guidance": null
+    }
+  ],
+  "coach_summary": "白鹤亮翅结束定势中，右腿（支撑腿）屈膝明显不足，建议加强右膝松沉、重心坐实。右手横向展开偏大，注意将右手收于头部右前方，保持右肩松沉、肘部自然下坠。左膝接近伸直但偏差较小，暂无充分证据判定为问题，可留意虚步腿是否保持自然微屈。"
+}
