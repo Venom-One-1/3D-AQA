@@ -72,7 +72,7 @@
 <text x="931" y="352.14" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="21" font-weight="700" fill="#172433"><tspan x="931" dy="0">对10个参考教学视频</tspan></text>
 <text x="931" y="384.78" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="400" fill="#627083"><tspan x="931" dy="0">查询同一动作阶段与同一指标</tspan></text>
 <rect x="770" y="414" width="322" height="152" rx="7" fill="#F2F7FB" stroke="#D8DEE7" stroke-width="1"/>
-<text x="792" y="444.78" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="700" fill="#326A95"><tspan x="792" dy="0">10个教师原始值</tspan></text>
+<text x="792" y="444.78" text-anchor="start" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="17" font-weight="700" fill="#326A95"><tspan x="792" dy="0">10个教师参考值</tspan></text>
 <circle cx="804" cy="500" r="8" fill="#4A7CA5"/>
 <text x="804" y="540.42" text-anchor="middle" font-family="Noto Sans CJK SC, Noto Sans CJK, sans-serif" font-size="13" font-weight="400" fill="#627083"><tspan x="804" dy="0">1</tspan></text>
 <circle cx="836" cy="486" r="8" fill="#4A7CA5"/>

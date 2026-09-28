@@ -115,7 +115,7 @@ def build() -> None:
     f.text(931, 345, "对10个参考教学视频", 21, bold=True)
     f.text(931, 379, "查询同一动作阶段与同一指标", 17, color=C["muted"])
     f.rect(770, 414, 322, 152, C["soft_blue"], C["line_light"], 1, 7)
-    f.text(792, 439, "10个教师原始值", 17, color=C["phase1"], bold=True, anchor="start")
+    f.text(792, 439, "10个教师参考值", 17, color=C["phase1"], bold=True, anchor="start")
     teacher_xs = [804, 836, 862, 889, 919, 947, 973, 1001, 1032, 1060]
     teacher_ys = [500, 486, 510, 492, 504, 480, 509, 490, 502, 484]
     for idx, (px, py) in enumerate(zip(teacher_xs, teacher_ys), start=1):
