@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0",
+  "move_id": 1,
+  "scope": "endpoint_geometry_only",
+  "queries": [
+    {
+      "query_id": "q_spine_lower_angle",
+      "operation": "joint_angle",
+      "points": ["Pelvis", "Spine1", "Spine2"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q_spine_upper_angle",
+      "operation": "joint_angle",
+      "points": ["Spine1", "Spine2", "Spine3"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q_spine_neck_angle",
+      "operation": "joint_angle",
+      "points": ["Spine2", "Spine3", "Neck"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q_knee_L_angle",
+      "operation": "joint_angle",
+      "points": ["L_Hip", "L_Knee", "L_Ankle"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q_knee_R_angle",
+      "operation": "joint_angle",
+      "points": ["R_Hip", "R_Knee", "R_Ankle"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q_lhand_pos",
+      "operation": "relative_position",
+      "points": ["L_Hand", "HipMidpoint"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q_rhand_pos",
+      "operation": "relative_position",
+      "points": ["R_Hand", "HipMidpoint"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q_lelbow_below",
+      "operation": "relative_position",
+      "points": ["L_Elbow", "L_Shoulder"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q_relbow_below",
+      "operation": "relative_position",
+      "points": ["R_Elbow", "R_Shoulder"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q_lelbow_knee_align",
+      "operation": "relative_position",
+      "points": ["L_Elbow", "L_Knee"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q_relbow_knee_align",
+      "operation": "relative_position",
+      "points": ["R_Elbow", "R_Knee"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    }
+  ],
+  "checks": [
+    {
+      "clause_id": "C01",
+      "support": "proxy",
+      "endpoint_interpretation": "可测量脊柱各段是否接近伸直（即不弯曲），作为"正"的几何表征；但"直"（相对重力竖直）无法在无重力参考系下验证。",
+      "evidence": [
+        {
+          "query_id": "q_spine_lower_angle",
+          "components": ["value"],
+          "purpose": "下段脊柱（骨盆-Spine1-Spine2）的伸直程度，反映躯干是否弯曲",
+          "expected_relation": "接近180°，表示该段脊柱无明显弯曲"
+        },
+        {
+          "query_id": "q_spine_upper_angle",
+          "components": ["value"],
+          "purpose": "中段脊柱（Spine1-Spine2-Spine3）的伸直程度",
+          "expected_relation": "接近180°，表示该段脊柱无明显弯曲"
+        },
+        {
+          "query_id": "q_spine_neck_angle",
+          "components": ["value"],
+          "purpose": "上段脊柱至颈部（Spine2-Spine3-Neck）的伸直程度",
+          "expected_relation": "接近180°，表示上体至颈部无明显前倾或后仰弯曲"
+        }
+      ],
+      "limitations": [
+        "torso_v1的up轴随躯干方向定义，无法判断躯干是否相对重力竖直",
+        "无重力参考系，不能区分躯干直立与整体前倾/后倾",
+        "仅能检测脊柱弯曲，不能检测整体倾斜"
+      ]
+    },
+    {
+      "clause_id": "C02",
+      "support": "proxy",
+      "endpoint_interpretation": "可测量双侧膝关节屈曲角度作为下蹲的几何结果；"松腰"（肌肉放松）和实际下蹲深度（需重力/地面参考）不可测。",
+      "evidence": [
+        {
+          "query_id": "q_knee_L_angle",
+          "components": ["value"],
+          "purpose": "左膝屈曲程度，反映左腿是否弯曲下蹲",
+          "expected_relation": "明显小于180°，表示左膝处于屈曲状态"
+        },
+        {
+          "query_id": "q_knee_R_angle",
+          "components": ["value"],
+          "purpose": "右膝屈曲程度，反映右腿是否弯曲下蹲",
+          "expected_relation": "明显小于180°，表示右膝处于屈曲状态"
+        }
+      ],
+      "limitations": [
+        "膝关节屈曲角度不能等同于实际下蹲深度（无地面/重力参考）",
+        ""松腰"涉及肌肉放松状态，无法从关节几何推断",
+        "膝弯曲不能推断哪条腿承重或重心转移"
+      ]
+    },
+    {
+      "clause_id": "C03",
+      "support": "proxy",
+      "endpoint_interpretation": "可测量双手相对髋部中点在躯干坐标系中的位置，判断是否处于腹前区域；但Hand关节非掌心，"轻轻"力度不可测，"下按"动作方向不可测。",
+      "evidence": [
+        {
+          "query_id": "q_lhand_pos",
+          "components": ["forward", "up"],
+          "purpose": "左手相对髋部中点的前方和上方分量，判断是否位于腹前",
+          "expected_relation": "forward分量为正（在身体前方），up分量适中（约在腹部高度，非过高或过低）"
+        },
+        {
+          "query_id": "q_rhand_pos",
+          "components": ["forward", "up"],
+          "purpose": "右手相对髋部中点的前方和上方分量，判断是否位于腹前",
+          "expected_relation": "forward分量为正（在身体前方），up分量适中（约在腹部高度，非过高或过低）"
+        }
+      ],
+      "limitations": [
+        "Hand关节点非掌心中心，位置存在偏差",
+        ""轻轻"为力度描述，无法从几何测量",
+        ""下按"为动作方向，端点姿态无法验证运动方向",
+        "torso_v1坐标系随躯干倾斜变化，若躯干前倾则forward并非真正的前方"
+      ]
+    },
+    {
+      "clause_id": "C04",
+      "support": "proxy",
+      "endpoint_interpretation": "可测量肘部相对肩部在躯干坐标系中的垂直位置，判断肘是否低于肩（下垂）；"松"（肌肉放松）不可测。",
+      "evidence": [
+        {
+          "query_id": "q_lelbow_below",
+          "components": ["up"],
+          "purpose": "左肘相对左肩的垂直分量，判断肘是否自然下垂",
+          "expected_relation": "up分量为负值，表示左肘位于左肩下方"
+        },
+        {
+          "query_id": "q_relbow_below",
+          "components": ["up"],
+          "purpose": "右肘相对右肩的垂直分量，判断肘是否自然下垂",
+          "expected_relation": "up分量为负值，表示右肘位于右肩下方"
+        }
+      ],
+      "limitations": [
+        ""松"为肌肉张力状态，无法从关节位置推断",
+        "仅能确认肘低于肩，不能区分主动下垂与被动悬挂",
+        "torso_v1的up轴随躯干方向，若躯干倾斜则"下方"含义改变"
+      ]
+    },
+    {
+      "clause_id": "C05",
+      "support": "direct",
+      "endpoint_interpretation": "直接测量肘与同侧膝在躯干坐标系中的上下对齐关系，验证"上下相对"的空间对应。",
+      "evidence": [
+        {
+          "query_id": "q_lelbow_knee_align",
+          "components": ["up", "forward", "right"],
+          "purpose": "左肘相对左膝的位置，验证肘在膝正上方且前后左右偏移小",
+          "expected_relation": "up分量为正（肘在膝上方），forward和right分量接近零（上下对齐）"
+        },
+        {
+          "query_id": "q_relbow_knee_align",
+          "components": ["up", "forward", "right"],
+          "purpose": "右肘相对右膝的位置，验证肘在膝正上方且前后左右偏移小",
+          "expected_relation": "up分量为正（肘在膝上方），forward和right分量接近零（上下对齐）"
+        }
+      ],
+      "limitations": [
+        "torso_v1坐标系非重力系，若躯干倾斜则"上下"非真正竖直方向",
+        "对齐精度受SMPL关节定位误差影响"
+      ]
+    },
+    {
+      "clause_id": "C06",
+      "support": "unsupported",
+      "endpoint_interpretation": "无法验证：Head关节非眼睛/前额位置，不能推断视线方向；无重力参考系不能判断"平"（水平）；无世界坐标前方参考不能判断"前方"。",
+      "evidence": [],
+      "limitations": [
+        "Head关节点位于颅底附近，非眼睛位置，不能推断注视方向",
+        "无重力参考系，无法判断视线是否水平",
+        "无世界坐标前方定义，无法判断是否朝前",
+        "即使头颈与脊柱对齐，也不能等同于平视前方"
+      ]
+    }
+  ]
+}

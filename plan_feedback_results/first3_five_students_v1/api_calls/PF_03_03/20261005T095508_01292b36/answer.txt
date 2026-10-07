@@ -1,0 +1,74 @@
+{
+  "case_id": "PF_03_03",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C10"],
+      "observation": "右手腕相对于头部明显偏右且偏后：右向分量 0.897 远超教师 P90（0.599），前向分量 0.101 远低于教师 P10（0.382）。要领要求"右手位于头部右前方"，当前几何表现更接近"右方"而非"右前方"。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_wrist_vs_head:right",
+          "student_value": 0.8973338430886351,
+          "teacher_median": 0.41541141867429976,
+          "p10": 0.3418176380686599,
+          "p90": 0.5992249181861629,
+          "direction": "above"
+        },
+        {
+          "evidence_id": "q_r_wrist_vs_head:forward",
+          "student_value": 0.10073948255478932,
+          "teacher_median": 0.5768115311919112,
+          "p10": 0.3818376195553711,
+          "p90": 0.6437304451077842,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "两项无警告、supported 的证据一致表明右手腕在躯干坐标系中相对头部过度外展（right 分量约为教师中位数的 2.2 倍），同时前向分量不足教师 P10 的三分之一。要领明确要求"右前方"，两个方向的偏差互相印证同一空间位置问题。无相反证据。",
+      "why_priority": "偏差幅度大（均超出 P10-P90 区间），证据无警告且 supported_claim_allowed=true，与要领文字直接对应，训练可操作性强。",
+      "training_guidance": "定势时检查右手是否已充分送到头部右前方而非仅停在右侧；可尝试在保持右肩松沉的前提下，将右前臂略向前送，使手腕投影落在额头前方偏右的位置，而非正侧方。",
+      "caveat": "Wrist 关节不等于掌心中心，Head 不等于额头；躯干坐标系 up 轴沿躯干而非重力方向，无法判断绝对高度或承重。",
+      "certainty": "supported"
+    },
+    {
+      "finding_id": "P2",
+      "priority": 2,
+      "clause_ids": ["C17"],
+      "observation": "左手腕相对于左髋的上方分量（0.063）和前向分量（0.149）均低于教师 P10（0.221 / 0.193），提示左手可能偏低且偏后，未充分"落于左胯前"。",
+      "evidence": [
+        {
+          "evidence_id": "q_l_wrist_vs_hip:up",
+          "student_value": 0.0628993971157608,
+          "teacher_median": 0.32392056137655,
+          "p10": 0.22075652500463894,
+          "p90": 0.6236719410069799,
+          "direction": "below"
+        },
+        {
+          "evidence_id": "q_l_wrist_vs_hip:forward",
+          "student_value": 0.14851404490054645,
+          "teacher_median": 0.35861423352498145,
+          "p10": 0.1932117201142341,
+          "p90": 0.5685684460366389,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "两项证据均显示学生左手腕在髋关节上方和前方的偏移量低于教师分布低端。要领要求"左手落于左胯前"，几何上对应手腕应在髋前方略上方。当前数值偏低可能反映左手下垂或回收。但两项证据均带有 window_spread 和 unstable_teacher_reference 警告，且 supported_claim_allowed=false，教师参考分布中有一位教师（BV1tk4y1r7Yr_p27）up 值异常高（1.253），可能拉高了中位数和区间。",
+      "why_priority": "偏差方向一致且幅度可观，与要领直接相关；但因稳定性警告和教师参考不稳定，优先级低于 P1，仅作观察建议。",
+      "training_guidance": "可留意定势时左手是否自然置于左胯前侧、指尖朝前，避免手臂完全下垂贴于体侧；若感觉左手位置已合适，则无需刻意调整。",
+      "caveat": "学生窗口内存在波动（window_min 0.017 至 window_max 0.171），教师参考中有一位极端值可能影响分布；Wrist≠掌心，Hip≠胯部精确位置；无法推断手掌朝向或是否放松。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C08"],
+      "reason": "两手间距（right 和 up 分量）偏大，但该偏差可由 P1（右手偏右）和 P2（左手偏低）共同解释，属于同一空间布局的衍生表现，不单独列出。且该证据带有 center_shift、window_spread、unstable_teacher_reference 警告，supported_claim_allowed=false。"
+    },
+    {
+      "clause_ids": ["C11"],
+      "reason": "右手腕相对头部的 up 分量（0.352）处于教师 P10-P90 区间内（0.125–0.367），未发现明显偏差。"
+    }
+  ],
+  "coach_summary": "本次测量最突出的观察是右手在定势时偏于头部正侧方而非右前方，建议在保持松肩坠肘的前提下将右前臂略向前送。左手位置可能略低于常见示范，但因测量稳定性有限，仅作为自我核验的参考，不必强行纠正。"
+}

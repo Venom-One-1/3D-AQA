@@ -200,16 +200,19 @@ def numbers_match(left,right):
     return isinstance(left,(float,int)) and not isinstance(left,bool) and math.isfinite(left) and abs(left-right)<=1e-6
 
 
-def validate_response(case, response):
+def validate_response(case, response, require_metric_comparisons=True):
     errors, checks = [], []
     if not isinstance(response,dict):
         return ["Response must be a JSON object"],[]
-    if set(response) != {"case_id","metric_comparisons","findings","coach_summary"}:
+    fields = {"case_id", "findings", "coach_summary"}
+    if require_metric_comparisons:
+        fields.add("metric_comparisons")
+    if set(response) != fields:
         errors.append("Response fields do not match requested schema")
     if response.get("case_id") != case["case_id"]:
         errors.append("case_id mismatch")
     metrics = {m["metric_id"]:m for m in case["metrics"]}
-    comparisons = response.get("metric_comparisons")
+    comparisons = response.get("metric_comparisons") if require_metric_comparisons else []
     if not isinstance(comparisons,list):
         comparisons=[];errors.append("metric_comparisons must be a list")
     seen = set()
@@ -231,7 +234,8 @@ def validate_response(case, response):
                 "numbers_correct":quote_ok})
             if actual!=expected or not quote_ok:
                 errors.append(f"Incorrect relation or numerical quote: {mid}/{method}")
-    if seen != set(metrics):errors.append("Missing metric comparisons: "+", ".join(sorted(set(metrics)-seen)))
+    if require_metric_comparisons and seen != set(metrics):
+        errors.append("Missing metric comparisons: "+", ".join(sorted(set(metrics)-seen)))
     findings=response.get("findings")
     if not isinstance(findings,list):findings=[];errors.append("findings must be a list")
     ids=set();possible=0
@@ -261,6 +265,9 @@ def validate_response(case, response):
 
 def validate(experiment, output):
     manifest=strict_json(experiment/"experiment_manifest.json")
+    require_comparisons = manifest.get("require_metric_comparisons", True)
+    if type(require_comparisons) is not bool:
+        raise ValueError("require_metric_comparisons must be boolean")
     if digest(experiment/"F_prompt.md")!=manifest["prompt_sha256"]:
         raise ValueError("Prompt changed; create a separate experiment")
     baseline_path=experiment/"evaluation/baseline_snapshot.json"
@@ -284,7 +291,7 @@ def validate(experiment, output):
         if not path.exists():missing.append(entry["case_id"]);continue
         received.append(entry["case_id"]);response_hashes[entry["case_id"]]=digest(path)
         try:
-            response=strict_json(path);issues,numeric=validate_response(case,response)
+            response=strict_json(path);issues,numeric=validate_response(case,response,require_comparisons)
         except (ValueError,TypeError) as exc:
             response={};issues=[str(exc)];numeric=[]
         checks.extend(numeric)
@@ -316,7 +323,8 @@ def validate(experiment, output):
     result={"status":"awaiting_responses" if not received else "partial" if missing else "responses_received_pending_manual_review",
         "submitted_count":len(received),"expected_case_count":len(manifest["cases"]),"missing_cases":missing,
         "automatic_errors":errors,"checked_relations":len(checks),
-        "expected_relations_for_submitted_cases":sum(2*c["metric_count"] for c in manifest["cases"] if c["case_id"] in received),
+        "require_metric_comparisons":require_comparisons,
+        "expected_relations_for_submitted_cases":sum(2*c["metric_count"] for c in manifest["cases"] if c["case_id"] in received) if require_comparisons else 0,
         "correct_relations":sum(c["relation_correct"] for c in checks),
         "correct_numerical_quotes":sum(c["numbers_correct"] for c in checks),
         "response_sha256":response_hashes,"diagnosis_accuracy":None,"manual_review_status":"pending"}

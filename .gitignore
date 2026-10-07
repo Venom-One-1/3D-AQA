@@ -103,9 +103,9 @@ temp/
 *.csv
 *.npz
 *.json
+!/prompt/check_plan_repair_policy_v1.json
 
 # Figures
 *.png
 *.jpg
 *.jpeg
-

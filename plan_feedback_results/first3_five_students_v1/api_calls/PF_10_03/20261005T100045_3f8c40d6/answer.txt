@@ -1,0 +1,66 @@
+{
+  "case_id": "PF_10_03",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C10"],
+      "observation": "学生右腕相对于头部的身体右向偏移明显大于教师分布，提示右手可能过于偏向右侧而非处于头部右前方的合理位置。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_wrist_vs_head:right",
+          "student_value": 0.621,
+          "teacher_median": 0.415,
+          "p10": 0.342,
+          "p90": 0.599,
+          "direction": "above"
+        },
+        {
+          "evidence_id": "q_r_wrist_vs_head:forward",
+          "student_value": 0.598,
+          "teacher_median": 0.577,
+          "p10": 0.382,
+          "p90": 0.644,
+          "direction": "within"
+        }
+      ],
+      "synthesis": "q_r_wrist_vs_head:right 测量 R_Wrist 减 Head 在身体右轴的分量（以躯干长度归一化）。学生值 0.621 超出 P90（0.599）且超出 median+2×MAD（0.523），十位教师中仅 BV1vShdzLEsn_p1（0.606）接近该值。同时 forward 分量 0.598 处于教师分布区间内，说明手在头前方这一维度正常，偏差集中在右向。要领要求'右手位于头部右前方'，过度右偏可能使手臂展开过大、偏离弧形棚劲的结构。无警告，数据稳定。",
+      "why_priority": "该指标无警告、两参考区间一致判定越界、偏差幅度相对教师离散度较大，且直接对应要领中右手空间位置的核心描述，训练可验证性强。",
+      "training_guidance": "定势时检查右手是否过度向右展开；可尝试将右腕略向头部方向收回，使右臂保持弧形而非直线外撑，同时保持肘部微屈、肩部松沉的感觉。",
+      "caveat": "Wrist 关节点非手掌中心，Head 非额头或头顶，实际手掌位置可能略有不同。测量基于躯干坐标系，无法判断肩关节是否紧张或手臂是否僵硬。",
+      "certainty": "supported"
+    },
+    {
+      "finding_id": "P2",
+      "priority": 2,
+      "clause_ids": ["C11"],
+      "observation": "学生右腕相对于头部的躯干上方偏移低于教师中位数及 median−2×MAD 区间，但仍在 P10–P90 范围内，提示右手高度可能略偏低。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_wrist_vs_head:up",
+          "student_value": 0.147,
+          "teacher_median": 0.333,
+          "p10": 0.125,
+          "p90": 0.367,
+          "direction": "within"
+        }
+      ],
+      "synthesis": "q_r_wrist_vs_head:up 测量 R_Wrist 减 Head 在躯干方向的分量。学生值 0.147 低于 median−2×MAD（0.275），但处于 P10（0.125）与 P90（0.367）之间。十位教师中有两位（an5qNCspzUw: 0.126, BV1svYmz6EFB_pNA: 0.108）低于学生值，说明低手位并非绝无仅有。要领要求'掌心中心大致与额头同高或略高'，但 Wrist≠掌心、Head≠额头，双重近似使解读不确定。两参考区间存在分歧（median_2mad 判 below，P10-P90 判 within），因此仅作为观察建议。",
+      "why_priority": "偏差幅度有限且处于 P10-P90 内，加上双重解剖近似和区间分歧，证据强度低于 P1，仅作为辅助观察。",
+      "training_guidance": "可留意定势时右手是否明显低于额头高度；若感觉手臂偏低，可尝试将右前臂略向上棚起，使掌心大致与额同高，但无需刻意抬高。",
+      "caveat": "Wrist 与掌心中心存在解剖偏差，Head 与额头亦有偏差，两者叠加使高度比较精度有限。区间分歧（interval_disagreement）表明该指标稳定性不足，不宜作为确定性纠正依据。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C08"],
+      "reason": "q_r_wrist_vs_l_wrist:right 学生值 1.172 超出 P90（1.090），但该偏差主要由右手过度右偏（已在 P1 中反映）所致，属于同一空间偏差的衍生表现，不再单独列出。q_r_wrist_vs_l_wrist:up 处于教师区间内，无异常。两项证据均带有 unstable_teacher_reference 或 interval_disagreement 警告，独立支撑力不足。"
+    },
+    {
+      "clause_ids": ["C17"],
+      "reason": "q_l_wrist_vs_hip 三个分量（right、up、forward）均处于教师 P10–P90 及 median±2×MAD 区间内，未发现明显偏差。参考分布存在 unstable_teacher_reference 警告（个别教师窗口波动大），但学生值本身无越界迹象，无需提出。"
+    }
+  ],
+  "coach_summary": "本次测量最值得关注的是右手在定势时可能过于向右侧展开，超出多数教师的参考范围，建议核验右臂是否保持弧形棚劲而非直线外撑。右手高度相对头部可能略偏低，但因测量近似和参考区间分歧，仅作为辅助观察，可在练习中留意掌心是否大致与额同高。左手位置和两手上下分开的整体幅度未见明显异常。"
+}

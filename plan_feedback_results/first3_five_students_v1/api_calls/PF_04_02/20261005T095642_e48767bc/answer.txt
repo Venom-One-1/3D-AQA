@@ -1,0 +1,83 @@
+{
+  "case_id": "PF_04_02",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C02"],
+      "observation": "左脚踝在躯干坐标系中的右向分量为 -0.472，明显低于教师 P10–P90 区间 [-0.342, -0.227]，表明左脚落点相对髋中心偏左幅度大于多数教师；前向分量 0.339 处于教师区间内，说明前方距离正常，但整体步幅方向偏侧向。",
+      "evidence": [
+        {
+          "evidence_id": "q_l_ankle_fwd:right",
+          "student_value": -0.472,
+          "teacher_median": -0.292,
+          "p10": -0.342,
+          "p90": -0.227,
+          "direction": "below"
+        },
+        {
+          "evidence_id": "q_l_ankle_fwd:forward",
+          "student_value": 0.339,
+          "teacher_median": 0.336,
+          "p10": 0.289,
+          "p90": 0.445,
+          "direction": "within"
+        }
+      ],
+      "synthesis": "relative_position 定义为 L_Ankle 减 HipMidpoint，right 为负表示偏左。学生 right 分量 -0.472 低于所有教师除 420p2gYFTa（-0.486）外的全部值，且低于 median−2MAD（-0.360）。forward 分量与教师中位数几乎一致，说明前方迈出距离正常，偏差集中在侧向。要领要求'向左前方迈出'，侧向比例偏大可能使弓步方向偏斜。无相反证据。",
+      "why_priority": "偏差幅度大（与中位数相差约 0.18 个腿长比例），两个区间均明确越界，且直接影响弓步方向和稳定性，训练可验证性强。",
+      "training_guidance": "可在练习时留意左脚落点是否过于偏向正左方；尝试将迈出方向调整为左前方约 30°–45°，使前向与侧向比例更均衡。可请同伴从正面观察膝盖与脚尖方向是否一致。",
+      "caveat": "Ankle 关节点非脚底实际接触点，躯干坐标系随转体变化，'左前方'的参考方向存在近似误差。一位教师（420p2gYFTa）数值接近学生，可能反映体型或风格差异。",
+      "certainty": "supported"
+    },
+    {
+      "finding_id": "P2",
+      "priority": 2,
+      "clause_ids": ["C05"],
+      "observation": "右膝无符号夹角为 155.447°，高于教师 P90（151.582°）及 median+2MAD（154.982°），提示右腿伸直程度超过多数教师。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_knee_angle:value",
+          "student_value": 155.447,
+          "teacher_median": 145.518,
+          "p10": 137.787,
+          "p90": 151.582,
+          "direction": "above"
+        }
+      ],
+      "synthesis": "joint_angle 为 R_Hip–R_Knee–R_Ankle 的无符号夹角，值越大表示腿越接近伸直。学生值超出所有教师（最高为 BV1tk4y1r7Yr_p27 的 153.306°），且超出 median+2MAD 上限。要领要求'自然蹬直'，暗示伸直但非锁死；学生数值偏高可能反映过度伸直或站姿几何差异。无相反证据。",
+      "why_priority": "虽偏差幅度不如 P1 显著，但涉及'自然'这一要领关键词，过度伸直可能影响膝关节舒适度和重心稳定，值得核验。",
+      "training_guidance": "定势时感受右腿是否完全锁死；若膝窝有挤压感，可微屈膝至感觉自然舒展即可，不必追求完全绷直。",
+      "caveat": "无符号夹角不区分过伸与正常伸直方向；'自然'程度无法从几何量化；个体腿长比例和髋关节角度差异可能影响绝对值比较。",
+      "certainty": "supported"
+    },
+    {
+      "finding_id": "P3",
+      "priority": 3,
+      "clause_ids": ["C08"],
+      "observation": "左腕相对 Head 的 up 分量为 -0.129（负值表示腕低于 Head），低于教师 P10（-0.116）及 median−2MAD（-0.089），提示左手高度可能偏低。",
+      "evidence": [
+        {
+          "evidence_id": "q_l_wrist_height:up",
+          "student_value": -0.129,
+          "teacher_median": -0.044,
+          "p10": -0.116,
+          "p90": -0.016,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "relative_position 为 L_Wrist 减 Head 在 torso_v1 up 方向的投影，除以躯干长度。学生值 -0.129 低于 P10，表明左腕相对头部位置偏低。要领要求'左手高与眼平'。但本项存在 unstable_teacher_reference 警告：教师 QxVvRcRn2TA 值为 -0.187（更低）且带 window_spread 警告，教师间离散度较大，参考分布稳定性不足。仍有观察价值，因为偏差方向与要领'高与眼平'一致，且学生值确实处于分布低端。",
+      "why_priority": "偏差存在但参考分布不稳定，且 Head≠眼睛、Wrist≠掌心，近似误差叠加，故置于第三位仅作核验建议。",
+      "training_guidance": "定势时自检左手是否大致与视线平齐；若感觉手臂偏低，可尝试将前臂微微上提至与眼同高，不必刻意追求精确。",
+      "caveat": "unstable_teacher_reference 警告表明教师参考分布波动较大；Head 关节点非眼睛位置，Wrist 非掌心，存在系统性近似偏差；supported_claim_allowed=false，本项仅为观察性提示。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C01", "C03", "C04", "C06", "C07", "C09", "C10", "C11", "C12", "C13"],
+      "reason": "C01/C06/C07/C10/C13 为 human_false_positive 已排除；C03/C04/C09/C11/C12 为 unsupported_at_endpoint，无可用测量证据。"
+    }
+  ],
+  "coach_summary": "本次测量显示左脚落点侧向偏移较明显，建议核验迈出方向是否过于偏左而非左前方；右腿伸直程度略高于教师群体，可留意是否有锁死感。左手高度可能略低于眼平，但参考分布稳定性不足，仅作自检参考。"
+}

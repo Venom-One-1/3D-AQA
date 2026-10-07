@@ -41,6 +41,66 @@ class ComparisonReviewTests(unittest.TestCase):
     def store(self):
         return ComparisonStore(self.exp, self.metric, self.state)
 
+    def ablation_fixture(self):
+        from test_f_group_experiment import fixture, answer
+        case = fixture()
+        case["technique"] = "technique"
+        response = answer(case)
+        response["findings"] = [{"finding_id": "P1", "assessment": "possible_issue",
+            "problem": "problem", "explanation": "evidence", "uncertainty": "limits",
+            "guidance": "guidance", "evidence_metric_ids": [case["metrics"][0]["metric_id"]]}]
+        other = self.root / "ablation"
+        for root in (self.exp, other):
+            for folder in ("inputs", "responses"):
+                (root / folder).mkdir(parents=True, exist_ok=True)
+            (root / "inputs/F001.json").write_text(json.dumps(case))
+            (root / "api_config.json").write_text(json.dumps({"model": "original" if root == self.exp else "snapshot"}))
+            (root / "F_prompt.md").write_text("prompt " + root.name)
+        (other / "experiment_manifest.json").write_bytes((self.exp / "experiment_manifest.json").read_bytes())
+        (self.exp / "responses/F001.json").write_text(json.dumps(response))
+        del response["metric_comparisons"]
+        (other / "responses/F001.json").write_text(json.dumps(response))
+        return other
+
+    def test_ablation_fresh_labels_separate_sources_and_export(self):
+        other = self.ablation_fixture()
+        original = self.store()
+        rid = "F001:F:finding:P1"
+        original.update_many([dict(record_id=rid, manual_verdict="correct")], 0)
+        before = self.state.read_bytes()
+        paired = ComparisonStore(self.exp, self.metric, ablation_root=other)
+        self.assertEqual(len(paired.records), 4)
+        self.assertEqual(set(r["source"] for r in paired.records.values()), {"F", "F_ablation"})
+        self.assertTrue(all(a["manual_verdict"] == "pending" for a in paired.annotations.values()))
+        self.assertEqual(paired.state_path, other / "ui_comparison/review_progress.json")
+        paired.update_many([dict(record_id=rid, manual_verdict="false_positive", notes="new review"),
+                            dict(record_id="F001:F_ablation:finding:P1", manual_verdict="correct")], 0)
+        restored = ComparisonStore(self.exp, self.metric, ablation_root=other)
+        self.assertEqual(restored.annotations[rid]["manual_verdict"], "false_positive")
+        rows = list(csv.DictReader(io.StringIO(restored.export_csv().decode("utf-8-sig"))))
+        self.assertEqual(len(rows), 4)
+        self.assertEqual(self.state.read_bytes(), before)
+        self.assertEqual(paired.client_payload()["mode"], "ablation")
+        (other / "responses/F001.json").write_text("{}")
+        with self.assertRaises(ValueError):
+            restored.update_many([dict(record_id=rid, manual_verdict="correct")], 1)
+
+    def test_ablation_rejects_mismatched_input_and_identity(self):
+        other = self.ablation_fixture()
+        path = other / "inputs/F001.json"
+        case = json.loads(path.read_text())
+        case["technique"] = "different"
+        path.write_text(json.dumps(case))
+        with self.assertRaisesRegex(ValueError, "input mismatch"):
+            ComparisonStore(self.exp, self.metric, ablation_root=other)
+        path.write_bytes((self.exp / "inputs/F001.json").read_bytes())
+        manifest_path = other / "experiment_manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["cases"][0]["student_id"] = "10"
+        manifest_path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, "identity mismatch"):
+            ComparisonStore(self.exp, self.metric, ablation_root=other)
+
     def test_live_responses_and_scope(self):
         store = self.store()
         self.assertEqual(len(store.records), 4)

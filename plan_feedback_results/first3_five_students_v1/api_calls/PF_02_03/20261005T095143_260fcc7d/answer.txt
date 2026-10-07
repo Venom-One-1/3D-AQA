@@ -1,0 +1,91 @@
+{
+  "case_id": "PF_02_03",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C11", "C08"],
+      "observation": "学生右手腕在躯干坐标系中位于头部下方（up 分量为负值），而十位教师均显示右手腕在头部上方，差异显著。两手之间的垂直间距也相应偏小，与右手偏低的判断一致。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_wrist_vs_head:up",
+          "student_value": -0.082,
+          "teacher_median": 0.333,
+          "p10": 0.125,
+          "p90": 0.367,
+          "direction": "below"
+        },
+        {
+          "evidence_id": "q_r_wrist_vs_l_wrist:up",
+          "student_value": 0.916,
+          "teacher_median": 1.279,
+          "p10": 0.953,
+          "p90": 1.394,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "q_r_wrist_vs_head:up 直接度量右手腕相对头部的躯干方向偏移，学生为 -0.082（即右手腕略低于头部参考点），教师中位数 0.333，最低教师也在 0.108 以上。该证据无稳定性警告且 supported_claim_allowed=true。q_r_wrist_vs_l_wrist:up 从两手垂直间距角度印证右手相对偏低（0.916 vs 教师中位数 1.279），但该证据有 unstable_teacher_reference 警告，仅作辅助。两项证据方向一致，无相反证据。",
+      "why_priority": "偏差幅度大（学生值与教师 P10 相差约 0.207 个躯干长度），主证据无警告且直接对应要领'掌心中心大致与额头同高或略高'，是本次最明确的几何差异。",
+      "training_guidance": "定势时核验右手是否已举至大约额头高度或略高。可在镜前慢速完成动作，确认右臂弧形上举终点位置；注意松肩坠肘，不必刻意抬高导致耸肩。",
+      "caveat": "Wrist 关节不等于掌心中心，Head 参考点不等于额头，两者叠加存在解剖近似偏差；但偏差幅度远超近似误差范围。torso_v1 的 up 轴沿躯干方向而非重力竖直，若躯干倾斜较大可能影响解读。",
+      "certainty": "supported"
+    },
+    {
+      "finding_id": "P2",
+      "priority": 2,
+      "clause_ids": ["C10"],
+      "observation": "学生右手腕相对头部的右向偏移（0.670）高于教师 P90（0.599），提示右手可能偏向头部右侧更远的位置；但中心帧值（0.592）落在 P10-P90 区间内，窗口内存在波动。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_wrist_vs_head:right",
+          "student_value": 0.670,
+          "teacher_median": 0.415,
+          "p10": 0.342,
+          "p90": 0.599,
+          "direction": "above"
+        }
+      ],
+      "synthesis": "要领要求'右手位于头部右前方'，right 分量反映右向偏移程度。学生窗口中位数 0.670 超出 P90，但中心帧值 0.592 处于区间内，且存在 center_shift、window_spread 和 center_direction_disagreement 警告，说明窗口内姿态有变化，中位数可能受少数帧拉高。无其他证据直接矛盾。",
+      "why_priority": "偏差存在但受窗口波动影响，中心帧值回归区间内，确定性低于 P1；仍值得留意右手是否过于偏侧而非保持在头右前方。",
+      "training_guidance": "可留意定势时右手是否在头部右前方而非过度偏向右侧；若感觉手臂过于外展，可微调肘部弧度使手掌回到额前偏右位置。",
+      "caveat": "窗口中位数与中心帧值不一致（差 0.079），存在 center_shift 和 window_spread 警告，不能排除定势前瞬间过渡帧的影响。supported_claim_allowed=false，仅为观察性提示。",
+      "certainty": "tentative"
+    },
+    {
+      "finding_id": "P3",
+      "priority": 3,
+      "clause_ids": ["C17"],
+      "observation": "学生左手腕相对左髋的前向偏移（0.140）低于教师 P10（0.193），提示左手可能更贴近髋部而非略置于其前方；但有一位教师（0.098）低于学生值，且参考分布标记为不稳定。",
+      "evidence": [
+        {
+          "evidence_id": "q_l_wrist_vs_hip:forward",
+          "student_value": 0.140,
+          "teacher_median": 0.359,
+          "p10": 0.193,
+          "p90": 0.569,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "要领要求'左手落于左胯前'，forward 分量反映左手相对髋部的前方程度。学生 0.140 低于 P10（0.193）和 median−2MAD（0.200），但教师 BV1vShdzLEsn_p1 值为 0.098 比学生更低，说明该位置在教师中并非不可能。参考分布标记 unstable_teacher_reference（一位教师 up 分量异常高导致 MAD 偏大），降低了参考区间的可靠性。",
+      "why_priority": "偏差幅度有限，存在教师个体低于学生，且参考不稳定，仅作为低优先级观察。",
+      "training_guidance": "可自查定势时左手是否自然置于左胯前方约一拳距离处，无需刻意前推；若已感觉在胯前则不必调整。",
+      "caveat": "unstable_teacher_reference 警告提示参考分布受个别教师异常值影响；'胯'的解剖位置与 L_Hip 关节存在偏差；Wrist 不等于手掌中心。supported_claim_allowed=false。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C10"],
+      "reason": "q_r_wrist_vs_head:forward 学生值 0.404 处于 P10-P90 区间内（0.382–0.644），未发现明显前方偏移不足，不单独提出。"
+    },
+    {
+      "clause_ids": ["C08"],
+      "reason": "q_r_wrist_vs_l_wrist:right 学生值 1.018 处于 P10-P90 区间内（0.686–1.090），两手水平分开程度无明显偏差；up 分量已合并入 P1。"
+    },
+    {
+      "clause_ids": ["C17"],
+      "reason": "q_l_wrist_vs_hip:up 学生值 0.277 处于 P10-P90 区间内（0.221–0.624），q_l_wrist_vs_hip:right 学生值 -0.235 虽略高于 P90（-0.255）但差距极小且有多项警告，均不单独提出。"
+    }
+  ],
+  "coach_summary": "本次最值得关注的是右手定势高度：几何测量显示右手腕位于头部参考点下方，与要领要求的'与额头同高或略高'存在明显差距，建议在镜前核验右臂上举终点。右手水平方向可能略偏外侧、左手前伸幅度可能略小，但这两项证据稳定性有限，仅作为辅助观察，不必强行纠正。"
+}

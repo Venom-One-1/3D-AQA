@@ -120,7 +120,7 @@ def run_case(entry, output, config, key, retries=2, retry_failed=False):
             return previous
     if answer_file.exists():
         raise ValueError(f"Untracked response exists; will not overwrite: {case_id}")
-    payload = request_payload(config, (output / "F_prompt.md").read_text(encoding="utf-8"),
+    payload = request_payload(config, (output / entry.get("prompt_file", "F_prompt.md")).read_text(encoding="utf-8"),
                               (output / entry["input_file"]).read_text(encoding="utf-8"))
     redact = lambda text: text.replace(key, "[REDACTED]")
     record = {"case_id": case_id, "status": "started",

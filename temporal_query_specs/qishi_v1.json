@@ -1,0 +1,215 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "qishi_temporal_keyposes_v1",
+  "video_id": "BV1WE411W7JB",
+  "move": {
+    "move_id": 1,
+    "move_name": "起势",
+    "start_seconds": 0.0,
+    "end_seconds": 16.0,
+    "technique": "两脚并拢自然直立，随后左脚向左慢慢开步，与肩同宽；两臂慢慢向前平举，两手高与肩平；随后两腿屈膝松腰下蹲，同时两掌轻轻下按至腹前。"
+  },
+  "execution": {
+    "smoothing_seconds": 0.2,
+    "derivative_window_seconds": 0.35,
+    "bridge_gap_seconds": 0.3,
+    "minimum_valid_ratio": 0.7,
+    "sensitivity_smoothing_seconds": [0.15, 0.2, 0.25],
+    "sensitivity_threshold_multipliers": [0.9, 1.0, 1.1]
+  },
+  "measurements": [
+    {
+      "query_id": "left_wrist_relative_pelvis",
+      "operation": "relative_position",
+      "points": ["L_Wrist", "Pelvis"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "right_wrist_relative_pelvis",
+      "operation": "relative_position",
+      "points": ["R_Wrist", "Pelvis"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "left_knee_angle",
+      "operation": "joint_angle",
+      "points": ["L_Hip", "L_Knee", "L_Ankle"]
+    },
+    {
+      "query_id": "right_knee_angle",
+      "operation": "joint_angle",
+      "points": ["R_Hip", "R_Knee", "R_Ankle"]
+    },
+    {
+      "query_id": "left_elbow_angle",
+      "operation": "joint_angle",
+      "points": ["L_Shoulder", "L_Elbow", "L_Wrist"]
+    },
+    {
+      "query_id": "right_elbow_angle",
+      "operation": "joint_angle",
+      "points": ["R_Shoulder", "R_Elbow", "R_Wrist"]
+    }
+  ],
+  "metrics": [
+    {
+      "metric_id": "mean_wrist_pelvis_up",
+      "sources": [
+        {"query_id": "left_wrist_relative_pelvis", "component": "up"},
+        {"query_id": "right_wrist_relative_pelvis", "component": "up"}
+      ],
+      "reduction": "mean",
+      "description": "双腕相对骨盆沿躯干 up 轴的平均归一化位置；up 不是重力竖直。"
+    },
+    {
+      "metric_id": "mean_wrist_pelvis_forward",
+      "sources": [
+        {"query_id": "left_wrist_relative_pelvis", "component": "forward"},
+        {"query_id": "right_wrist_relative_pelvis", "component": "forward"}
+      ],
+      "reduction": "mean",
+      "description": "双腕相对骨盆沿身体 forward 轴的平均归一化位置。"
+    },
+    {
+      "metric_id": "mean_knee_angle",
+      "sources": [
+        {"query_id": "left_knee_angle", "component": "value"},
+        {"query_id": "right_knee_angle", "component": "value"}
+      ],
+      "reduction": "mean",
+      "description": "左右膝无符号几何夹角的平均值；角度减小表示膝关节屈曲增加。"
+    },
+    {
+      "metric_id": "mean_elbow_angle",
+      "sources": [
+        {"query_id": "left_elbow_angle", "component": "value"},
+        {"query_id": "right_elbow_angle", "component": "value"}
+      ],
+      "reduction": "mean",
+      "description": "左右肘无符号几何夹角的平均值，仅作为手臂弯曲变化的辅助信号。"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "arms_raised_completion",
+      "label": "双臂前举完成阶段",
+      "technique": "两臂慢慢向前平举，两手高与肩平，宽与肩同，掌心向下。",
+      "query": {
+        "schema_version": "0.1",
+        "scope": "stable_window",
+        "search_region": {"unit": "move_progress", "start": 0.5, "end": 0.85},
+        "conditions": [
+          {
+            "condition_id": "wrists_high",
+            "metric_id": "mean_wrist_pelvis_up",
+            "signal": "value",
+            "aggregation": "instant",
+            "operator": "local_maximum",
+            "role": "required",
+            "min_duration_seconds": 0.25,
+            "score_threshold": 0.85,
+            "weight": 1.0
+          },
+          {
+            "condition_id": "wrists_forward",
+            "metric_id": "mean_wrist_pelvis_forward",
+            "signal": "value",
+            "aggregation": "instant",
+            "operator": "local_maximum",
+            "role": "required",
+            "min_duration_seconds": 0.25,
+            "score_threshold": 0.85,
+            "weight": 1.0
+          },
+          {
+            "condition_id": "vertical_motion_slow",
+            "metric_id": "mean_wrist_pelvis_up",
+            "signal": "velocity",
+            "aggregation": "instant",
+            "operator": "stable",
+            "role": "required",
+            "min_duration_seconds": 0.25,
+            "score_threshold": 0.6,
+            "weight": 0.75
+          }
+        ],
+        "temporal_relations": [],
+        "selection": {
+          "target": "window",
+          "strategy": "best_score",
+          "representative_frame": "max_score"
+        },
+        "rationale": "在起势后半段寻找双腕同时到达较高、较前位置且竖向变化趋缓的阶段。区间表示前举完成附近的阶段，不要求演练者静止。"
+      },
+      "after_event": null,
+      "terminal_extension": "none",
+      "auxiliary_reference_image": "/home/sqw/VisualSearch/aqa/FrameData/KeyPose/1_qishi/00017.jpg"
+    },
+    {
+      "event_id": "press_down_and_squat_transition",
+      "label": "屈膝按掌协同下降过程",
+      "technique": "两腿屈膝松腰下蹲，同时两掌轻轻下按至腹前。",
+      "query": {
+        "schema_version": "0.1",
+        "scope": "transition_interval",
+        "search_region": {"unit": "move_progress", "start": 0.65, "end": 1.0},
+        "conditions": [
+          {
+            "condition_id": "wrists_descending",
+            "metric_id": "mean_wrist_pelvis_up",
+            "signal": "velocity",
+            "aggregation": "instant",
+            "operator": "decreasing",
+            "role": "required",
+            "min_duration_seconds": 0.6,
+            "score_threshold": 0.12,
+            "weight": 1.0
+          },
+          {
+            "condition_id": "knees_flexing",
+            "metric_id": "mean_knee_angle",
+            "signal": "velocity",
+            "aggregation": "instant",
+            "operator": "decreasing",
+            "role": "required",
+            "min_duration_seconds": 0.6,
+            "score_threshold": 0.05,
+            "weight": 1.0
+          },
+          {
+            "condition_id": "elbows_softening",
+            "metric_id": "mean_elbow_angle",
+            "signal": "velocity",
+            "aggregation": "instant",
+            "operator": "decreasing",
+            "role": "supporting",
+            "min_duration_seconds": 0.3,
+            "score_threshold": 0.1,
+            "weight": 0.35
+          }
+        ],
+        "temporal_relations": [],
+        "selection": {
+          "target": "window",
+          "strategy": "longest_match",
+          "representative_frame": "end"
+        },
+        "rationale": "在前举完成以后寻找双腕持续下降且双膝夹角同步减小的最长区间。该动作是起势的末段过程，区间延续到已知招式结束边界，代表帧取过程末端。"
+      },
+      "after_event": {
+        "event_id": "arms_raised_completion",
+        "anchor": "representative",
+        "offset_seconds": 0.2
+      },
+      "terminal_extension": "move_end",
+      "auxiliary_reference_image": "/home/sqw/VisualSearch/aqa/FrameData/KeyPose/1_qishi/00021.jpg"
+    }
+  ],
+  "notes": [
+    "本计划由 Codex 综合完整起势动作要领设计，不是逐句强制映射。",
+    "KeyPose 图片只用于人工目视参考，不参与查询得分、候选区间或代表帧选择。",
+    "查询定位动作语义阶段，不按教师姿态相似度寻找最标准帧。"
+  ]
+}

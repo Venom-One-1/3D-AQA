@@ -1,0 +1,332 @@
+Let me analyze each clause carefully against the endpoint measurement capabilities.
+
+**C01 "上体微向左转"**: This is a transition/process description. At the endpoint, we can observe the torso's orientation relative to the lower body, but "微向左转" describes a rotational action. We can use relative_position of shoulders vs hips in torso_v1 to see if shoulders are rotated relative to hips, but torso_v1 follows the torso itself, so it can't measure torso rotation in world space. We can compare shoulder midpoint vs hip midpoint lateral offset as a proxy. Actually, torso_v1's "left" axis is derived from hips and shoulders combined, so it can't distinguish torso rotation from hip rotation. This is fundamentally unsupported for measuring "turn" at endpoint without a gravity/world frame.
+
+**C02 "左脚向左前方迈出"**: Transition/process. At endpoint, we can observe left foot is forward and to the left relative to the body. relative_position of L_Ankle vs R_Ankle in torso_v1 can show this.
+
+**C03 "脚跟先着地"**: Process (order of contact). Unsupported at endpoint.
+
+**C04 "随即脚掌踏实"**: Process/contact. Unsupported.
+
+**C05 "右腿自然蹬直"**: Endpoint: right leg relatively straight. joint_angle at R_Knee (R_Hip, R_Knee, R_Ankle) should be near 180.
+
+**C06 "成左弓步"**: Endpoint: left knee bent, right leg straight, left foot forward. Multiple queries.
+
+**C07 "两手随转体分别向左上、右下分开"**: The "随转体" part is process. At endpoint, left hand is upper-left, right hand is lower-right relative to torso. relative_position queries.
+
+**C08 "左手高与眼平"**: Left wrist approximately at head/eye height. relative_position L_Wrist vs Head in torso_v1, up component near zero.
+
+**C09 "掌心斜向上"**: Palm orientation unsupported.
+
+**C10 "右手落于右胯旁"**: Right wrist near right hip. relative_position R_Wrist vs R_Hip.
+
+**C11 "掌心向下"**: Palm orientation unsupported.
+
+**C12 "指尖向前"**: Finger direction unsupported.
+
+**C13 "眼看左手"**: Gaze direction unsupported. Head position relative to L_Wrist could be a very weak proxy but Head is not the eye.
+
+Let me design the queries:
+
+1. **q01**: relative_position L_Ankle vs R_Ankle in torso_v1 (for C02, C06)
+2. **q02**: joint_angle R_Hip, R_Knee, R_Ankle (for C05, C06)
+3. **q03**: joint_angle L_Hip, L_Knee, L_Ankle (for C06)
+4. **q04**: relative_position L_Wrist vs Head in torso_v1 (for C08)
+5. **q05**: relative_position L_Wrist vs ShoulderMidpoint in torso_v1 (for C07, C08)
+6. **q06**: relative_position R_Wrist vs R_Hip in torso_v1 (for C10)
+7. **q07**: relative_position R_Wrist vs ShoulderMidpoint in torso_v1 (for C07)
+8. **q08**: relative_position L_Wrist vs R_Wrist in torso_v1 (for C07 separation)
+9. **q09**: distance L_Ankle to R_Ankle normalized by average_leg_length (for C06 stance width)
+
+Let me refine and finalize.
+
+```json
+{
+  "schema_version": "1.0",
+  "move_id": 2,
+  "scope": "endpoint_geometry_only",
+  "queries": [
+    {
+      "query_id": "q01",
+      "operation": "relative_position",
+      "points": ["L_Ankle", "R_Ankle"],
+      "normalizer": "average_leg_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q02",
+      "operation": "joint_angle",
+      "points": ["R_Hip", "R_Knee", "R_Ankle"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q03",
+      "operation": "joint_angle",
+      "points": ["L_Hip", "L_Knee", "L_Ankle"],
+      "normalizer": null,
+      "coordinate_frame": null
+    },
+    {
+      "query_id": "q04",
+      "operation": "relative_position",
+      "points": ["L_Wrist", "Head"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q05",
+      "operation": "relative_position",
+      "points": ["L_Wrist", "ShoulderMidpoint"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q06",
+      "operation": "relative_position",
+      "points": ["R_Wrist", "R_Hip"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q07",
+      "operation": "relative_position",
+      "points": ["R_Wrist", "ShoulderMidpoint"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q08",
+      "operation": "relative_position",
+      "points": ["L_Wrist", "R_Wrist"],
+      "normalizer": "torso_length",
+      "coordinate_frame": "torso_v1"
+    },
+    {
+      "query_id": "q09",
+      "operation": "distance",
+      "points": ["L_Ankle", "R_Ankle"],
+      "normalizer": "average_leg_length",
+      "coordinate_frame": null
+    }
+  ],
+  "checks": [
+    {
+      "clause_id": "C01",
+      "support": "unsupported",
+      "endpoint_interpretation": "「上体微向左转」描述的是一个旋转过程。torso_v1坐标系本身随躯干旋转，无法在端点测量躯干相对于世界或下肢的绝对转向。没有可用的世界参考系或重力系来量化水平面内的躯干旋转角度。",
+      "evidence": [],
+      "limitations": [
+        "torso_v1的left轴由髋和肩混合定义，无法分离躯干相对于骨盆的水平旋转",
+        "无重力参考系或全局朝向数据，无法测量绝对转向",
+        "「微转」是过程描述，端点几何无法还原旋转量"
+      ]
+    },
+    {
+      "clause_id": "C02",
+      "support": "proxy",
+      "endpoint_interpretation": "「迈出」是过渡动作，端点仅能观察左脚相对于右脚在躯干坐标系中的前后和左右位置，作为迈出方向的间接证据。",
+      "evidence": [
+        {
+          "query_id": "q01",
+          "components": ["forward", "right"],
+          "purpose": "观察端点时左踝相对右踝在躯干坐标系中的前后和左右偏移，间接反映左脚向左前方迈出的结果",
+          "expected_relation": "forward分量为正值（左脚在右脚前方），right分量为负值（左脚在右脚左侧，即身体左方）"
+        }
+      ],
+      "limitations": [
+        "「迈出」是动态过程，端点仅反映最终位置而非运动轨迹",
+        "无法确认迈出方向是否严格为「左前方」而非其他方向",
+        "torso_v1坐标系随躯干变化，若躯干已旋转则前后左右含义随之改变"
+      ]
+    },
+    {
+      "clause_id": "C03",
+      "support": "unsupported",
+      "endpoint_interpretation": "「脚跟先着地」描述的是着地顺序（脚跟先于脚掌），这是一个时间序列上的接触过程，端点静态几何无法测量着地顺序或接触点。",
+      "evidence": [],
+      "limitations": [
+        "SMPL关节点不包含足底接触信息",
+        "着地顺序是时间过程，端点无法还原",
+        "Ankle关节点不代表脚跟或脚掌接触点"
+      ]
+    },
+    {
+      "clause_id": "C04",
+      "support": "unsupported",
+      "endpoint_interpretation": "「脚掌踏实」描述的是脚掌与地面的接触状态和承重过程，端点几何无法测量地面接触或实际承重。",
+      "evidence": [],
+      "limitations": [
+        "无地面接触力或接触面积数据",
+        "「踏实」涉及承重和肌肉控制，超出关节几何测量范围",
+        "actual_weight_bearing在工具中标记为不支持"
+      ]
+    },
+    {
+      "clause_id": "C05",
+      "support": "direct",
+      "endpoint_interpretation": "「右腿自然蹬直」在端点表现为右腿膝关节接近伸直状态，可通过右膝夹角直接测量。",
+      "evidence": [
+        {
+          "query_id": "q02",
+          "components": ["value"],
+          "purpose": "测量右腿在端点时的膝关节夹角，蹬直时该角度应接近180度（完全伸直）",
+          "expected_relation": "右膝夹角接近180度，表示右腿基本伸直"
+        }
+      ],
+      "limitations": [
+        "「自然」包含肌肉放松程度，几何无法测量",
+        "「蹬直」中的「蹬」暗示主动发力过程，端点仅能观察伸直结果",
+        "joint_angle是无符号几何夹角，不等同于临床膝关节伸展角度"
+      ]
+    },
+    {
+      "clause_id": "C06",
+      "support": "proxy",
+      "endpoint_interpretation": "「成左弓步」在端点表现为左膝弯曲、右腿伸直、左脚在前且两脚有一定前后距离的综合姿态。可分别测量左右膝角和两脚间距，但无法验证重心分配。",
+      "evidence": [
+        {
+          "query_id": "q03",
+          "components": ["value"],
+          "purpose": "测量左膝夹角，弓步时前腿（左腿）应明显弯曲，角度显著小于180度",
+          "expected_relation": "左膝夹角明显小于180度，表示左腿屈膝"
+        },
+        {
+          "query_id": "q02",
+          "components": ["value"],
+          "purpose": "测量右膝夹角，弓步时后腿（右腿）应接近伸直",
+          "expected_relation": "右膝夹角接近180度，表示右腿伸直"
+        },
+        {
+          "query_id": "q01",
+          "components": ["forward"],
+          "purpose": "测量左踝相对右踝的前后距离，弓步时前脚应在后脚前方",
+          "expected_relation": "forward分量为正值，表示左脚在右脚前方"
+        },
+        {
+          "query_id": "q09",
+          "components": ["value"],
+          "purpose": "测量两踝之间的总距离，弓步时两脚间应有较大的前后跨度",
+          "expected_relation": "两踝距离较大，反映弓步的步幅"
+        }
+      ],
+      "limitations": [
+        "弓步要求前腿承重、后腿蹬地，但actual_weight_bearing不可测量",
+        "无法验证重心是否落在前腿",
+        "torso_v1中的前后方向随躯干朝向变化，若躯干旋转则方向含义改变",
+        "无法验证步幅是否符合该动作的标准比例"
+      ]
+    },
+    {
+      "clause_id": "C07",
+      "support": "proxy",
+      "endpoint_interpretation": "「随转体」是过程描述，端点仅能观察两手在躯干坐标系中的分离位置：左手偏左上、右手偏右下。",
+      "evidence": [
+        {
+          "query_id": "q05",
+          "components": ["right", "up"],
+          "purpose": "测量左腕相对肩中点的位置，验证左手是否在身体左上方",
+          "expected_relation": "right分量为负值（左手在身体左侧），up分量为正值（左手在肩上方）"
+        },
+        {
+          "query_id": "q07",
+          "components": ["right", "up"],
+          "purpose": "测量右腕相对肩中点的位置，验证右手是否在身体右下方",
+          "expected_relation": "right分量为正值（右手在身体右侧），up分量为负值（右手在肩下方）"
+        },
+        {
+          "query_id": "q08",
+          "components": ["right", "up"],
+          "purpose": "测量两腕之间的相对位置差，验证两手是否形成左上右下的对角分离",
+          "expected_relation": "right分量为负值（左腕在右腕左侧），up分量为正值（左腕在右腕上方）"
+        }
+      ],
+      "limitations": [
+        "「随转体」是过程描述，端点无法验证分手是否由转体带动",
+        "torso_v1坐标系随躯干旋转，若躯干已左转则左右含义随之改变",
+        "无法验证分手的轨迹和时序"
+      ]
+    },
+    {
+      "clause_id": "C08",
+      "support": "proxy",
+      "endpoint_interpretation": "「左手高与眼平」在端点可通过左腕与头部的相对高度来近似。但Head关节点位于头顶附近而非眼睛位置，Wrist也不代表手掌中心，因此仅为近似。",
+      "evidence": [
+        {
+          "query_id": "q04",
+          "components": ["up"],
+          "purpose": "测量左腕相对头部的上下偏移，若左手与眼平则左腕应略低于Head（因Head在头顶，眼在Head下方）",
+          "expected_relation": "up分量为较小的负值或接近零，表示左腕高度接近头部（眼睛略低于Head点）"
+        }
+      ],
+      "limitations": [
+        "Head关节点不代表眼睛位置，实际眼睛在Head下方，因此存在系统性偏差",
+        "Wrist关节点不代表手掌中心，手掌展开时指尖可能高于腕关节",
+        "无法精确量化「与眼平」的容差范围"
+      ]
+    },
+    {
+      "clause_id": "C09",
+      "support": "unsupported",
+      "endpoint_interpretation": "「掌心斜向上」描述的是手掌朝向，属于掌面方向信息。SMPL-24关节点不包含手掌法向量或掌面朝向数据，palm_orientation在工具中标记为不支持。",
+      "evidence": [],
+      "limitations": [
+        "palm_orientation在工具不支持列表中",
+        "SMPL-24无手掌法向量或手指展开信息",
+        "无法从腕关节位置推断掌心朝向"
+      ]
+    },
+    {
+      "clause_id": "C10",
+      "support": "proxy",
+      "endpoint_interpretation": "「右手落于右胯旁」在端点可通过右腕与右髋的相对位置来近似。但「胯旁」是模糊的区域描述，且Wrist不代表手掌中心。",
+      "evidence": [
+        {
+          "query_id": "q06",
+          "components": ["right", "up", "forward"],
+          "purpose": "测量右腕相对右髋的位置偏移，验证右手是否在右髋附近",
+          "expected_relation": "各分量绝对值均较小，表示右腕在右髋附近；right分量可能为小正值（略偏外侧），up分量接近零或略负"
+        }
+      ],
+      "limitations": [
+        "「胯旁」是模糊区域，无精确定义",
+        "Wrist关节点不代表手掌中心，实际手掌位置可能有偏移",
+        "无法区分「落于」的过程与端点位置"
+      ]
+    },
+    {
+      "clause_id": "C11",
+      "support": "unsupported",
+      "endpoint_interpretation": "「掌心向下」描述的是手掌朝向，属于掌面方向信息。SMPL-24关节点不包含手掌法向量数据，palm_orientation在工具中标记为不支持。",
+      "evidence": [],
+      "limitations": [
+        "palm_orientation在工具不支持列表中",
+        "SMPL-24无手掌法向量信息",
+        "无法从腕关节位置推断掌心朝向"
+      ]
+    },
+    {
+      "clause_id": "C12",
+      "support": "unsupported",
+      "endpoint_interpretation": "「指尖向前」描述的是手指指向，SMPL-24关节点中无指尖或手指方向数据，无法测量。",
+      "evidence": [],
+      "limitations": [
+        "SMPL-24无指尖关节点",
+        "无法从腕关节位置推断手指指向",
+        "手指方向需要更精细的手部模型"
+      ]
+    },
+    {
+      "clause_id": "C13",
+      "support": "unsupported",
+      "endpoint_interpretation": "「眼看左手」描述的是视线方向（gaze），SMPL-24关节点不包含眼睛位置或视线方向数据。Head关节点位于头顶附近，不能代表眼睛位置或视线方向。",
+      "evidence": [],
+      "limitations": [
+        "SMPL-24无眼睛或视线方向数据",
+        "Head关节点不代表眼睛位置，不能推断注视方向",
+        "即使头部朝向左手方向，也不能确认视线是否看向左手"
+      ]
+    }
+  ]
+}
+```

@@ -38,6 +38,20 @@ def answer(case):
 
 
 class FGroupTests(unittest.TestCase):
+    def test_ablation_schema_keeps_old_default_and_evidence_checks(self):
+        case = fixture()
+        response = answer(case)
+        del response["metric_comparisons"]
+        self.assertTrue(validate_response(case, response)[0])
+        self.assertEqual(validate_response(case, response, False), ([], []))
+        response["findings"] = [{"finding_id": "P1", "assessment": "possible_issue",
+            "problem": "p", "explanation": "e", "uncertainty": "u", "guidance": "g",
+            "evidence_metric_ids": ["nonexistent"]}]
+        self.assertTrue(any("Invalid evidence" in e for e in validate_response(case, response, False)[0]))
+        response["findings"] = []
+        response["metric_comparisons"] = []
+        self.assertTrue(validate_response(case, response, False)[0])
+
     def test_case_is_whitelisted_complete_and_retains_all_teachers(self):
         case=fixture();text=json.dumps(case)
         self.assertEqual(len(case["metrics"]),9)
@@ -97,6 +111,17 @@ class FGroupTests(unittest.TestCase):
             self.assertEqual(result["correct_relations"],18)
             self.assertEqual(response.read_bytes(),raw)
             with self.assertRaises(FileExistsError):validate(root,root/"answered_check")
+            manifest = json.loads((root/"experiment_manifest.json").read_text())
+            manifest["require_metric_comparisons"] = False
+            write_json(root/"experiment_manifest.json", manifest)
+            ablated = answer(case)
+            del ablated["metric_comparisons"]
+            write_json(response, ablated)
+            result = validate(root, root/"ablation_check")
+            self.assertEqual(result["automatic_errors"], [])
+            self.assertEqual(result["expected_relations_for_submitted_cases"], 0)
+            self.assertEqual(result["checked_relations"], 0)
+            self.assertIsNone(result["diagnosis_accuracy"])
 
 
 if __name__=="__main__":

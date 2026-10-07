@@ -19,10 +19,14 @@ def read_json(path):
 
 
 class ComparisonStore:
-    def __init__(self, experiment_root, metric_root, state_path=None):
+    def __init__(self, experiment_root, metric_root, state_path=None, ablation_root=None):
         self.root = Path(experiment_root).resolve()
         self.metric_root = Path(metric_root).resolve()
-        self.state_path = Path(state_path) if state_path else self.root / "ui_review/review_progress.json"
+        self.ablation_root = Path(ablation_root).resolve() if ablation_root else None
+        self.mode = "ablation" if self.ablation_root else "baseline"
+        default_state = (self.ablation_root / "ui_comparison/review_progress.json" if self.ablation_root
+                         else self.root / "ui_review/review_progress.json")
+        self.state_path = Path(state_path) if state_path else default_state
         self.lock = RLock()
         self.revision = 0
         self.source_hashes = {}
@@ -35,6 +39,19 @@ class ComparisonStore:
             return read_json(path)
 
         manifest = load(self.root / "experiment_manifest.json")
+        ablation_entries = {}
+        self.models = {}
+        if self.ablation_root:
+            other_manifest = load(self.ablation_root / "experiment_manifest.json")
+            ablation_entries = {e["case_id"]: e for e in other_manifest["cases"]}
+            if not ablation_entries or len(ablation_entries) != len(other_manifest["cases"]):
+                raise ValueError("Empty or duplicate ablation cases")
+            original_ids = [e["case_id"] for e in manifest["cases"]]
+            if len(set(original_ids)) != len(original_ids) or not set(ablation_entries) <= set(original_ids):
+                raise ValueError("Ablation cases do not match original manifest")
+            for key, root in (("F", self.root), ("F_ablation", self.ablation_root)):
+                self.models[key] = load(root / "api_config.json")["model"]
+                self.source_hashes[str(root / "F_prompt.md")] = _sha256(root / "F_prompt.md")
         baseline = load(self.root / "evaluation/baseline_snapshot.json")
         reference = load(self.metric_root / "reference_manifest_snapshot.json")
         if reference["reference"]["video_id"] != "BV1WE411W7JB":
@@ -43,11 +60,27 @@ class ComparisonStore:
         seen = set()
         for entry in manifest["cases"]:
             cid, sid, mid = entry["case_id"], entry["student_id"], entry["move_id"]
+            if self.ablation_root and cid not in ablation_entries:
+                continue
             if cid in seen:
                 raise ValueError(f"Duplicate case: {cid}")
             seen.add(cid)
             source = load(self.root / entry["input_file"])
             response = load(self.root / entry["response_file"])
+            ablation_response = None
+            if self.ablation_root:
+                other = ablation_entries[cid]
+                if (other["student_id"], other["move_id"]) != (sid, mid):
+                    raise ValueError(f"Ablation identity mismatch: {cid}")
+                other_source = load(self.ablation_root / other["input_file"])
+                if other_source != source:
+                    raise ValueError(f"Ablation input mismatch: {cid}")
+                ablation_response = load(self.ablation_root / other["response_file"])
+                from run_f_group_experiment import validate_response
+                for answer, require_comparisons in ((response, True), (ablation_response, False)):
+                    issues, _ = validate_response(source, answer, require_comparisons)
+                    if issues:
+                        raise ValueError(f"Invalid paired response {cid}: {'; '.join(issues)}")
             if response.get("case_id") != cid or not isinstance(response.get("findings"), list):
                 raise ValueError(f"Invalid response case/findings: {cid}")
             if not isinstance(response.get("coach_summary"), str):
@@ -65,6 +98,8 @@ class ComparisonStore:
                     "reference_time": endpoints[mid]["boundary_time_seconds"],
                     "student_time": rows[0]["student_evidence"]["boundary_time_seconds"],
                     "images": {}, "record_ids": []}
+            if self.ablation_root:
+                case["ablation_response"] = ablation_response
             for role, path in {
                 "reference": self.metric_root / "figures" / f"{mid:02d}_reference.jpg",
                 "student": self.metric_root / "student" / sid / f"{mid:02d}_endpoint.jpg",
@@ -75,7 +110,12 @@ class ComparisonStore:
                 self.image_paths[token] = path
                 case["images"][role] = "/api/image/" + token
             self.add_record(case, "F", "coach_summary", "summary", response["coach_summary"])
-            self.add_record(case, "rule_baseline", "coach_summary", "summary", baseline_summary)
+            if self.ablation_root:
+                self.add_record(case, "F_ablation", "coach_summary", "summary", ablation_response["coach_summary"])
+                for finding in ablation_response["findings"]:
+                    self.add_record(case, "F_ablation", "finding", finding["finding_id"], finding)
+            else:
+                self.add_record(case, "rule_baseline", "coach_summary", "summary", baseline_summary)
             finding_ids = set()
             for finding in response["findings"]:
                 fid = finding.get("finding_id")
@@ -83,7 +123,7 @@ class ComparisonStore:
                     raise ValueError(f"Invalid or duplicate finding_id: {cid}")
                 finding_ids.add(fid)
                 self.add_record(case, "F", "finding", fid, finding)
-            for row in rows:
+            for row in ([] if self.ablation_root else rows):
                 if row["decision"] in ("feedback_candidate", "needs_review"):
                     self.add_record(case, "rule_baseline", "metric", row["record_id"], {
                         k: row[k] for k in ("metric_id", "metric_label_zh", "decision", "decision_zh",
@@ -147,6 +187,8 @@ class ComparisonStore:
     def client_payload(self):
         with self.lock:
             return {"cases": self.cases, "records": self.records,
+                    "mode": self.mode, "models": self.models,
+                    "export_filename": "f_group_ablation_review.csv" if self.ablation_root else "f_group_review.csv",
                     "annotations": copy.deepcopy(self.annotations), "revision": self.revision}
 
     def export_csv(self):

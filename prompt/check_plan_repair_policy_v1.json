@@ -1,0 +1,103 @@
+{
+  "version": "1.0",
+  "scope": "Reviewed exact serialization/reference/coordinate-contract corrections; not expert pose labels",
+  "cases": {
+    "M01_R02": {
+      "source_sha256": "8ef5b236169877662cf1ee6f0d08b1ad3fc2a2e5fbbfadbe516cee3a81fbb185",
+      "escape_literals": [
+        "可测量脊柱各段是否接近伸直（即不弯曲），作为\"正\"的几何表征；但\"直\"（相对重力竖直）无法在无重力参考系下验证。",
+        "可测量双侧膝关节屈曲角度作为下蹲的几何结果；\"松腰\"（肌肉放松）和实际下蹲深度（需重力/地面参考）不可测。",
+        "\"松腰\"涉及肌肉放松状态，无法从关节几何推断",
+        "可测量双手相对髋部中点在躯干坐标系中的位置，判断是否处于腹前区域；但Hand关节非掌心，\"轻轻\"力度不可测，\"下按\"动作方向不可测。",
+        "\"轻轻\"为力度描述，无法从几何测量",
+        "\"下按\"为动作方向，端点姿态无法验证运动方向",
+        "可测量肘部相对肩部在躯干坐标系中的垂直位置，判断肘是否低于肩（下垂）；\"松\"（肌肉放松）不可测。",
+        "\"松\"为肌肉张力状态，无法从关节位置推断",
+        "torso_v1的up轴随躯干方向，若躯干倾斜则\"下方\"含义改变",
+        "直接测量肘与同侧膝在躯干坐标系中的上下对齐关系，验证\"上下相对\"的空间对应。",
+        "torso_v1坐标系非重力系，若躯干倾斜则\"上下\"非真正竖直方向",
+        "无法验证：Head关节非眼睛/前额位置，不能推断视线方向；无重力参考系不能判断\"平\"（水平）；无世界坐标前方参考不能判断\"前方\"。"
+      ],
+      "semantic_warnings": ["仅修复文字序列化；脊柱共线是否能代理上体正直、Hand 与掌心的对应关系未得到语义确认。"]
+    },
+    "M02_R01": {
+      "source_sha256": "5abcca44d5db330b8e34a0705906b26e4535471c58469d82c538e803a6ff09e2",
+      "edits": [
+        {
+          "path": ["checks", 1, "evidence", 0, "components"],
+          "before": ["left", "forward"],
+          "after": ["right", "forward"],
+          "kind": "coordinate_contract_correction",
+          "reason": "工具仅返回 right/up/forward，left=-right；同时修正相应符号说明，不改变关节或相对位置定义。"
+        },
+        {
+          "path": ["checks", 1, "evidence", 0, "purpose"],
+          "before": "左踝相对髋中点在torso_v1坐标系中的左方和前方分量可反映左脚是否迈向左前方",
+          "after": "左踝相对髋中点在torso_v1坐标系中的right和forward分量可描述左前方的位置关系；向左对应right为负。",
+          "kind": "coordinate_contract_correction",
+          "reason": "说明实际返回的分量及其符号；静态位置不能验证迈步过程。"
+        },
+        {
+          "path": ["checks", 1, "evidence", 0, "expected_relation"],
+          "before": "left分量为正值（左脚在身体左侧），forward分量为正值（左脚在身体前方）",
+          "after": "right分量为负值（左脚在身体左侧），forward分量为正值（左脚在身体前方）",
+          "kind": "coordinate_contract_correction",
+          "reason": "同一几何关系的等价表达：left>0 当且仅当 right<0。"
+        },
+        {
+          "path": ["checks", 6, "evidence", 0, "components"],
+          "before": ["left", "up"],
+          "after": ["right", "up"],
+          "kind": "coordinate_contract_correction",
+          "reason": "工具仅返回 right/up/forward，left=-right；不交换关节左右。"
+        },
+        {
+          "path": ["checks", 6, "evidence", 0, "expected_relation"],
+          "before": "left分量为正值（左手在左侧），up分量为正值（左手在肩上方或附近）",
+          "after": "right分量为负值（左手在左侧），up分量为正值（左手在肩上方或附近）",
+          "kind": "coordinate_contract_correction",
+          "reason": "同步反转符号，保留原来的左侧关系及其他几何描述。"
+        }
+      ],
+      "semantic_warnings": ["只统一坐标分量表达，不确认手高、步幅、自然蹬直等动作解释或代理指标的有效性。"]
+    },
+    "M03_R01": {
+      "source_sha256": "d923cf91aa21dde74d36b873f045bc19af0d5afa1dc65d0df36f24f795605bac",
+      "edits": [
+        {
+          "path": ["checks", 2, "evidence", 0, "expected_relation"],
+          "before": "骨盆在right分量上偏向右脚方向（即right分量为负值，因为骨盆偏向右脚意味着骨盆在踝中点的右侧），表明重心偏右",
+          "after": "骨盆在right分量上偏向右脚方向（即right分量为正值，因为骨盆偏向右脚意味着骨盆在踝中点的右侧），表明重心偏右",
+          "kind": "coordinate_sign_contradiction",
+          "reason": "仅纠正字面右侧与right<0的自相矛盾；target=Pelvis、origin=AnkleMidpoint，所以身体坐标右侧是right>0。关于重心的推断仍需语义复核。"
+        }
+      ],
+      "semantic_warnings": [
+        "C03 用骨盆偏移、膝角推断重心或承重，不能视为已证实的受力结论；本轮仅执行几何测量。",
+        "C15 对微屈引入了大于90度的范围，未获得教师数据或专家验证，不应执行为质量阈值。",
+        "C15 用手腕相对肩的高度解释肘部下坠，证据并未直接测量肘部位置。",
+        "Wrist/Head/Hand 等代理点的支持等级和要领关联仍待语义复核。"
+      ]
+    },
+    "M03_R02": {
+      "source_sha256": "18f934f460a6a9f43625fcb91c159ae5067a894f59482c7fdfa2b7a7e070a300",
+      "edits": [
+        {
+          "path": ["checks", 13, "evidence", 0, "query_id"],
+          "before": "q_r_shoulder_vs_pelvis_pos",
+          "after": "q_r_shoulder_vs_pelvis_up",
+          "target_query": {
+            "query_id": "q_r_shoulder_vs_pelvis_up",
+            "operation": "relative_position",
+            "points": ["R_Shoulder", "Pelvis"],
+            "normalizer": "torso_length",
+            "coordinate_frame": "torso_v1"
+          },
+          "kind": "reviewed_reference_correction",
+          "reason": "C14明示右肩相对骨盆的up分量，且定义列表中有唯一匹配的关节顺序、坐标系和尺度；依据测量含义确认，不使用名称模糊匹配。"
+        }
+      ],
+      "semantic_warnings": ["修复引用并移除未使用查询，不代表肩部高度可以可靠判定松沉，也不补写被遗漏的检查。"]
+    }
+  }
+}

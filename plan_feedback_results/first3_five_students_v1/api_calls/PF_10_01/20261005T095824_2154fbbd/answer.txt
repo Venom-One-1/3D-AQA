@@ -1,0 +1,39 @@
+Let me analyze the evidence systematically.
+
+**C01 - 上体保持正直 (spine angles)**
+
+1. `q_spine_mid_angle:value`: Student 166.294°, teacher median 155.780°, P10-P90 [152.214, 157.880]. Student is above both intervals. No warnings, usable, supported_claim_allowed=true. The student's spine mid angle is notably larger (straighter/less flexed) than all teachers.
+
+2. `q_spine_neck_angle:value`: Student 156.859°, teacher median 142.912°, P10-P90 [141.790, 147.481]. Student is above both intervals. Warning: `unstable_teacher_reference` (one teacher BV1svYmz6EFB_pNA has center_shift and window_spread). supported_claim_allowed=false. Must use tentative.
+
+Both spine angles are consistently above teacher ranges, suggesting the student's spine segments are straighter (less flexed) than teachers. These two measures are complementary (mid-spine and upper spine/neck), so they should be merged into one finding.
+
+**C02 - 两腿屈膝松腰下蹲 (knee angles)**
+
+1. `q_knee_L_angle:value`: Student 131.079°, teacher median 120.288°, P10-P90 [113.798, 131.626]. Student is within both intervals. No issue.
+
+2. `q_knee_R_angle:value`: Student 125.307°, teacher median 117.692°, P10-P90 [106.099, 119.153]. Student is above both intervals. No warnings, usable, supported_claim_allowed=true. Right knee angle is larger (less flexed) than teacher range.
+
+Left knee is within range but right knee is above. This asymmetry is noteworthy.
+
+**C03 - 两掌轻轻下按至腹前 (wrist positions)**
+
+1. `q_wrist_L_rel_pelvis:up`: Student 0.094, within P10-P90 [0.035, 0.295]. No issue.
+2. `q_wrist_L_rel_pelvis:forward`: Student 0.115, below P10-P90 [0.220, 0.488]. Warning: `unstable_teacher_reference`. supported_claim_allowed=false.
+3. `q_wrist_R_rel_pelvis:up`: Student 0.105, within P10-P90 [0.008, 0.257]. No issue.
+4. `q_wrist_R_rel_pelvis:forward`: Student 0.152, below P10-P90 [0.204, 0.389]. Warning: `unstable_teacher_reference`. supported_claim_allowed=false.
+
+Both forward components are below teacher ranges, suggesting hands are closer to the body (less forward from pelvis) than teachers. Both have unstable_teacher_reference warnings. These should be merged into one finding.
+
+**Priority ranking:**
+1. C01 spine angles: Both measures consistently above, one without warnings. Clear pattern of straighter spine. Directly relates to "上体保持正直" - though the measurement only shows inter-segment collinearity, not gravity-vertical alignment.
+2. C03 wrist forward: Both hands less forward than teachers, consistent pattern, but unstable reference. Relates to "两掌轻轻下按至腹前".
+3. C02 right knee: Above range, but left knee is within. Asymmetry is notable but less clear-cut.
+
+Let me finalize:
+
+- P1: C01 spine (merged mid + neck angles) - supported for mid, tentative for neck
+- P2: C03 wrist forward (merged L+R) - tentative due to unstable reference
+- P3: C02 right knee - supported
+
+{"case_id":"PF_10_01","findings":[{"finding_id":"P1","priority":1,"clause_ids":["C01"],"observation":"学生脊柱中段角（Spine1-Spine2-Spine3）为166.294°，上段角（Spine2-Spine3-Neck）为156.859°，均高于教师分布区间，提示脊柱节段间共线性偏高、弯曲程度偏小。","evidence":[{"evidence_id":"q_spine_mid_angle:value","student_value":166.293946442036,"teacher_median":155.77953394303572,"p10":152.21417649598627,"p90":157.87954536706232,"direction":"above"},{"evidence_id":"q_spine_neck_angle:value","student_value":156.85946975691002,"teacher_median":142.91188969048005,"p10":141.79011680481642,"p90":147.48075642020137,"direction":"above"}],"synthesis":"两项脊柱角度测量分别反映中段和上段的节段间夹角。学生两项均明显高于全部十位教师值，方向一致，表明脊柱整体弯曲程度偏小、节段间更接近共线。要领要求'上体保持正直'，但当前测量仅能评估节段共线性，无法判断躯干相对重力是否竖直。q_spine_neck_angle存在unstable_teacher_reference警告（一位教师窗口波动较大），但其余九位教师值仍远低于学生，整体趋势一致。","why_priority":"两项独立测量方向一致且偏差幅度较大（中段角超出P90约8.4°，上段角超出P90约9.4°），与要领'上体保持正直'直接相关，是本次最显著的几何差异。","training_guidance":"可在练习时留意脊柱是否保持了自然的生理弧度，避免过度挺腰或刻意绷直。可请老师从侧面观察躯干是否自然中正，而非仅凭自我感觉判断是否'正直'。","caveat":"脊柱节段角仅反映局部共线性，不能判断躯干相对重力方向是否竖直，也不能区分前倾、后仰或侧倾。q_spine_neck_angle的教师参考存在一位教师窗口波动，但该教师窗口中位数仍在教师正常范围内，不影响整体趋势判断。","certainty":"tentative"},{"finding_id":"P2","priority":2,"clause_ids":["C03"],"observation":"学生左右手腕相对骨盆的前向分量（forward）分别为0.115和0.152，均低于教师P10-P90区间，提示双手在体前方向上偏靠近躯干。","evidence":[{"evidence_id":"q_wrist_L_rel_pelvis:forward","student_value":0.11459648895550999,"teacher_median":0.29814998176391194,"p10":0.22040066825114668,"p90":0.4882776222734058,"direction":"below"},{"evidence_id":"q_wrist_R_rel_pelvis:forward","student_value":0.15169233512298896,"teacher_median":0.2856980564230073,"p10":0.20359705631740596,"p90":0.3888777653181064,"direction":"below"}],"synthesis":"左右手腕的前向分量均低于教师P10，方向一致，提示双手在腹前的位置可能偏贴近身体。要领要求'两掌轻轻下按至腹前'，前向分量偏低可能意味着手掌尚未充分前伸至腹前适当距离。但两项证据均标记unstable_teacher_reference（各有教师存在center_shift或window_spread），且教师间前向分量本身离散度较大（P10-P90跨度约0.27和0.19），参考分布的稳定性有限。上下方向（up分量）均在教师区间内，未见异常。","why_priority":"左右两侧方向一致且均低于P10，与要领'下按至腹前'直接相关；但因教师参考不稳定，置信度受限，排在P1之后。","training_guidance":"可核验定势时双手是否已自然前伸至腹前适当距离，掌心是否朝向下方。可对照示范视频观察手掌与腹部之间的前后距离，确认是否因手臂回收过多导致手掌偏贴近身体。","caveat":"Wrist关节点非掌心中心，位置存在近似偏差。教师参考分布标记不稳定，部分教师存在窗口波动或中心帧偏移，参考区间的可靠性有限。'轻轻'为力度描述，无法从几何推断。前向分量低也可能与躯干前倾角度差异有关，不能单独归因于手臂位置。","certainty":"tentative"},{"finding_id":"P3","priority":3,"clause_ids":["C02"],"observation":"学生右膝角为125.307°，高于教师P10-P90区间（P90为119.153°），提示右膝屈曲程度可能偏小；左膝角131.079°在教师区间内。","evidence":[{"evidence_id":"q_knee_R_angle:value","student_value":125.3068560789486,"teacher_median":117.69246360532931,"p10":106.0991453493265,"p90":119.1530188360103,"direction":"above"},{"evidence_id":"q_knee_L_angle:value","student_value":131.0788721501911,"teacher_median":120.28828162768386,"p10":113.79830878486246,"p90":131.62556147574506,"direction":"within"}],"synthesis":"右膝角超出教师P90约6.2°，而左膝角处于教师区间上端附近。两侧均偏大但右膝更明显超出区间，可能存在左右不对称或整体下蹲深度偏浅的倾向。要领要求'两腿屈膝松腰下蹲'，膝角偏大可能对应下蹲深度不足。但左膝在区间内，且教师间膝角离散度较大（左膝P10-P90跨度约17.8°，右膝约13.1°），个体差异显著。","why_priority":"右膝超出区间幅度适中，且与左膝形成不对称，值得关注但偏差幅度不如P1显著，且教师分布本身较宽，排在第三位。","training_guidance":"可留意下蹲时两膝是否均匀弯曲，右膝是否充分屈曲。可尝试在保持上体中正的前提下略微加深下蹲幅度，观察右膝角度是否接近教师常见范围。不必强求某一具体角度。","caveat":"膝关节角为几何夹角，不能推断实际承重比例、重心分配或'松腰'状态。下蹲绝对深度需要地面参考，当前工具不支持。教师间膝角离散度较大，区间外不一定代表错误。","certainty":"supported"}],"not_selected":[{"clause_ids":["C04"],"reason":"该条款因human_false_positive被排除，不纳入检查。"},{"clause_ids":["C05"],"reason":"该条款因human_false_positive被排除，不纳入检查。"},{"clause_ids":["C06"],"reason":"该条款因unsupported_at_endpoint被排除，眼平视前方无法从端点几何推断。"}],"coach_summary":"本次测量显示脊柱节段间角度偏大，提示躯干可能偏于绷直，建议在保持中正的同时留意脊柱自然弧度。双手前向分量偏低，可核验手掌是否已充分前伸至腹前适当位置。右膝屈曲程度可能略浅于教师常见范围，可留意下蹲时两膝是否均匀弯曲。以上均为几何测量层面的观察，建议结合老师现场指导进一步确认。"}

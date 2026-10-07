@@ -1,0 +1,45 @@
+{
+  "case_id": "PF_01_03",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C17"],
+      "observation": "左手腕相对于左髋的前方分量（0.187）略低于教师 P10（0.193），提示左手在左胯前方的位置可能稍偏后，但差距极小（约 0.006 躯干长度比），且有一位教师值为 0.098，远低于学生。",
+      "evidence": [
+        {
+          "evidence_id": "q_l_wrist_vs_hip:forward",
+          "student_value": 0.1867729543373946,
+          "teacher_median": 0.35861423352498145,
+          "p10": 0.1932117201142341,
+          "p90": 0.5685684460366389,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "要领要求'左手落于左胯前'，forward 分量直接对应'前'的程度。学生值 0.187 低于 P10（0.193）和 median−2MAD 下界（0.200），两个区间均判定 below。但差距仅约 0.006，且教师 BV1vShdzLEsn_p1 的值为 0.098，说明教师间本身存在较大变异。参考分布标记为 unstable_teacher_reference，supported_claim_allowed 为 false，因此本条仅为极初步的观察提示，不构成明确错误判断。",
+      "why_priority": "这是本案例中唯一在两个参考区间均显示方向一致偏离的证据，且直接对应要领中'左胯前'的空间要求。尽管偏差极小，仍可作为自我核验的线索。其余检查项均在教师分布范围内。",
+      "training_guidance": "可在定势时留意左手是否自然置于左胯前方，不必刻意前推；若感觉左手贴近胯侧或略偏后，可尝试在放松状态下将左掌稍向前送，以舒适自然为度。",
+      "caveat": "偏差仅 0.006（躯干长度比），极为边际；教师参考分布标记为不稳定（unstable_teacher_reference），且有一位教师值远低于学生；Wrist 不等于掌心，Hip 不等于'胯'的精确解剖位置；无法推断手掌朝向或是否真正放松。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C10"],
+      "reason": "右手相对头部的 right（0.417）和 forward（0.604）均在教师 P10-P90 及 median±2MAD 范围内，与要领'右手位于头部右前方'一致，未发现偏差。"
+    },
+    {
+      "clause_ids": ["C11"],
+      "reason": "右手腕相对头部的 up 分量（0.336）与教师中位数（0.333）几乎一致，在两个参考区间内，未发现高度偏差。"
+    },
+    {
+      "clause_ids": ["C08"],
+      "reason": "两手腕间 right（0.775）和 up（1.327）均在教师分布范围内；虽标记 unstable_teacher_reference，但学生值接近中位数，无可观察的分离不足或过度。"
+    },
+    {
+      "clause_ids": ["C17"],
+      "reason": "q_l_wrist_vs_hip:right 学生值 −0.249 仅比 P90（−0.255）高 0.006，且存在 interval_disagreement 与 center_direction_disagreement，偏差过于边际，不单独列出。q_l_wrist_vs_hip:up（0.270）在范围内。"
+    }
+  ],
+  "coach_summary": "本次测量中，学生白鹤亮翅定势的右手位置、高度及两手分开幅度均与教师分布吻合。唯一可留意之处是左手相对左胯的前方位置可能略偏后，但差距极小且教师参考本身不稳定，仅建议练习时自行核验左手是否自然落在胯前即可，无需刻意调整。"
+}

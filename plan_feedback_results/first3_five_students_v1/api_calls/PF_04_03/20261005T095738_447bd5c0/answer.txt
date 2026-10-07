@@ -1,0 +1,70 @@
+{
+  "case_id": "PF_04_03",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C11", "C08"],
+      "observation": "学生右手腕在结束定势时位于头部下方（up 分量 -0.037），而十位教师全部为正值（最低 0.108，中位数 0.333），表明右手未举至头部附近高度。两手上下分开的垂直间距（0.822）也明显低于教师中位数（1.279），与右手偏低一致。",
+      "evidence": [
+        {
+          "evidence_id": "q_r_wrist_vs_head:up",
+          "student_value": -0.037,
+          "teacher_median": 0.333,
+          "p10": 0.125,
+          "p90": 0.367,
+          "direction": "below"
+        },
+        {
+          "evidence_id": "q_r_wrist_vs_l_wrist:up",
+          "student_value": 0.822,
+          "teacher_median": 1.279,
+          "p10": 0.953,
+          "p90": 1.394,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "C11 要求掌心中心大致与额头同高或略高。q_r_wrist_vs_head:up 直接测量右手腕相对头部的躯干方向高度，学生值为负（腕低于头），而所有教师均为正（腕高于头），差距显著且方向一致。C08 的两手垂直分开距离（q_r_wrist_vs_l_wrist:up）也低于教师 P10，与右手偏低相互印证。左手高度（q_l_wrist_vs_hip:up = 0.414）处于教师范围内，因此垂直间距缩小主要归因于右手未充分上举。无相反证据。",
+      "why_priority": "这是本案例中偏差最大、证据最稳定的发现：q_r_wrist_vs_head:up 无警告且 supported_claim_allowed=true，学生值与全部教师值符号相反，偏差幅度远超测量近似误差。该问题直接对应要领中右手高度的核心要求。",
+      "training_guidance": "定势时注意将右臂向上舒展，使右手腕大致到达头部高度或略高。可先对照镜子确认右手是否已举至额头附近，再体会右肩松沉与手臂弧形的配合，避免耸肩代偿。",
+      "caveat": "Head 关节点不等于额头，Wrist 不等于掌心中心，两者叠加存在解剖近似偏差；up 轴沿躯干方向而非重力竖直方向。但学生值为负而教师全部为正，符号差异不太可能由近似误差解释。",
+      "certainty": "supported"
+    },
+    {
+      "finding_id": "P2",
+      "priority": 2,
+      "clause_ids": ["C17"],
+      "observation": "学生左手腕相对左髋的前方距离（0.095）低于教师 P10（0.193），提示左手可能偏于贴近髋部而非明确置于胯前。但有一位教师（BV1vShdzLEsn_p1，0.098）与学生非常接近。",
+      "evidence": [
+        {
+          "evidence_id": "q_l_wrist_vs_hip:forward",
+          "student_value": 0.095,
+          "teacher_median": 0.359,
+          "p10": 0.193,
+          "p90": 0.569,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "C17 要求左手落于左胯前。forward 分量衡量左手腕在躯干前方方向上相对左髋的偏移。学生值 0.095 为正（仍在髋前方），但低于教师 P10（0.193），与中位数 0.359 差距较大。不过教师 BV1vShdzLEsn_p1 的 0.098 与学生几乎相同，说明该位置在教师中并非完全不存在。参考分布标记为 unstable_teacher_reference，降低了结论可靠性。",
+      "why_priority": "偏差幅度明显但存在一位教师近似值，且参考分布稳定性不足，优先级低于 P1。作为辅助观察仍有核验价值。",
+      "training_guidance": "可留意定势时左手是否自然落在左胯前方约一掌距离处，而非紧贴髋部。如果当前手位感觉舒适且符合自身架式风格，也可保持现状，以整体协调为准。",
+      "caveat": "参考分布标记为 unstable_teacher_reference（一位教师 BV1tk4y1r7Yr_p27 的 up 分量存在极端窗口波动，可能影响整体分布估计）。Wrist 不等于掌心，Hip 关节与'胯'的解剖位置有偏差。supported_claim_allowed=false，本项仅为观察建议。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C10"],
+      "reason": "右手相对头部的右向分量（0.599）和前方分量（0.384）均处于教师 P10-P90 区间边缘，方向正确（右方、前方），但两项均有 interval_disagreement 警告且 supported_claim_allowed=false，证据不足以提出明确问题。"
+    },
+    {
+      "clause_ids": ["C08"],
+      "reason": "C08 的右向分量（q_r_wrist_vs_l_wrist:right）有 window_spread、interval_disagreement 和 unstable_teacher_reference 三重警告，且 supported_claim_allowed=false；up 分量已合并入 P1。"
+    },
+    {
+      "clause_ids": ["C17"],
+      "reason": "C17 的 up 分量（0.414）处于教师范围内，无异常；right 分量有 window_spread、interval_disagreement 和 unstable_teacher_reference 三重警告，supported_claim_allowed=false，证据不足。"
+    }
+  ],
+  "coach_summary": "本次最突出的观察是右手在定势时未举至头部高度，右手腕低于头部而教师普遍高于头部，建议练习时关注右臂向上舒展至额头附近。左手前后位置可能略偏贴近髋部，但参考分布稳定性有限，仅建议自行核验。其余检查项未发现明确偏差。"
+}

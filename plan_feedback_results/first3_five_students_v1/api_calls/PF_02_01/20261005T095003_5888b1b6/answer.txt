@@ -1,0 +1,117 @@
+Let me analyze the evidence systematically.
+
+**C01 - 上体保持正直:**
+- q_spine_mid_angle: student 157.448, median 155.780, P10-P90 [152.214, 157.880]. Within both intervals. No warnings. No issue.
+- q_spine_neck_angle: student 142.957, median 142.912, P10-P90 [141.790, 147.481]. Within both intervals. Warning: unstable_teacher_reference. No issue.
+
+**C02 - 两腿屈膝松腰下蹲:**
+- q_knee_L_angle: student 123.362, median 120.288, P10-P90 [113.798, 131.626]. Within both intervals. No warnings. No issue.
+- q_knee_R_angle: student 121.612, median 117.692, P10-P90 [106.099, 119.153]. Above P90 on P10-P90, within on median±2MAD. Warning: interval_disagreement. supported_claim_allowed=false. The student's right knee angle is above P90 (121.612 > 119.153), suggesting less flexion than most teachers. But interval disagreement and supported_claim_allowed=false means tentative only.
+
+**C03 - 两掌轻轻下按至腹前:**
+- q_wrist_L_rel_pelvis:forward: student 0.123, median 0.298, P10-P90 [0.220, 0.488]. Below both intervals. Warning: unstable_teacher_reference. supported_claim_allowed=false. This is a notable deviation - left wrist is less forward relative to pelvis than all teachers.
+- q_wrist_R_rel_pelvis:forward: student 0.198, median 0.286, P10-P90 [0.204, 0.389]. Below P10-P90, within median±2MAD. Warnings: interval_disagreement, unstable_teacher_reference. supported_claim_allowed=false.
+- q_wrist_L_rel_pelvis:up: student 0.249, median 0.120, P10-P90 [0.035, 0.295]. Within P10-P90, above median±2MAD. Warnings: interval_disagreement, center_direction_disagreement. supported_claim_allowed=false.
+- q_wrist_R_rel_pelvis:up: student 0.242, median 0.114, P10-P90 [0.008, 0.257]. Within both intervals. No warnings. supported_claim_allowed=true.
+
+Key observations:
+1. **Forward position of both wrists** is notably low compared to teachers. Left wrist forward (0.123) is below P10 (0.220) and below median±2MAD (0.137). Right wrist forward (0.198) is below P10 (0.204). Both suggest hands are closer to the body (less forward) than typical teacher demonstrations. This relates to "两掌轻轻下按至腹前" - the hands may be held too close to the body rather than slightly forward at abdomen level.
+
+2. **Up position of wrists**: Left is above median±2MAD but within P10-P90; right is within both. The up values suggest hands are somewhat higher than teacher median but still within teacher range. Combined with the forward finding, the hands appear to be positioned higher and closer to the torso than typical.
+
+3. **Right knee angle** is above P90 but within median±2MAD, with interval disagreement. This is a weaker signal.
+
+The most coherent finding is the forward position of both wrists being below teacher ranges, suggesting hands are held too close to the body. The up components are within or near teacher ranges, so the primary issue is the forward distance. These should be merged into one finding about hand position.
+
+For the right knee, the evidence is weaker due to interval disagreement and the wide teacher spread. I'll include it as tentative.
+
+Let me finalize:
+
+**Finding 1 (P1):** Both wrists' forward position relative to pelvis is below teacher reference, suggesting hands are held closer to the torso than typical. Left wrist is clearly below both intervals; right wrist is below P10-P90. This is the most consistent and notable deviation.
+
+**Finding 2 (P2):** Right knee angle above P90, suggesting possibly less knee flexion on the right side. But with interval disagreement, this is tentative.
+
+Actually, let me reconsider. The left wrist forward is below both intervals (below P10=0.220 and below median-2MAD=0.137). The right wrist forward is below P10-P90 (0.198 < 0.204) but within median±2MAD (0.198 > 0.157). Both have unstable_teacher_reference warnings. The left is more clearly deviant.
+
+For the up components: left wrist up is above median+2MAD (0.249 > 0.247) but within P10-P90. Right wrist up is within both. These are less clear.
+
+I'll merge the forward components into one finding about hand position being too close to the body, and note the up components as secondary context.
+
+For the right knee: student 121.612 vs P90 119.153. It's above P90 but within median±2MAD (122.324). The interval disagreement warning means I should be tentative. The difference is modest (~2.5 degrees above P90). Given the wide teacher spread (P10=106.099 to P90=119.153), and that the left knee is well within range, this might suggest slight asymmetry but it's not strong enough for a high-confidence finding. I'll include it as tentative.
+
+Let me check if I should include the wrist up values. Left wrist up (0.249) is above median+2MAD (0.247) - barely. Right wrist up (0.242) is within both. The up values being somewhat elevated combined with forward being low could suggest hands are held higher and closer to the body than typical. But the up values are within P10-P90, so this is a weaker signal. I'll mention it as context in the synthesis but not as a separate finding.
+
+Final plan:
+- P1: Wrist forward position (both sides, merged) - hands too close to body
+- P2: Right knee angle slightly above P90 - tentative observation about possible asymmetry
+
+Actually, for P2, the evidence is quite weak. The student value (121.612) is only slightly above P90 (119.153), and within median±2MAD. With interval_disagreement warning and supported_claim_allowed=false, this is very tentative. I think it's still worth mentioning as an observation but with strong caveats.
+
+Let me also reconsider whether to include the wrist up values in P1. The left wrist up is above median±2MAD but within P10-P90, with interval_disagreement and center_direction_disagreement warnings. The right wrist up is within both. So the up component doesn't strongly support a finding on its own. I'll mention it as context.
+
+{
+  "case_id": "PF_02_01",
+  "findings": [
+    {
+      "finding_id": "P1",
+      "priority": 1,
+      "clause_ids": ["C03"],
+      "observation": "双腕相对骨盆的前向分量均低于教师参考分布，提示双手可能过于贴近躯干，未充分前伸至腹前位置。左腕前向分量（0.123）低于P10（0.220）及median−2×MAD（0.137）；右腕前向分量（0.198）略低于P10（0.204），但在median±2×MAD区间内。",
+      "evidence": [
+        {
+          "evidence_id": "q_wrist_L_rel_pelvis:forward",
+          "student_value": 0.12283330401777687,
+          "teacher_median": 0.29814998176391194,
+          "p10": 0.22040066825114668,
+          "p90": 0.4882776222734058,
+          "direction": "below"
+        },
+        {
+          "evidence_id": "q_wrist_R_rel_pelvis:forward",
+          "student_value": 0.19758821844191174,
+          "teacher_median": 0.2856980564230073,
+          "p10": 0.20359705631740596,
+          "p90": 0.3888777653181064,
+          "direction": "below"
+        }
+      ],
+      "synthesis": "要领要求'两掌轻轻下按至腹前'，腹前位置通常意味着双手在躯干前方一定距离处。左腕前向分量0.123远低于教师中位数0.298，且低于所有十位教师中的最低值（BV1iE411c7Ni_p03的0.170）；右腕0.198也低于教师中位数0.286，略低于P10。两侧一致偏低，形成相互印证的模式。同时，双腕的up分量（左0.249、右0.242）处于教师分布中上区域，提示手的位置可能偏高且偏近躯干。但两项前向证据均标记unstable_teacher_reference（部分教师存在center_shift或window_spread），supported_claim_allowed=false，因此只能作为观察性提示。",
+      "why_priority": "这是本案例中偏差最一致、幅度最明显的指标：左腕前向分量低于所有教师值，右腕也低于P10，且两侧方向一致，与要领中'至腹前'的空间要求直接相关。",
+      "training_guidance": "可尝试在定势时留意双掌是否已微微前送至腹前，而非紧贴腹部或大腿。可对照镜面或请同伴从侧面观察手掌与躯干之间是否有适当距离，以舒适自然为度，不必刻意前推。",
+      "caveat": "Wrist关节点非掌心中心，实际手掌位置可能有偏差。教师参考分布中部分教师存在窗口波动（BV1MFZKYnEdM_pNA、BV1svYmz6EFB_pNA有center_shift警告），参考分布本身稳定性有限。torso_v1的forward轴沿躯干方向而非世界坐标，无法排除躯干倾斜的影响。无法推断掌心朝向或按压力度。",
+      "certainty": "tentative"
+    },
+    {
+      "finding_id": "P2",
+      "priority": 2,
+      "clause_ids": ["C02"],
+      "observation": "右膝屈曲角度（121.612°）略高于教师P10-P90区间上限（119.153°），提示右膝屈曲程度可能略小于多数教师，但在median±2×MAD区间（113.061°–122.324°）内。左膝（123.362°）在两个参考区间内均无异常。",
+      "evidence": [
+        {
+          "evidence_id": "q_knee_R_angle:value",
+          "student_value": 121.61189069916048,
+          "teacher_median": 117.69246360532931,
+          "p10": 106.0991453493265,
+          "p90": 119.1530188360103,
+          "direction": "above"
+        }
+      ],
+      "synthesis": "要领要求'两腿屈膝松腰下蹲'。右膝角度121.612°高于教师中位数117.692°约3.9°，超出P90约2.5°，但仍在median+2×MAD（122.324°）以内。教师间右膝角度差异较大（P10=106.099°至P90=119.153°），且存在interval_disagreement（P10-P90判above而median±2MAD判within），说明该偏差处于模糊地带。左膝123.362°在两个区间内均正常，左右差异约1.75°，不构成明显不对称。",
+      "why_priority": "偏差幅度较小且处于两个参考区间的分歧区域，教师间本身变异较大，训练意义有限，故优先级低于P1。",
+      "training_guidance": "可在下蹲定势时自我检查双膝屈曲是否大致对称、深度是否适中。若感觉右腿偏直，可尝试微微加深右膝屈曲，以舒适稳定为准，无需强压。",
+      "caveat": "interval_disagreement表明两个参考区间给出不同判断，偏差的显著性不确定。膝关节角度不能推断承重比例、重心位置或'松腰'状态。教师间右膝角度变异较大（如420p2gYFTa达128.824°），个体差异显著。",
+      "certainty": "tentative"
+    }
+  ],
+  "not_selected": [
+    {
+      "clause_ids": ["C01"],
+      "reason": "q_spine_mid_angle（157.448°）和q_spine_neck_angle（142.957°）均在教师P10-P90及median±2×MAD区间内，未发现明显偏差。脊柱共线性指标正常，且该指标本身无法判断躯干是否在世界坐标中竖直。"
+    },
+    {
+      "clause_ids": ["C03"],
+      "reason": "双腕up分量（左0.249、右0.242）虽高于教师中位数，但均在P10-P90区间内（左腕在median±2MAD边缘），且左腕up存在interval_disagreement和center_direction_disagreement，证据不足以单独构成问题。已作为P1的辅助背景提及。"
+    }
+  ],
+  "coach_summary": "本次测量中最值得关注的观察是双腕的前向位置可能偏近躯干，尤其左腕明显低于教师参考范围，建议在定势时核验双掌是否已自然前送至腹前方。右膝屈曲角度略高于教师P90但幅度很小且参考区间存在分歧，仅作为自我检查的参考。所有结论均基于几何测量的近似比较，不代表动作质量判定。"
+}

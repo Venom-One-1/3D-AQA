@@ -28,8 +28,9 @@ class ComparisonHandler(ReviewRequestHandler):
         elif path == "/api/data":
             self._send_json(dict(self.store.client_payload(), token=self.token))
         elif path == "/api/export":
+            filename = "f_group_ablation_review.csv" if self.store.ablation_root else "f_group_review.csv"
             self._send_bytes(self.store.export_csv(), "text/csv; charset=utf-8",
-                             extra={"Content-Disposition": 'attachment; filename="f_group_review.csv"'})
+                             extra={"Content-Disposition": f'attachment; filename="{filename}"'})
         else:
             super().do_GET()
 
@@ -63,11 +64,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--experiment-root", type=Path, default=PROJECT / "f_group_experiment/first3_five_students_api")
     parser.add_argument("--metric-root", type=Path, default=PROJECT / "endpoint_metric_results/first3_five_students")
+    parser.add_argument("--ablation-root", type=Path, help="Compare F with an ablation instead of the rule baseline")
     parser.add_argument("--state-path", type=Path)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8502)
     args = parser.parse_args()
-    state = args.state_path or args.experiment_root / "ui_review/review_progress.json"
+    state = args.state_path or (args.ablation_root / "ui_comparison/review_progress.json" if args.ablation_root
+                               else args.experiment_root / "ui_review/review_progress.json")
     state.parent.mkdir(parents=True, exist_ok=True)
     with state.with_suffix(".lock").open("a") as lock:
         try:
@@ -78,7 +81,7 @@ def main():
                         "Open the existing server URL, or stop that server before restarting.\n"
                         "Changing --port does not release the annotation lock. "
                         "Do not delete the lock file while the server is running.\n")
-        store = ComparisonStore(args.experiment_root, args.metric_root, state)
+        store = ComparisonStore(args.experiment_root, args.metric_root, state, args.ablation_root)
         server = create_server(store, args.host, args.port)
         print(f"{len(store.cases)} cases / {len(store.records)} review items: http://{args.host}:{server.server_port}", flush=True)
         try:
