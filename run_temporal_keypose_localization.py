@@ -236,6 +236,14 @@ def result_rows(
             None if result["representative_sample_index_5fps_0based"] is None
             else result["representative_sample_index_5fps_0based"] + 1
         )
+        result["representative_grid_time_5fps_seconds"] = (
+            None if representative is None
+            else result["representative_sample_index_5fps_0based"] / 5
+        )
+        result["representative_grid_source_frame_0based"] = (
+            None if representative is None
+            else int(np.floor(result["representative_grid_time_5fps_seconds"] * fps + .5))
+        )
         result["boundary_delta_seconds"] = (
             None if result["representative_time_seconds"] is None
             else result["representative_time_seconds"] - boundary_time
@@ -314,6 +322,7 @@ def save_overview(
     plan: dict[str, Any],
     rows: list[dict[str, Any]],
     fps: float,
+    auxiliary_correspondences: dict[str, str] | None = None,
 ) -> None:
     frame_ids = []
     for row in rows:
@@ -321,18 +330,20 @@ def save_overview(
                     "interval_end_source_frame_0based"):
             if row[key] is not None:
                 frame_ids.append(int(row[key]))
+        if row["status"] == "located":
+            frame_ids.append((row["interval_start_source_frame_0based"]
+                              + row["interval_end_source_frame_0based"]) // 2)
     frames = read_video_frames(video, frame_ids)
     width, cell_width, cell_height = 1760, 410, 250
     header_height, row_height = 125, 390
     canvas = Image.new("RGB", (width, header_height + len(rows) * row_height), "white")
     draw = ImageDraw.Draw(canvas)
-    draw.text((30, 18), "起势时序关键事件定位", fill="#111827", font=_font(34, True))
+    draw.text((30, 18), plan["move"]["move_name"]+"：时序关键事件定位", fill="#111827", font=_font(34, True))
     draw.text(
         (30, 65),
-        "BV1WE411W7JB | KeyPose 仅作辅助参考，不参与信号计算或候选选择",
+        plan['video_id']+" | 已知招式边界限定搜索范围；frame0 表示原视频 0-based 帧号",
         fill="#52606d", font=_font(20),
     )
-    labels = ["辅助 KeyPose（非金标准）", "事件区间起点", "代表帧", "事件区间终点"]
     for row_index, (event, row) in enumerate(zip(plan["events"], rows)):
         top = header_height + row_index * row_height
         draw.rectangle((0, top, width, top + row_height), fill="#f8fafc" if row_index % 2 == 0 else "white")
@@ -343,28 +354,39 @@ def save_overview(
         draw.text((30, top + 50), status_text, fill="#216e5a", font=_font(18))
         images: list[Image.Image | None] = []
         auxiliary = Path(event["auxiliary_reference_image"])
-        images.append(Image.open(auxiliary).convert("RGB") if auxiliary.is_file() else None)
-        for key in ("interval_start_source_frame_0based", "representative_source_frame_0based",
-                    "interval_end_source_frame_0based"):
-            frame = row[key]
-            images.append(None if frame is None else frames[int(frame)])
+        start, rep, end = [row[k] for k in (
+            "interval_start_source_frame_0based", "representative_source_frame_0based",
+            "interval_end_source_frame_0based")]
+        if auxiliary.is_file():
+            labels = ["辅助 KeyPose（非金标准）", "事件区间起点", "代表帧", "事件区间终点"]
+            columns = [None, start, rep, end]
+            with Image.open(auxiliary) as reference_image:
+                images.append(reference_image.convert("RGB"))
+            images.extend(None if f is None else frames[int(f)] for f in columns[1:])
+        else:
+            labels = ["事件区间起点", "区间中点", "代表帧", "事件区间终点"]
+            columns = [start, None if start is None else (start+end)//2, rep, end]
+            images = [None if f is None else frames[int(f)] for f in columns]
+        if row.get("representative_source") == "known_move_end":
+            labels[2] = "代表帧（已知结束边界）"
+            labels[3] = "已知招式结束边界"
         for column, (label, image) in enumerate(zip(labels, images)):
             left = 30 + column * (cell_width + 20)
             draw.text((left, top + 84), label, fill="#334155", font=_font(17, column == 2))
             if image is None:
                 draw.rectangle((left, top + 116, left + cell_width, top + 116 + cell_height), fill="#e5e7eb")
             else:
-                canvas.paste(letterbox(image, cell_width, cell_height), (left, top + 116))
-            if column > 0 and row["status"] == "located":
-                frame_key = (
-                    "interval_start_source_frame_0based" if column == 1
-                    else "representative_source_frame_0based" if column == 2
-                    else "interval_end_source_frame_0based"
-                )
-                frame_id = int(row[frame_key])
+                canvas.paste(letterbox(image, cell_width, cell_height - 38), (left, top + 116))
+            if columns[column] is not None:
+                frame_id = int(columns[column])
                 draw.rectangle((left, top + 328, left + cell_width, top + 366), fill=(255, 255, 255))
                 draw.text((left + 8, top + 334), f"{frame_id / fps:.3f}s | frame0 {frame_id}",
                           fill="#111827", font=_font(16))
+            elif column == 0 and auxiliary.is_file():
+                correspondence = (auxiliary_correspondences or {}).get(event['event_id'])
+                caption = auxiliary.name + (f" | {correspondence}" if correspondence else '')
+                draw.rectangle((left, top + 328, left + cell_width, top + 366), fill='white')
+                draw.text((left + 8, top + 334), caption, fill='#111827', font=_font(16))
     canvas.save(path, quality=94)
 
 
@@ -376,35 +398,73 @@ def save_diagnostics(
     times: np.ndarray,
 ) -> None:
     font = font_manager.FontProperties(fname=str(DEFAULT_FONT))
-    colors = ["#147d64", "#c66a15"]
-    figure, axes = plt.subplots(3, 1, figsize=(15, 11), sharex=True)
-    axes[0].plot(times, signals["mean_wrist_pelvis_up"].smoothed, label="mean wrist up", color="#2563a7")
-    axes[0].plot(times, signals["mean_wrist_pelvis_forward"].smoothed, label="mean wrist forward", color="#7c4ba5")
-    axes[0].set_ylabel("归一化位置", fontproperties=font)
-    axes[0].legend(loc="upper left")
-    axes[1].plot(times, signals["mean_knee_angle"].smoothed, label="mean knee angle", color="#b84d45")
-    axes[1].plot(times, signals["mean_elbow_angle"].smoothed, label="mean elbow angle", color="#64748b", alpha=.8)
-    axes[1].set_ylabel("角度（degree）", fontproperties=font)
-    axes[1].legend(loc="upper left")
-    for index, (event, color) in enumerate(zip(plan["events"], colors)):
+    groups = [[], [], []]
+    for metric_id in signals:
+        group_id = 2 if ('angle' in metric_id or 'knee' in metric_id) else int('distance' in metric_id)
+        groups[group_id].append(metric_id)
+    groups = [group for group in groups if group]
+    count = len(groups) + len(plan['events'])
+    figure, axes = plt.subplots(count, 1, figsize=(15, 2.5*count), sharex=True)
+    for axis, group in zip(axes, groups):
+        for metric_id in group:
+            axis.plot(times, signals[metric_id].smoothed, label=metric_id)
+        axis.set_ylabel('degree' if all('angle' in m or 'knee' in m for m in group) else 'ratio')
+        axis.legend(loc='upper left', fontsize=8, ncol=2)
+    for index, event in enumerate(plan["events"]):
+        color = plt.get_cmap('tab10')(index % 10)
         detection = detections[event["event_id"]]
-        axes[2].plot(times, detection["score"], label=event["label"], color=color)
+        axis = axes[len(groups)+index]
+        scores = np.where(detection['search_mask'], detection['score'], np.nan)
+        axis.plot(times, scores, label=event["label"], color=color)
         result = detection["result"]
         if result["status"] == "located":
-            for axis in axes:
-                axis.axvspan(result["start_time_seconds"], result["end_time_seconds"], color=color, alpha=.10)
-                axis.axvline(result["representative_time_seconds"], color=color, linewidth=1.4, linestyle="--")
-    axes[2].set_ylabel("查询得分", fontproperties=font)
-    axes[2].set_xlabel("裁剪后视频时间（s）", fontproperties=font)
-    axes[2].set_ylim(-.03, 1.05)
-    axes[2].legend(loc="upper left", prop=font)
+            axis.axvspan(result['start_time_seconds'], result['end_time_seconds'], color=color, alpha=.10)
+            axis.axvspan(result['detected_match_start_time_seconds'],
+                         result['detected_match_end_time_seconds'], color=color, alpha=.2)
+            axis.axvline(result['representative_time_seconds'], color=color, linestyle='--')
+        axis.set_ylabel("查询得分", fontproperties=font)
+        axis.set_ylim(-.03, 1.05)
+        axis.legend(loc="upper left", prop=font)
+    axes[-1].set_xlabel("裁剪后视频时间（s）", fontproperties=font)
     for axis in axes:
         axis.grid(True, alpha=.22)
         axis.set_xlim(plan["move"]["start_seconds"], plan["move"]["end_seconds"])
-    figure.suptitle("起势：逐帧信号与时序查询结果", fontproperties=font, fontsize=18)
+    figure.suptitle(plan['move']['move_name']+"：逐帧信号与时序查询结果", fontproperties=font, fontsize=18)
     figure.tight_layout(rect=(0, 0, 1, .97))
     figure.savefig(path, dpi=180, bbox_inches="tight")
     plt.close(figure)
+
+
+def save_report(path, plan, rows):
+    lines = [f"# {plan['move']['move_name']}：时序查询定位", '',
+             f"参考视频：{plan['video_id']}；已知招式范围："
+             f"{plan['move']['start_seconds']:.3f}–{plan['move']['end_seconds']:.3f}s。", '',
+             '时间均为裁剪后完整视频时间。查询得分用于选取候选，不是动作质量分或正确概率。', '',
+             '| 事件 | 输出区间 | 信号匹配区间 | 代表帧时间 | 代表帧来源 | 9组扰动定位次数 |',
+             '|---|---|---|---|---|---|']
+    for row in rows:
+        if row['status'] != 'located':
+            lines.append(f"| {row['label']} | 未定位：{row['reason']} | | | | |")
+            continue
+        source = '已知招式结束边界' if row['representative_source']=='known_move_end' else '信号查询'
+        lines.append(
+            f"| {row['label']} | {row['start_time_seconds']:.3f}–{row['end_time_seconds']:.3f}s | "
+            f"{row['detected_match_start_time_seconds']:.3f}–{row['detected_match_end_time_seconds']:.3f}s | "
+            f"{row['representative_time_seconds']:.3f}s | {source} | "
+            f"{row['sensitivity']['located_run_count']}/{row['sensitivity']['run_count']} |"
+        )
+    lines += ['', '![区间与代表帧](keypose_overview.jpg)', '',
+              '![逐帧信号](temporal_diagnostics.png)', '',
+              '诊断图深色阴影为信号匹配区间，浅色阴影为输出区间，虚线为代表帧。', '',
+              '## 查询依据', '']
+    for event in plan['events']:
+        lines += [f"### {event['label']}", '', event['technique'], '',
+                  event['query']['rationale'], '']
+    lines += ['## 解释范围', '',
+              '本次为同一参考视频上的查询开发与可视化检查，内部事件尚无人工时间金标准。'
+              '参数扰动是稳定性诊断，不能解释为独立准确率。'
+              '身体坐标 up 跟随躯干，不是地面竖直方向；腕、踝只用于几何定位。', '']
+    path.write_text('\n'.join(lines), encoding='utf-8')
 
 
 def main() -> None:
@@ -413,20 +473,22 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--video", type=Path, default=DEFAULT_VIDEO)
     parser.add_argument("--tracking", type=Path, default=DEFAULT_TRACKING)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--smpl-batch-size", type=int, default=256)
     args = parser.parse_args()
     for path in (args.plan, args.manifest, args.video, args.tracking):
         if not path.is_file():
             parser.error(f"Missing input: {path}")
-    if args.output_dir.exists() and any(args.output_dir.iterdir()):
-        parser.error(f"Refusing to overwrite nonempty output directory: {args.output_dir}")
     if args.smpl_batch_size <= 0:
         parser.error("--smpl-batch-size must be positive")
 
     plan = load_json(args.plan)
     validate_temporal_plan(plan)
+    if args.output_dir is None:
+        args.output_dir = PROJECT/'temporal_keypose_results'/args.plan.stem/plan['video_id']
+    if args.output_dir.exists() and any(args.output_dir.iterdir()):
+        parser.error(f"Refusing to overwrite nonempty output directory: {args.output_dir}")
     manifest = load_json(args.manifest)
     if plan["video_id"] != manifest["reference"]["video_id"]:
         raise ValueError("Plan and reference manifest video IDs differ")
@@ -473,7 +535,7 @@ def main() -> None:
             "source_frame_0based": "canonical OpenCV frame index",
             "source_frame_1based": "source_frame_0based + 1",
             "time_seconds": "source_frame_0based / source_fps",
-            "sample_index_5fps_0based": "round(time_seconds * 5)",
+            "sample_index_5fps_0based": "floor(time_seconds * 5 + 0.5); nearest grid, not exact source frame",
         },
         "gold_move_end_time_seconds": float(event["boundary_time_seconds"]),
         "events": rows,
@@ -496,10 +558,11 @@ def main() -> None:
     save_overview(
         args.output_dir / "keypose_overview.jpg", args.video, plan, rows, fps,
     )
+    save_report(args.output_dir/'report.md', plan, rows)
     write_json(args.output_dir / "summary.json", {
         "schema_version": "1.0",
         "status": "completed" if all(row["status"] == "located" for row in rows) else "needs_review",
-        "scope": "BV1WE411W7JB move 1 only; two semantic events; no LLM call",
+        "scope": f"{plan['video_id']} move {plan['move']['move_id']}; authored temporal queries",
         "video": {"video_id": plan["video_id"], "source_fps": fps,
                   "source_frame_count": frame_count},
         "move": {**plan["move"], "segment_start_source_frame_0based": start_frame,
@@ -515,7 +578,7 @@ def main() -> None:
             "purpose": "visual reference only; no explicit Gold correspondence assumed",
         },
         "limitations": [
-            "The two internal events do not have human Gold timestamps.",
+            "Internal events do not have human Gold timestamps.",
             "Event intervals are semantic candidates, not statistical confidence intervals.",
             "torso_v1 up follows the torso and is not gravity vertical.",
             "A successful result on one teacher does not establish cross-person generalization.",
@@ -526,11 +589,13 @@ def main() -> None:
             "manifest": file_record(args.manifest, include_hash=True),
             "video": file_record(args.video, include_hash=False),
             "tracking": file_record(args.tracking, include_hash=False),
+            "executor": file_record(PROJECT/'aqa3d/temporal_keyposes.py', include_hash=True),
+            "runner": file_record(Path(__file__), include_hash=True),
         },
         "outputs": [
             "temporal_queries.json", "keypose_events.json", "keypose_events.csv",
             "sensitivity_runs.csv", "motion_signals.npz", "temporal_diagnostics.png",
-            "keypose_overview.jpg", "summary.json",
+            "keypose_overview.jpg", "report.md", "summary.json",
         ],
     })
     print(f"Saved {len(rows)} temporal events to {args.output_dir}")

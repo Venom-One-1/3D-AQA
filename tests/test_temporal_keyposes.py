@@ -14,6 +14,7 @@ from aqa3d.temporal_keyposes import (
     rolling_slope,
     validate_temporal_plan,
 )
+from build_temporal_query_plans import build_plan
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,6 +53,64 @@ def piecewise(times, start, peak_start, peak_end, end, low, high, final):
 
 
 class TemporalKeyposeTests(unittest.TestCase):
+    def test_authored_move_plans_preserve_boundaries_and_alternate_sides(self):
+        text = ''.join(f'## 第{i}式 测试\n\n### 动作要领\n\n'+
+                       ''.join(f'{j}. 动作{j}\n' for j in range(1, 6 if i == 2 else 3))
+                       for i in (2,3))
+        manifest = dict(reference=dict(video_id='test'), endpoint_keyposes=[
+            dict(move_id=1,boundary_time_seconds=16),
+            dict(move_id=2,boundary_time_seconds=41.4,move_name_zh='左右野马分鬃',
+                 move_name_pinyin='yemafenzong',final_technique_step='动作5'),
+            dict(move_id=3,boundary_time_seconds=47.8,move_name_zh='白鹤亮翅',
+                 move_name_pinyin='baiheliangchi',final_technique_step='动作2'),
+        ])
+        plan = build_plan(manifest, text, 2)
+        self.assertEqual(plan['move']['start_seconds'], 16)
+        self.assertEqual(plan['move']['end_seconds'], 41.4)
+        self.assertEqual([e['event_id'] for e in plan['events'][1::2]],
+                         ['part_mane_1_L','part_mane_2_R','part_mane_3_L'])
+        self.assertEqual(plan['events'][-1]['terminal_extension'], 'move_end')
+        validate_temporal_plan(build_plan(manifest, text, 3))
+
+    def test_self_dependency_is_rejected(self):
+        plan = load_plan()
+        plan['events'][0]['after_event'] = dict(
+            event_id=plan['events'][0]['event_id'], anchor='end', offset_seconds=0)
+        with self.assertRaisesRegex(ValueError, 'not earlier'):
+            validate_temporal_plan(plan)
+
+    def test_signed_height_order_does_not_confuse_left_and_right(self):
+        plan = load_plan()
+        plan['events'] = plan['events'][:1]
+        cond = plan['events'][0]['query']['conditions'][0]
+        cond.update(operator='positive', score_threshold=.5)
+        plan['events'][0]['query']['conditions'] = [cond]
+        times = np.arange(0,16.1,.1)
+        frames = np.arange(len(times))
+        for sign, expected in [(1,'located'),(-1,'not_located')]:
+            raw = {m['metric_id']: np.full(len(times), sign, dtype=float) for m in plan['metrics']}
+            signals = prepare_metric_signals(raw,times,smoothing_seconds=.2,derivative_window_seconds=.35)
+            result = locate_events(plan,signals,frames,times,10)
+            self.assertEqual(result[plan['events'][0]['event_id']]['result']['status'],expected)
+
+    def test_missing_boundary_is_not_silently_replaced_or_smoothed(self):
+        plan = load_plan()
+        plan['events'] = plan['events'][:1]
+        event = plan['events'][0]
+        event['query']['search_region']['end'] = 1
+        event['terminal_extension'] = 'move_end'
+        event['query']['selection']['representative_frame'] = 'end'
+        cond = event['query']['conditions'][0]
+        cond.update(operator='positive', score_threshold=.5)
+        event['query']['conditions'] = [cond]
+        times = np.arange(0,16.1,.1)
+        raw = {m['metric_id']: np.ones(len(times)) for m in plan['metrics']}
+        raw[cond['metric_id']][-1] = np.nan
+        signals = prepare_metric_signals(raw,times,smoothing_seconds=.4,derivative_window_seconds=.4)
+        self.assertTrue(np.isnan(signals[cond['metric_id']].smoothed[-1]))
+        result = locate_events(plan,signals,np.arange(len(times)),times,10)
+        self.assertEqual(result[event['event_id']]['result']['reason'],'missing_valid_move_end')
+
     def test_frozen_qishi_plan_is_valid(self):
         validate_temporal_plan(load_plan())
 

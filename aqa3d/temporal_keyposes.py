@@ -13,6 +13,7 @@ from .pose_measurements import MeasurementQuery, measure_pose
 EPS = 1e-10
 SUPPORTED_OPERATORS = {
     "increasing", "decreasing", "stable", "local_minimum", "local_maximum",
+    "positive", "negative",
 }
 SUPPORTED_SCOPES = {"instant_event", "stable_window", "transition_interval"}
 SUPPORTED_REDUCTIONS = {"mean", "median", "min", "max"}
@@ -111,7 +112,6 @@ def validate_temporal_plan(plan: dict[str, Any]) -> None:
         event_id = event["event_id"]
         if not isinstance(event_id, str) or not event_id or event_id in event_ids:
             raise ValueError(f"Invalid or duplicate event_id: {event_id!r}")
-        event_ids.add(event_id)
         query = event["query"]
         _exact_fields(
             query,
@@ -182,6 +182,9 @@ def validate_temporal_plan(plan: dict[str, Any]) -> None:
                 raise ValueError(f"Negative dependency offset in {event_id}")
         if event["terminal_extension"] not in {"none", "move_end"}:
             raise ValueError(f"Invalid terminal_extension in {event_id}")
+        if event["terminal_extension"] == "move_end" and region["end"] != 1:
+            raise ValueError("move_end extension requires search_region.end=1")
+        event_ids.add(event_id)
 
 
 def rolling_median(values: np.ndarray, times: np.ndarray, window_seconds: float) -> np.ndarray:
@@ -249,8 +252,11 @@ def prepare_metric_signals(
     prepared = {}
     for metric_id, raw in raw_metrics.items():
         smoothed = rolling_median(raw, times, smoothing_seconds)
+        smoothed[~np.isfinite(raw)] = np.nan
         velocity = rolling_slope(smoothed, times, derivative_window_seconds)
+        velocity[~np.isfinite(raw)] = np.nan
         acceleration = rolling_slope(velocity, times, derivative_window_seconds)
+        acceleration[~np.isfinite(raw)] = np.nan
         prepared[metric_id] = MetricSignals(raw.copy(), smoothed, velocity, acceleration)
     return prepared
 
@@ -272,6 +278,12 @@ def _robust_high(
 
 
 def _operator_score(values: np.ndarray, operator: str, search: np.ndarray) -> np.ndarray:
+    if operator in {"positive", "negative"}:
+        valid = np.isfinite(values)
+        result = np.full(len(values), np.nan)
+        result[valid] = (values[valid] > EPS if operator == "positive"
+                         else values[valid] < -EPS).astype(float)
+        return result
     if operator == "local_maximum":
         return _robust_high(values, search)
     if operator == "local_minimum":
@@ -388,6 +400,8 @@ def locate_events(
         for mask in required_masks:
             candidate &= mask
         candidate = _bridge(candidate, int(round(execution["bridge_gap_seconds"] * fps)))
+        for valid_mask in required_valid_masks:
+            candidate &= valid_mask
         minimum_event_frames = max(
             1,
             int(np.ceil(max(
@@ -417,6 +431,7 @@ def locate_events(
                 "condition_scores": condition_scores,
                 "condition_masks": condition_masks,
             }
+            outputs[event_id]["result"]["valid_search_ratio"] = valid_ratio
             continue
         strategy = event["query"]["selection"]["strategy"]
         if strategy == "first_match":
@@ -434,9 +449,14 @@ def locate_events(
         detected_start, detected_end = selected
         interval_start, interval_end = selected
         if event["terminal_extension"] == "move_end":
-            valid_end = np.flatnonzero(search & np.isfinite(composite))
-            if len(valid_end):
-                interval_end = int(valid_end[-1])
+            endpoint = np.flatnonzero(np.abs(times - move_end) < 0.51 / fps)
+            if len(endpoint) != 1 or not available_search[endpoint[0]]:
+                missing = _empty_detection(event, len(times), "missing_valid_move_end")
+                missing.update(search_mask=search, candidate_mask=candidate, score=composite,
+                               condition_scores=condition_scores, condition_masks=condition_masks)
+                outputs[event_id] = missing
+                continue
+            interval_end = int(endpoint[0])
         representative = _representative(
             interval_start, interval_end, composite,
             event["query"]["selection"]["representative_frame"],
@@ -453,12 +473,19 @@ def locate_events(
             "representative_source_frame_0based": int(frame_ids[representative]),
             "detected_match_start_source_frame_0based": int(frame_ids[detected_start]),
             "detected_match_end_source_frame_0based": int(frame_ids[detected_end]),
+            "detected_match_start_time_seconds": float(times[detected_start]),
+            "detected_match_end_time_seconds": float(times[detected_end]),
             "start_time_seconds": float(times[interval_start]),
             "end_time_seconds": float(times[interval_end]),
             "representative_time_seconds": float(times[representative]),
             "representative_score": float(composite[representative]),
             "valid_search_ratio": valid_ratio,
             "terminal_extension": event["terminal_extension"],
+            "representative_source": (
+                "known_move_end" if event["terminal_extension"] == "move_end"
+                and event["query"]["selection"]["representative_frame"] == "end"
+                else "signal_query"
+            ),
             "selection_rationale": event["query"]["rationale"],
         }
         outputs[event_id] = {
@@ -482,9 +509,11 @@ def _empty_detection(event: dict[str, Any], length: int, reason: str) -> dict[st
         "representative_source_frame_0based": None,
         "detected_match_start_source_frame_0based": None,
         "detected_match_end_source_frame_0based": None,
+        "detected_match_start_time_seconds": None, "detected_match_end_time_seconds": None,
         "start_time_seconds": None, "end_time_seconds": None,
         "representative_time_seconds": None, "representative_score": None,
         "valid_search_ratio": 0.0, "terminal_extension": event["terminal_extension"],
+        "representative_source": None,
         "selection_rationale": event["query"]["rationale"],
     }
     return {
