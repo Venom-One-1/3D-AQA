@@ -60,6 +60,59 @@ python run_feedback_review_app.py
 `manual_review_labeled.csv`，已复核的 93 项使用英文枚举
 `correct / false_positive / uncertain`，其余记录保留原状态。
 
+#### 新旧纯文本 F 对照复核
+
+沿用 F 组复核界面，加载历史结果与新版纯文本实验的当前响应文件：
+
+```bash
+python /home/sqw/Projects/3D-AQA/run_f_group_review_app.py \
+  --comparison-root /home/sqw/tmp/f_group_text_run_20261108_v1 \
+  --port 8506
+```
+
+访问 `http://127.0.0.1:8506`，左右两栏分别显示历史 F 和新版 F 的总结、
+问题、训练指导及数值证据。参考图片仅供人工复核，两组模型的输入均为文本和数值。
+标注可保存、切换案例时保存，并可导出带 `F_old / F_new` 来源的 CSV。
+本轮标注独立存放于新版实验的 `ui_version_comparison/review_progress.json`；
+历史标注与模型响应保持原样。复核状态绑定当前源文件哈希，之后修改源文件需使用新的
+`--state-path`。远程环境可转发 8506 端口。
+
+也支持由 `run_f_group_api.py` 直接生成的标准 API 结果目录（包含
+`experiment_manifest.json`、`api_config.json`、`F_prompt.md` 和 `responses/`）。例如：
+
+```bash
+python /home/sqw/Projects/3D-AQA/run_f_group_review_app.py \
+  --comparison-root /home/sqw/tmp/f_group_text_api_20261109_v2 \
+  --comparison-label 'F Prompt v2' \
+  --syntax-policy /home/sqw/tmp/f_group_text_api_20261109_v2/ui_version_comparison/syntax_repairs.json \
+  --port 8507
+```
+
+`--syntax-policy` 可选，只接受绑定原文哈希的明确引号转义规则，复用现有解析器，
+仅影响显示解析，不改写原始响应。界面显示转义说明、自动校验提示及原始返回文本；
+可读的数值校验异常仍进入人工复核，不自动标为误判。案例身份和可显示结构仍严格检查。
+本轮标注在 v2 结果目录下独立保存；远程访问时需转发对应的 8507 端口。
+
+#### F Prompt v2 与 F + RGB 对照复核
+
+同一界面也支持 `frozen/experiment_manifest.json`、`frozen/prompts/F_RGB.md` 的
+RGB 结果布局。使用 `--experiment-root` 指向纯文本 v2、`--comparison-root` 指向 RGB
+结果，并通过重复的 `--case-id` 明确选择共同案例；不指定时仍要求两组案例集合完全相同。
+`--original-label` 和 `--comparison-label` 分别设置两栏名称。
+
+RGB 对照显示实际发送的原始 PNG、evidence_sources、visual_evidence，以及两组
+总结、训练建议和数值依据。共享数值与动作要领必须完全一致，仅允许原有模态标识和
+visual_context 扩展。请求内容、配对图片和原始响应哈希均参与绑定；模型省略 case_id
+时，只在请求和响应记录可核验的情况下展示，并明确提示缺失，不向模型原文补写字段。
+显式错误的 case_id 仍被拒绝。引号解析策略支持 original_cases 和 cases，分别用于左右栏，
+原文均保持不变。标注独立保存；CSV 带来源显示名称。
+
+本次九案例的运行说明、一键 Windows 访问包和独立标注位于
+`/home/sqw/tmp/f_group_rgb_api_20261111_v7/ui_text_rgb_comparison/`。
+双击访问脚本自动建立或复用仅绑定本机的 SSH 转发，并在远端服务未运行时启动它，
+不修改 Windows 全局执行策略，不保存 SSH 密码，不把未鉴权的复核服务暴露到公网。
+无免密 SSH 时仍须正常认证；本地脚本须在 Windows 下载并执行，服务器无法代为修改本机配置。
+
 在 `4d-humans` 环境中安装项目依赖：
 
 ```bash
@@ -221,6 +274,84 @@ conda run -n 4d-humans python build_endpoint_keypose_reference.py
 `[previous_boundary + 1, current_boundary]`，第 1 式从 sample/source index 0
 开始。参考 tracking 必须在全部 24 个精确边界帧上存在 SMPL pose，否则程序默认
 报错；仅诊断缺失数据时可以显式添加 `--allow-missing-tracking-keyposes`。
+
+## FastSAM SMPL 教师结束定势
+
+`run_fastsam_teacher_endpoints.py` 读取 `fastsam_smpl_primary_v1` 的单人 NPZ，
+以既有 `BV1WE411W7JB` reference manifest 的 24 式结束时刻为锚点，对齐新选的
+其余十个教师视频。复用全局 5 FPS、23 个局部关节旋转的 Geodesic DTW，
+排除 `global_orient`；不加载 manifest 中旧的 PHALP tracking。
+
+```bash
+python -B run_fastsam_teacher_endpoints.py \
+  --smpl-root /data1/shenqingwei/VisualSearch/aqa/FastSAM_SMPL/teacher_single_person_11 \
+  --video-root /data1/shenqingwei/VisualSearch/aqa/teach_trimmed \
+  --reference-manifest reference_data/BV1WE411W7JB/reference_manifest.json \
+  --output-root /home/sqw/tmp/fastsam_teacher_endpoints_20261111_v1
+```
+
+输出目录必须不存在；仅核对输入可加 `--preflight-only` 并使用另一新目录。
+每个教师保存 24 个定势的 `endpoint_keyposes.csv/json`、精确源行的
+`endpoint_smpl.npz`、全序列路径与局部代价、招式区间、原图及配对复核图。
+根目录提供 `teacher_cohort.csv`、`all_teacher_endpoints.csv/json`、`index.md`、
+输入/代码校验值和 `batch_summary.json`。锚点不计入十位教师区间，当前入口不计算
+教师参考区间、排名或反馈。教师代码按本次 source manifest 顺序重新记录，
+不可套用旧教师映射。
+
+原视频帧索引、NPZ 行号、真实源帧时间与 5 FPS 网格时间分别保存；无效或缺失的
+采样帧直接报错，不删行后重排时间，不插值、平滑、旋转修正或最近帧替代。
+重复/逆序定势不静默修复。所有迁移定势均为待人工复核的预测，
+SMPL 转换残差不是实际人体重建误差或动作质量分数。
+
+## FastSAM 裁剪学生定势与复核
+
+`prepare_fastsam_student_bundle.py` 将已人工裁剪的十二人 ZIP 直接整理到
+`/data1/shenqingwei/VisualSearch/aqa/student_trimmed/` 与
+`/data1/shenqingwei/VisualSearch/aqa/FastSAM_SMPL/student_single_person_12/`，
+逐文件验证 ZIP CRC 和清单 SHA256，保留原 ZIP、裁剪 manifest 和编码日志。
+两个目标目录必须不存在，不重新编码视频或改写参数。
+
+```bash
+python -B run_fastsam_student_endpoints.py \
+  --output-root /home/sqw/tmp/fastsam_student_endpoints_20261111_v1
+```
+
+学生侧使用 `output_video_frame_indices` 和实际视频 PTS；原 `source_frame_indices`
+保留裁剪前帧号，不能直接用来索引裁剪后视频。尤其对可变帧率视频，不以原视频
+`input_fps` 推算新视频时刻。按实际 PTS 在 5 FPS 时间网格取帧后，复用原有 23 个
+局部旋转 Geodesic DTW；结果同时保存裁剪前后帧号、NPZ 行号、实际 PTS、
+路径、精确参数子集和配对截图。缺帧默认报错；只有明确授权时，才能用
+`--allow-nearest-case <ID>` 为指定学生开放最多一帧的相邻替代，逐点记录请求帧、
+实际帧和偏移。`--student-id <ID>` 可在新目录中单独运行指定学生，不改写旧结果。
+
+学生 05 的原视频约 30.0123 FPS，而重建按 30 FPS 采样；六个未重建的视频帧
+是正常抽样，并非丢失姿态。对此使用 `--student-id 05 --native-sampling-case 05`
+在新目录补跑：从首个保留的原生 SMPL 采样起每六个取一个，降至既有 DTW 的
+5 FPS，再通过 NPZ 的精确映射读取视频帧。连续原生采样编号必须完整，不补帧、
+不使用近邻替代；同时保留名义采样时轴、实际视频 PTS 和原始/裁剪后帧号。
+
+单页复核界面可同时加载学生与此前的教师结果：
+
+```bash
+python -B run_fastsam_endpoint_review_app.py \
+  --student-results /home/sqw/tmp/fastsam_student_endpoints_20261111_v1 \
+  --teacher-results /home/sqw/tmp/fastsam_teacher_endpoints_20261111_v1 \
+  --state /home/sqw/tmp/fastsam_endpoint_review_20261111_v1/review_progress.json \
+  --host 127.0.0.1 --port 8509
+```
+
+复核界面支持切换人物和招式、配对看图、学生逐帧查看、保存结论与备注及 CSV 导出。
+锚点标注只读，手工选帧与自动定势分别记录，不改写自动结果或原始 SMPL。
+确认修正帧必须有对应 SMPL，并与已确认的其他定势保持时间递增。
+持久化采用文件锁、revision 和源文件绑定；不要删除运行中的锁文件。
+
+浏览器位于另一台电脑时，需要转发远端端口，例如：
+
+```bash
+ssh -N -L 8509:127.0.0.1:8509 -o ExitOnForwardFailure=yes sqw@202.112.113.90
+```
+
+然后访问 `http://127.0.0.1:8509`。复核服务默认仅监听回环地址。
 
 ## 学生结束定势 KeyPose
 
